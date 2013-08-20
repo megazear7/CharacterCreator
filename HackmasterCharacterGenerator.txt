@@ -1,0 +1,44 @@
+
+
+Hackmaster character manager
+
+intial creation
+leveling up
+combat calculator
+
+
+mongo
+
+
+
+
+Alex:  do you have a github account? if so what is your username>
+ Sent at 8:38 AM on Monday
+ Alex:  ?
+ Sent at 8:38 AM on Monday
+ Alex:  I made a repo called CharacterCreator, https://github.com/megazear7?tab=repositories
+errr https://github.com/megazear7/CharacterCreator
+ Sent at 9:37 AM on Monday
+ Alex:  I finally got that server working, it was a stupid little error that I had in my content type line that I checked 50 billion times lol. 
+ Sent at 9:39 AM on Monday
+ Alex:  before we get started I feel like we need an "outline" of what language to use on the backend, how to organize the html, what database to use, and how to organize the files in the repo.
+ Sent at 9:40 AM on Monday
+ me:  It is usually something like that, looks right, just off by a character and I never see it
+I agree
+ Sent at 7:30 PM on Monday
+ me:  Go ahead and create the git hub project and we can create a text document to outline all that... I am thinking php and mysql on linux, but I am open to just about anything you want to do
+ Sent at 7:32 PM on Monday
+ me:  Oh, and I got an offer letter, switch over to part time employee on the 3rd of Sep
+ Sent at 7:33 PM on Monday
+ me:  ok and now I scroll up and see the link to the repository. L
+ Sent at 7:39 PM on Monday
+ me:  my git hub account name is
+   BuckRogers1965
+ Sent at 7:58 PM on Monday
+ me:  We can do this in phases as well... first thing is a character generator that when given a class and race will generate an acceptable character.
+Then we can work on managing build points and stats as the character levels up.
+ Sent at 8:01 PM on Monday
+ 
+
+
+

@@ -1,44 +1,73 @@
-
-
 Hackmaster character manager
 
-intial creation
-leveling up
-combat calculator
-
-
-mongo
-
-
-
-
-Alex:  do you have a github account? if so what is your username>
- Sent at 8:38 AM on Monday
- Alex:  ?
- Sent at 8:38 AM on Monday
- Alex:  I made a repo called CharacterCreator, https://github.com/megazear7?tab=repositories
-errr https://github.com/megazear7/CharacterCreator
- Sent at 9:37 AM on Monday
- Alex:  I finally got that server working, it was a stupid little error that I had in my content type line that I checked 50 billion times lol. 
- Sent at 9:39 AM on Monday
- Alex:  before we get started I feel like we need an "outline" of what language to use on the backend, how to organize the html, what database to use, and how to organize the files in the repo.
- Sent at 9:40 AM on Monday
- me:  It is usually something like that, looks right, just off by a character and I never see it
-I agree
- Sent at 7:30 PM on Monday
- me:  Go ahead and create the git hub project and we can create a text document to outline all that... I am thinking php and mysql on linux, but I am open to just about anything you want to do
- Sent at 7:32 PM on Monday
- me:  Oh, and I got an offer letter, switch over to part time employee on the 3rd of Sep
- Sent at 7:33 PM on Monday
- me:  ok and now I scroll up and see the link to the repository. L
- Sent at 7:39 PM on Monday
- me:  my git hub account name is
-   BuckRogers1965
- Sent at 7:58 PM on Monday
- me:  We can do this in phases as well... first thing is a character generator that when given a class and race will generate an acceptable character.
+I am thinking php and mysql on linux, but I am open to just about anything you want to do
+We can do this in phases as well... first thing is a character generator that when given a class and race will generate an acceptable character.
 Then we can work on managing build points and stats as the character levels up.
- Sent at 8:01 PM on Monday
  
+Intial Creation
+Leveling Up
+Combat Calculator
+
+Steps:
+0) Decide whether to use Mongo or MySQL.
+1) Design what the character looks like on the data side.
+2) Design a Character Object that can be used all over to retrieve and manipulate character data.
+3) Make a Character Creator Object that creates Character Objects given certain data.
+4) Design a web interface which retrieves info from user and gives it to the backend Character Creator Object.
+5) Add leveling up functionality to the Character Creator Object.
+6) Make a web interface for leveling up characters.
+7) Make "Combat Calculator", a functionality that, given a character and a selection of items and armor and weapons, spits out a combat rose or stat grid
+8) Make a front end experience to use the Combat Calculator.
+
+Backend:
+Character
+CharacterCreator
+CombatCalculator
+
+Frontend:
+ - When coming to the website asked to either sign in or create an account.
+
+ - Once signed in a row of navigation links at the top and a grid of your caracters as the main portion of the screen, with an extra
+   button that says "create a new character".
+   Navigation: "Characters"
+
+ 	- Clicking on create a new character takes you through a series of steps in creating a character, some steps are skipable, or have a
+	  "auto-complete this step for me" type button. 
+	  Navigation: "Characters - Character Creation"
+
+ 	- Instead clicking on a characters takes you to a screen that is a "visual representaion" of the character. A few buttons at the top
+ 	  let you "Add experience" and  "Manage Combat Profiles". A few (slightly hidden) buttons at the bottom have two more options and that is
+ 	  "Remove Character" and "Give Full Customization Access"
+	  Navigation: "Characters - <CharacterName>"
+
+ 		- Clicking Add Experience gives you an option to directly set a level for the character (in which case a button will apear that says
+ 		  "Level up Your character Now") or you can just add experience, or set experience. If enough experience is hit to level up, a button will
+ 		  appear that says "Level up your character now". 
+	      Navigation: "Characters - <CharacterName> - Add Experience"
+
+ 		- Instead Clicking Manage Combat Profiles will give you a grid of combat roses, with one an extra button that says "add combat grid"
+		  Also each Combat rose has two tabs at the top, one that says "Combat Rose" which is by default selected, and another that says,
+		  "Combat Grid" which, if selected, turns the rose into a grid that explains the source of the stats (like on the character sheet).
+		  Upon returning to this page the grids should stay selected even if returning days later, (i.e. that selection needs to be in 
+		  that data some where).
+	      Navigation: "Characters - <CharacterName> - Combat Profiles"
+
+ 			- Clicking on a combat rose will take you to a new page
+ 			  which is a full detailed combat grid of how the stats were calculated. The navigation bar at the top should read:
+	      	  Navigation: "Characters - <CharacterName> - Combat Profiles - <CombatProfile>"
+
+ 		- Instead clicking Remove Character lets you remove the character from the front screen (the data is kept, and an option to restore 
+  		  characters is given in character creation. A pop up dialog box is displayed asking for a yes or no and explaining how to restore
+		  the character later.
+	      Navigation: "Characters - <CharacterName>"
+
+ 		- Instead clicking Give Full Customization Access brings up a dialog box that says, "Doing this will make this character "House Rules", if
+ 		  you want to revert this house ruling later you can, and your non house ruled character will be restored.", and then a yes / no option is 
+ 		  given
+	      Navigation: "Characters - <CharacterName>"
+
+ 
+
 
 
 

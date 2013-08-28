@@ -19,6 +19,11 @@ Steps:
 7) Make "Combat Calculator", a functionality that, given a character and a selection of items and armor and weapons, spits out a combat rose or stat grid
 8) Make a front end experience to use the Combat Calculator.
 
+What do yo think about the outline I have below? Obviously we don't need to do all of it, but I was just trying to come up with something
+that is clean and simply (for the user) and that also is expandable with new pages / dialogs / options. Basically tring to keep he front end 
+design and the back end design expandable. There is a lot in the outline, thats more of a wishlist of functionality, maybe having a smaller 
+simpler step one outline would be good. Any way what do you think?
+
 Backend:
 Character
 CharacterCreator
@@ -34,6 +39,18 @@ Frontend:
  	- Clicking on create a new character takes you through a series of steps in creating a character, some steps are skipable, or have a
 	  "auto-complete this step for me" type button. 
 	  Navigation: "Characters - Character Creation"
+
+		- A screen comes up with three options (in the same button grid layout deal): QuickGenerate, Step-By-Step, Fill-In(Will be flagged as a 
+		  house ruled character).
+			Navigation: "Characters - Character Creation"
+
+			- Clicking QuickGenerate allows you to pick a race and a class, and then takes you right to the equipment step.
+			  Navigation: "Characters - Character Creation"
+
+			- Clicking Step-By-Step lets you go through the 10 steps of making a character, each step is a seperate page.
+			  Navigation: "Character - Character Creation - Step 1 - Step 2 - ... - Step 10"
+
+			- Clicking Fill In will ask you for a chracter name, then it will take you to a blank character screen where you can put in all of your own numbers
 
  	- Instead clicking on a characters takes you to a screen that is a "visual representaion" of the character. A few buttons at the top
  	  let you "Add experience" and  "Manage Combat Profiles". A few (slightly hidden) buttons at the bottom have two more options and that is
@@ -56,6 +73,12 @@ Frontend:
  			  which is a full detailed combat grid of how the stats were calculated. The navigation bar at the top should read:
 	      	  Navigation: "Characters - <CharacterName> - Combat Profiles - <CombatProfile>"
 
+			- Instead clicking on add combat grid will turn that square button into something new that basically has a drop down list for body,
+			  left hand, right hand, and then another which allows you to add a "custom item", every time a cutom item is added a new drop down list for
+			  another custom item is added. This allows you to add things such as "+2 helm of defense" or what not. On this section there is a button
+			  to submit the combat profile. When this is clicked this section turns into a new combat rose.
+			  Navigation: "Characters - <CharacterName> - Combat Profiles"
+
  		- Instead clicking Remove Character lets you remove the character from the front screen (the data is kept, and an option to restore 
   		  characters is given in character creation. A pop up dialog box is displayed asking for a yes or no and explaining how to restore
 		  the character later.
@@ -66,8 +89,19 @@ Frontend:
  		  given
 	      Navigation: "Characters - <CharacterName>"
 
- 
+How the page is created on the front end:
+
+Javascript classes:
+	dialogWindow: 	This is a class that creates a block of html that is essentially a wrapper. So many of the pages described above have
+					a grid layout of options. These grids are a grid of 3 rows and any number of columns. The grid is a grid of squares
+					and anything can be put inside of them really. So the "Characters" page is a grid of dialogWindows and inside each
+					dialogWindow is a character (maybe name, race, class and health or something). Plus one additional dialogWindow that simply
+					says "create new character". And takes you to character creation.	
+
+	windowPage:		This is a class that contains zero or more dialogWindows. This is a sequence of dialogWindows where the dialogWindow at position
+					0 goes into the 0,0 spot of the grid, and the dialogWindow at position 1 goes in the 1,0 position in the grid, ect... 
+					windowPage creates all the html needed for the "grid" section of the page.
 
 
-
-
+Non grid pages (as well as the html that goes inside dialogWindows):
+	These pages may just be custom html for each page needed without useing dynamicly created html like dialogWindow and windowPage.

@@ -6,10 +6,14 @@
 
 // Note: Character and DialogWindow(character) could likely be condensed down into one object
 
-// need some javascript which follows the specification in HackmasterCharacterGenerator.txt
-// i.e. I need to create a "WindowPage", and then add "dialogWindow" 's to it, one for each character
-// where the data comes from? ajax? or some sort of templating system so that the page is served with
-// all of that data
+// So the dialogWindow 's appear down the page, and do not move across. Because of how dynamic this
+// can be, I think the size, color and other "internal properties" of the dialogWindow 's should be
+// set with its own toHtml() method, and there position (and maybe even padding?) should be up to 
+// the WindowPage 's toHtml() method to deal with. the first three should go in the first row, the
+// next three in the following row, each with a space anybetween (on all edges) of 10% of the the 
+// containers width.
+// remember to think about single point of control over changes so that the number of dialogWindows per row,
+// and the spaceing and sizes can all by changed easily
 
 /*
 Constructor Arguments:
@@ -41,8 +45,11 @@ function WindowPage(windows){
 	*/
 	this.toHtml = function(container){
 		// this function can be called and it will return html that can be inserted into the page.
-		container.append(this.windows[0].toHtml());
-		//container.append("<p>Hello</p>");
+		var length = this.windows.length;
+		for(var i = 0; i<length; i++){
+			var dialog = this.windows[i].toHtml(container);
+			container.append(dialog);
+		}
 	}
 }
 
@@ -56,22 +63,41 @@ function DialogWindow(character){
 	
 	/*
 	This function simply returns the html representation of the character
+	This function should be called withen WindowPage so that it can fully figure out what
 	*/
-	this.toHtml = function(){
-		// obviously this is not how we want to do this, instead we can use jQuery to build a html element tha has all the thing
-		// we would want  DialogWindow to have.
-		return "name = " + this.character.name + "<br/>race = " + this.character.race + "<br/>class = " + this.character.class;
-		// this function can be called and it will return html that can be inserted into the page.
-		// this function should be called withen WindowPage so that it can fully figure out what
-		// all the html should be.
+	this.toHtml = function(container){
+
+		var dialogWidth = container.width()/5;
+		var dialogSep = container.width()/10;
+	
+		var htmlWindow = jQuery('<div/>', {
+			id: "dialogWindow"
+		}).css("width", dialogWidth).css("height", dialogWidth)
+			.css("margin", dialogSep);
+
+		jQuery("<p>" + "name = " + this.character.name + "<br/>race = " + this.character.race + "<br/>class = " + this.character.characterClass + " </p>").appendTo(htmlWindow);
+
+		return htmlWindow;
 	}
 }
 
 $(document).ready(function(){
 	var slighter = new Character("Slighter", "Human", "Fighter");
+	var wiz = new Character("Wiz", "Elf", "Wizard");
+	var mearth = new Character("Mearth", "Human", "Cleric");
+	var snaggleTooth = new Character("SnaggleTooth", "Half-Orc", "Ranger");
+
 	var slighterWindow = new DialogWindow(slighter);
+	var wizWindow = new DialogWindow(wiz);
+	var mearthWindow = new DialogWindow(mearth);
+	var snaggleToothWindow = new DialogWindow(snaggleTooth);
+
 	var characterWindows = new Array();
 	characterWindows[0] = slighterWindow;
+	characterWindows[1] = wizWindow;
+	characterWindows[2] = mearthWindow;
+	characterWindows[3] = snaggleToothWindow;
+
 	var characterPage = new WindowPage(characterWindows);
 	var container = $(".bodyContainer");
 	characterPage.toHtml(container);
@@ -80,6 +106,12 @@ $(document).ready(function(){
 </script>
 
 <style>
+
+#dialogWindow{
+	background-color: rgb(206,206,206);
+	padding: 10px;
+	border: 5px rgb(00,69,99);
+}
 
 .topBannerContainer{
 width: 100%;
@@ -94,17 +126,15 @@ background-color: rgb(160,160,160);
 }
 
 body{
-background-color: rgb(170,170,170);
+background-color: rgb(160,160,160);
 }
 
 </style>
 
 <div class="bodywrapper">
 	<div class="topBannerContainer">
-		<p>this is the top banner</p>
 	</div>
 	<div class="bodyContainer">
-		<p>this is the body container</p>
 	</div>
 </div>
 

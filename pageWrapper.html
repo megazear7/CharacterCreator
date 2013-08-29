@@ -48,6 +48,16 @@ function WindowPage(windows){
 		var length = this.windows.length;
 		for(var i = 0; i<length; i++){
 			var dialog = this.windows[i].toHtml(container);
+
+			var row = Math.floor(i/3 + 1);	
+			var column = i%3 + 1;
+			var posRow = (10+(30*(column-1)));
+
+			dialog.css("left",posRow+"%");
+
+			var posCol = (container.width() / 20) + (container.width() * .3 * (row-1));
+
+			dialog.css("top",posCol);
 			container.append(dialog);
 		}
 	}
@@ -72,8 +82,8 @@ function DialogWindow(character){
 	
 		var htmlWindow = jQuery('<div/>', {
 			id: "dialogWindow"
-		}).css("width", dialogWidth).css("height", dialogWidth)
-			.css("margin", dialogSep);
+		}).css("width", dialogWidth).css("height", dialogWidth).css("position","absolute");
+			//.css("margin", dialogSep);
 
 		jQuery("<p>" + "name = " + this.character.name + "<br/>race = " + this.character.race + "<br/>class = " + this.character.characterClass + " </p>").appendTo(htmlWindow);
 
@@ -97,6 +107,10 @@ $(document).ready(function(){
 	characterWindows[1] = wizWindow;
 	characterWindows[2] = mearthWindow;
 	characterWindows[3] = snaggleToothWindow;
+	characterWindows[3] = snaggleToothWindow;
+	characterWindows[4] = snaggleToothWindow;
+	characterWindows[5] = snaggleToothWindow;
+	characterWindows[6] = snaggleToothWindow;
 
 	var characterPage = new WindowPage(characterWindows);
 	var container = $(".bodyContainer");
@@ -123,6 +137,7 @@ background-color: rgb(96,96,96);
 width: 100%;
 height: 100%;
 background-color: rgb(160,160,160);
+position: relative;
 }
 
 body{

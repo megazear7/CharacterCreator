@@ -28,6 +28,58 @@ function Character(name, race, characterClass){
 	this.name = name;
 	this.race = race;
 	this.characterClass = characterClass;
+
+	/*
+	* this should return a html representation of whatever this data is representing, in this case: a character
+	*/
+	this.toHtml = function(){
+		return "<p><h1>" + this.name + "</h1><br/><b>" + this.race + "  " 
+			+ this.characterClass + "</b></p>";
+	}
+}
+
+function Weapon(name, damage, speed){
+	// data for weapons go in here
+	this.name = name;
+	this.damage = damage;
+	this.speed = speed;
+
+	/*
+	* this should return a html representation of whatever this data is representing, in this case: a weapon
+	*/
+	this.toHtml = function(){
+		return "<p><h1>" + this.name + "</h1><br/><b>" + "Damage: " + this.damage + "<br/>" 
+			+ "speed: " + this.speed + "</b></p>";
+	}
+}
+
+function CombatRose(name, speed, init, reach, topSave, attack, defense, damage, dmgReduction){
+	// data for weapons go in here
+	this.name = name;
+	this.speed = speed;
+	this.init = init;
+	this.reach = reach;
+	this.topSave = topSave;
+	this.attack = attack;
+	this.defense = defense;
+	this.damage = damage;
+	this.dmgReduction = dmgReduction;
+
+	/*
+	* this should return a html representation of whatever this data is representing, in this case: a weapon
+	*/
+	this.toHtml = function(){
+		return	"<p><h2>" + this.name + "</h2><b>" + 
+				"Attack: " + this.attack + "<br/>" +
+				"Defense: " + this.defense + "<br/>" +
+				"Damage: " + this.damage + "<br/>" +
+				"Damage Reduction: " + this.dmgReduction + "<br/><br/>" +
+				"Speed: " + this.speed + "<br/>" + 
+				"Initiative: " + this.init + "<br/>" +
+				"Reach: " + this.reach + "<br/>" +
+				"Top Save: " + this.topSave + "<br/>" +
+				"</b></p>";
+	}
 }
 
 /*
@@ -46,7 +98,6 @@ function WindowPage(windows){
 	this.toHtml = function(container){
 		// this function can be called and it will return html that can be inserted into the page.
 		var length = this.windows.length;
-		var rows = 0;
 		for(var i = 0; i<length; i++){
 			var dialog = this.windows[i].toHtml(container);
 
@@ -61,21 +112,20 @@ function WindowPage(windows){
 
 			dialog.css("top",posCol);
 			container.append(dialog);
-			rows = column;
 		}
 	}
 }
 
 /*
 Constructor Arguments:
-	Character: a character which is the data representation of a character
+	contents: contents is the data that goes inside this DialogWindow
 */
-function DialogWindow(character){
-	// given a character we can create a DialogWindow of that character
-	this.character = character;
+function DialogWindow(contents){
+	// given a contents we can create a DialogWindow of that content
+	this.contents = contents;
 	
 	/*
-	This function simply returns the html representation of the character
+	This function simply returns the html representation of the contents
 	This function should be called withen WindowPage so that it can fully figure out what
 	*/
 	this.toHtml = function(container){
@@ -86,10 +136,8 @@ function DialogWindow(character){
 		var htmlWindow = jQuery('<div/>', {
 			id: "dialogWindow"
 		}).css("width", dialogWidth).css("height", dialogWidth).css("position","absolute");
-			//.css("margin", dialogSep);
 
-		jQuery("<p><h1>" + this.character.name + "</h1><br/><b>" + this.character.race + "  " 
-			+ this.character.characterClass + "</b></p>").appendTo(htmlWindow);
+		jQuery(this.contents.toHtml()).appendTo(htmlWindow);
 
 		return htmlWindow;
 	}
@@ -101,23 +149,29 @@ $(document).ready(function(){
 	var mearth = new Character("Mearth", "Human", "Cleric");
 	var snaggleTooth = new Character("SnaggleTooth", "Half-Orc", "Ranger");
 
+	var longsword = new Weapon("Longsword", "2d8", "11");
+	var mace = new Weapon("Mace", "2d6", "8");
+
+	var slighterCombatRose = new CombatRose("Slighter's Combat Chart:", "9", "+2", "7", "1 ft", "+5", "+4", "4", "2d8+2");
+
 	var slighterWindow = new DialogWindow(slighter);
 	var wizWindow = new DialogWindow(wiz);
 	var mearthWindow = new DialogWindow(mearth);
 	var snaggleToothWindow = new DialogWindow(snaggleTooth);
+	var longswordWindow = new DialogWindow(longsword);
+	var maceWindow = new DialogWindow(mace);
+	var slighterCombatRoseWindow = new DialogWindow(slighterCombatRose);
 
-	var characterWindows = new Array();
-	characterWindows[0] = slighterWindow;
-	characterWindows[1] = wizWindow;
-	characterWindows[2] = mearthWindow;
-	characterWindows[3] = snaggleToothWindow;
-	characterWindows[3] = snaggleToothWindow;
-	characterWindows[4] = snaggleToothWindow;
-	characterWindows[5] = snaggleToothWindow;
-	characterWindows[6] = snaggleToothWindow;
-	characterWindows[7] = snaggleToothWindow;
+	var dialogWindows = new Array();
+	dialogWindows[0] = slighterWindow;
+	dialogWindows[1] = wizWindow;
+	dialogWindows[2] = mearthWindow;
+	dialogWindows[3] = snaggleToothWindow;
+	dialogWindows[4] = longswordWindow;
+	dialogWindows[5] = slighterCombatRoseWindow;
+	dialogWindows[6] = maceWindow;
 
-	var characterPage = new WindowPage(characterWindows);
+	var characterPage = new WindowPage(dialogWindows);
 	var container = $(".bodyContainer");
 	characterPage.toHtml(container);
 });

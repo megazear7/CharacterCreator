@@ -1,0 +1,112 @@
+<html>
+<body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<script>
+
+// Note: Character and DialogWindow(character) could likely be condensed down into one object
+
+// need some javascript which follows the specification in HackmasterCharacterGenerator.txt
+// i.e. I need to create a "WindowPage", and then add "dialogWindow" 's to it, one for each character
+// where the data comes from? ajax? or some sort of templating system so that the page is served with
+// all of that data
+
+/*
+Constructor Arguments:
+	right now I am just giving name race and character class
+	in the future we should give it a json string that is returned
+	from either a ajax call to the server that has all the needed
+	character data inside, or set a template variable that has a json string
+	inside which has all the needed character data
+*/
+function Character(name, race, characterClass){
+	// data for characters go in here
+	this.name = name;
+	this.race = race;
+	this.characterClass = characterClass;
+}
+
+/*
+Constructor Arguments:
+	windows: a array of DialogWindows, the contents of each dialog window do not matter
+*/
+function WindowPage(windows){
+	// given an array of DialogWindows we can create a WindowPage
+	this.windows = new Array();
+	this.windows = windows;
+
+	/*
+	Arguments:
+		container: a jQuery html element that the WindowPage will be placed inside.
+	*/
+	this.toHtml = function(container){
+		// this function can be called and it will return html that can be inserted into the page.
+		container.append(this.windows[0].toHtml());
+		//container.append("<p>Hello</p>");
+	}
+}
+
+/*
+Constructor Arguments:
+	Character: a character which is the data representation of a character
+*/
+function DialogWindow(character){
+	// given a character we can create a DialogWindow of that character
+	this.character = character;
+	
+	/*
+	This function simply returns the html representation of the character
+	*/
+	this.toHtml = function(){
+		// obviously this is not how we want to do this, instead we can use jQuery to build a html element tha has all the thing
+		// we would want  DialogWindow to have.
+		return "name = " + this.character.name + "<br/>race = " + this.character.race + "<br/>class = " + this.character.class;
+		// this function can be called and it will return html that can be inserted into the page.
+		// this function should be called withen WindowPage so that it can fully figure out what
+		// all the html should be.
+	}
+}
+
+$(document).ready(function(){
+	var slighter = new Character("Slighter", "Human", "Fighter");
+	var slighterWindow = new DialogWindow(slighter);
+	var characterWindows = new Array();
+	characterWindows[0] = slighterWindow;
+	var characterPage = new WindowPage(characterWindows);
+	var container = $(".bodyContainer");
+	characterPage.toHtml(container);
+});
+
+</script>
+
+<style>
+
+.topBannerContainer{
+width: 100%;
+height: 50px;
+background-color: rgb(96,96,96);
+}
+
+.bodyContainer{
+width: 100%;
+height: 100%;
+background-color: rgb(160,160,160);
+}
+
+body{
+background-color: rgb(170,170,170);
+}
+
+</style>
+
+<div class="bodywrapper">
+	<div class="topBannerContainer">
+		<p>this is the top banner</p>
+	</div>
+	<div class="bodyContainer">
+		<p>this is the body container</p>
+	</div>
+</div>
+
+</body>
+</html>

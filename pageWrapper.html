@@ -46,6 +46,7 @@ function WindowPage(windows){
 	this.toHtml = function(container){
 		// this function can be called and it will return html that can be inserted into the page.
 		var length = this.windows.length;
+		var rows = 0;
 		for(var i = 0; i<length; i++){
 			var dialog = this.windows[i].toHtml(container);
 
@@ -56,9 +57,11 @@ function WindowPage(windows){
 			dialog.css("left",posRow+"%");
 
 			var posCol = (container.width() / 20) + (container.width() * .3 * (row-1));
+			var bodyHeight = posCol;
 
 			dialog.css("top",posCol);
 			container.append(dialog);
+			rows = column;
 		}
 	}
 }
@@ -146,7 +149,6 @@ border-width:5px;
 border-color:rgb(36,103,126);
 border-radius:20px;
 text-align:center;
-/*vertical-align:top;*/
 line-height: 10px;
 color:rgb(192,216,224);
 }
@@ -178,8 +180,12 @@ height: 100%;
 position: relative;
 }
 
+body {
+	margin:15px;
+}
+
 body{
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(130,130,130)), to(rgb(190,190,190)));
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(130,130,130)), to(rgb(220,220,220))) fixed;
 }
 
 </style>

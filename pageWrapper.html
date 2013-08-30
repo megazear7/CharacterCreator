@@ -49,11 +49,10 @@ function Character(name, race, characterClass){
 		var height = parentElem.height();
 	
 		var characterEditButton = jQuery('<div>', {
-			class: "internalCharacter editButton smallButton",
+			class: "characterEditButton smallButton",
 		}).css("left","80%").css("top","10%");
 
 		internals.append(info);
-		console.log(characterEditButton);
 		internals.append(characterEditButton);
 
 		var that = this;
@@ -129,6 +128,12 @@ function WindowPage(windows, columns){
 	this.columns = columns
 	this.windows = new Array();
 	this.windows = windows;
+	this.container;
+
+	this.changeColumns = function(columns){
+		this.columns = columns;
+		this.toHtml(this.container);
+	}
 
 	this.lanes = function(){
 		return this.columns * 3 + 1;
@@ -142,6 +147,7 @@ function WindowPage(windows, columns){
 	*/
 	this.toHtml = function(container){
 		// this function can be called and it will return html that can be inserted into the page.
+		this.container = container;
 		container.empty();
 		var length = this.windows.length;
 		for(var i = 0; i<length; i++){
@@ -246,11 +252,30 @@ $(document).ready(function(){
 	$(window).resize(function(){
 		characterPage.toHtml(container);
 	});
+	$(".topDot").click(function(){
+		characterPage.changeColumns(1);
+	});
+	$(".twoDot").click(function(){
+		characterPage.changeColumns(2);
+	});
+	$(".threeDot").click(function(){
+		characterPage.changeColumns(3);
+	});
+	$(".fourDot").click(function(){
+		characterPage.changeColumns(4);
+	});
+	$(".fiveDot").click(function(){
+		characterPage.changeColumns(5);
+	});
 });
 
 </script>
 
 <style>
+
+.characterEditButton:hover{
+background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(130,180,225)), to(rgb(225,225,225)));
+}
 
 #dialogWindow{
 padding: 10px;
@@ -323,10 +348,72 @@ body{
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(220,220,220))) fixed;
 }
 
+.gridSelectDot:hover{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185)));
+}
+
+.gridSelectDot{
+width: 5px;
+height: 5px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(100,126,185)));
+position: absolute;
+left:1.1%;
+top:32%;
+border-style:ridge;
+border-width:2px;
+border-color:rgb(36,103,126);
+border-radius:7px;
+line-height: 18px;
+color:rgb(11,52,104);
+}
+
+.gridSelect:hover{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(169,176,225)));
+}
+
+.gridSelect{
+width: 10px;
+height: 101%;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
+position: absolute;
+left:1.1%;
+top:130%;
+border-style:ridge;
+border-width:2px;
+border-color:rgb(36,103,126);
+border-radius:7px;
+}
+
+.topDot{
+top: 1%;
+}
+.twoDot{
+top: 21%;
+}
+.threeDot{
+top: 41%;
+}
+.fourDot{
+top: 61%;
+}
+.fiveDot{
+top: 81%;
+}
+
+.gridSelect{
+left: 0%;
+}
 </style>
 
 <div class="bodywrapper">
 	<div class="topBannerContainer">
+		<div class="gridSelect">
+			<div class="gridSelectDot topDot"></div>
+			<div class="gridSelectDot twoDot"></div>
+			<div class="gridSelectDot threeDot"></div>
+			<div class="gridSelectDot fourDot"></div>
+			<div class="gridSelectDot fiveDot"></div>
+		</div>
 		<p class="navLinks"><h1>Characters</h2></p>
 		<div class="settings smallButton"></div>
 	</div>
@@ -334,5 +421,5 @@ background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), t
 	</div>
 </div>
 
-</body>
 </html>
+</body>

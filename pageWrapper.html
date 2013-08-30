@@ -22,12 +22,48 @@ function Character(name, race, characterClass){
 		alert("in the " + this.name + " character");
 	}
 
+	this.buttonOne = function(){
+		alert("editing " + this.name);
+	}
+
+	this.buttonTwo = function(){
+		alert("in the " + this.name + " character");
+	}
+
+	this.buttonThree = function(){
+		alert("in the " + this.name + " character");
+	}
+
 	/*
 	* this should return a html representation of whatever this data is representing, in this case: a character
 	*/
-	this.toHtml = function(){
-		return "<p><h1>" + this.name + "</h1><br/><b>" + this.race + "  " 
-			+ this.characterClass + "</b></p>";
+	this.toHtml = function(parentElem){
+		var info = "<h1>" + this.name + "</h1><br/><b>" + this.race + "  " 
+			+ this.characterClass + "</b>";
+		
+		var internals = jQuery('<div>', {
+			class: "internalCharacter internalWindow",
+		});
+
+		var width = parentElem.width();
+		var height = parentElem.height();
+	
+		var characterEditButton = jQuery('<div>', {
+			class: "internalCharacter editButton smallButton",
+		}).css("left","80%").css("top","10%");
+
+		internals.append(info);
+		console.log(characterEditButton);
+		internals.append(characterEditButton);
+
+		var that = this;
+		// in order to have a "sub" button simply add something along the lines of
+		// domElement.click(function(){that.buttonOne()};
+		// otherDomElement.click(function(){that.buttonTwo()};
+		// anotherDomElement.click(function(){that.buttonThree()};
+		characterEditButton.click(function(){that.buttonOne()});
+
+		return internals;
 	}
 }
 
@@ -137,7 +173,6 @@ function DialogWindow(contents, clickEvent){
 		this.contents.onClick();
 	}
 
-
 	/*
 	This function simply returns the html representation of the contents
 	This function should be called withen WindowPage so that it can fully figure out what
@@ -154,7 +189,7 @@ function DialogWindow(contents, clickEvent){
 			id: "dialogWindow"
 		}).css("width", dialogWidth).css("height", dialogWidth).css("position","absolute");
 
-		jQuery(this.contents.toHtml()).appendTo(htmlWindow);
+		jQuery(this.contents.toHtml(htmlWindow)).appendTo(htmlWindow);
 
 		// tie a click event of htmlWindow to the onClick function of this DialogWindow
 		var that = this;
@@ -231,6 +266,22 @@ overflow: hidden;
 background: -webkit-gradient(linear, 100% 100%, 0% 0%,from(rgb(19,76,90)), to(rgb(225,225,225)));
 }
 
+.smallButton{
+width: 15px;
+height: 15px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
+position: absolute;
+right:1.1%;
+top:32%;
+border-style:ridge;
+border-width:2px;
+border-color:rgb(36,103,126);
+border-radius:7px;
+line-height: 18px;
+color:rgb(11,52,104);
+}
+
+
 .topBannerContainer{
 position: fixed;
 top:0%;
@@ -252,22 +303,7 @@ color:rgb(202,225,225);
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(169,176,182)));
 }
 
-.topBannerContainer .settings{
-width: 15px;
-height: 15px;
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
-position: absolute;
-right:1.1%;
-top:32%;
-border-style:ridge;
-border-width:2px;
-border-color:rgb(36,103,126);
-border-radius:7px;
-line-height: 18px;
-color:rgb(11,52,104);
-}
-
-.topBannerContainer .settings:hover{
+.smallButton:hover{
 background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(177,208,225)), to(rgb(225,225,225)));
 color:rgb(93,23,216);
 border-color:rgb(36,103,126);
@@ -292,7 +328,7 @@ background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), t
 <div class="bodywrapper">
 	<div class="topBannerContainer">
 		<p class="navLinks"><h1>Characters</h2></p>
-		<div class="settings"></div>
+		<div class="settings smallButton"></div>
 	</div>
 	<div class="bodyContainer">
 	</div>

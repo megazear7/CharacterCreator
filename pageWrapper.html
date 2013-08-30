@@ -4,17 +4,6 @@
 
 <script>
 
-// Note: Character and DialogWindow(character) could likely be condensed down into one object
-
-// So the dialogWindow 's appear down the page, and do not move across. Because of how dynamic this
-// can be, I think the size, color and other "internal properties" of the dialogWindow 's should be
-// set with its own toHtml() method, and there position (and maybe even padding?) should be up to 
-// the WindowPage 's toHtml() method to deal with. the first three should go in the first row, the
-// next three in the following row, each with a space anybetween (on all edges) of 10% of the the 
-// containers width.
-// remember to think about single point of control over changes so that the number of dialogWindows per row,
-// and the spaceing and sizes can all by changed easily
-
 /*
 Constructor Arguments:
 	right now I am just giving name race and character class
@@ -85,11 +74,17 @@ function CombatRose(name, speed, init, reach, topSave, attack, defense, damage, 
 /*
 Constructor Arguments:
 	windows: a array of DialogWindows, the contents of each dialog window do not matter
+	columns: the number of columns you want in the grid, grid will be dynamicly created with the number of columns disired
 */
-function WindowPage(windows){
+function WindowPage(windows, columns){
 	// given an array of DialogWindows we can create a WindowPage
+	this.columns = columns
 	this.windows = new Array();
 	this.windows = windows;
+
+	this.lanes = function(){
+		return this.columns * 3 + 1;
+	}
 
 	/*
 	Arguments:
@@ -99,16 +94,17 @@ function WindowPage(windows){
 		// this function can be called and it will return html that can be inserted into the page.
 		var length = this.windows.length;
 		for(var i = 0; i<length; i++){
-			var dialog = this.windows[i].toHtml(container);
+			var dialog = this.windows[i].toHtml(container, this.lanes());
 
-			var row = Math.floor(i/3 + 1);	
-			var column = i%3 + 1;
-			var posRow = (10+(30*(column-1)));
+			var row = Math.floor(i/this.columns + 1);	
+			var column = i%this.columns + 1;
+			var posRow = ((100/this.lanes())+(3*(100/this.lanes()*(column-1))));
+			//var posRow = (10+(30*(column-1)));
+			console.log("posRow = " + posRow);
 
-			dialog.css("left",posRow+"%");
+			dialog.css("left", posRow+"%");
 
-			var posCol = (container.width() / 20) + (container.width() * .3 * (row-1));
-			var bodyHeight = posCol;
+			var posCol = (container.width() / 20) + (container.width() * (3/this.lanes()) * (row-1));
 
 			dialog.css("top",posCol);
 			container.append(dialog);
@@ -127,11 +123,14 @@ function DialogWindow(contents){
 	/*
 	This function simply returns the html representation of the contents
 	This function should be called withen WindowPage so that it can fully figure out what
+	Arguments:
+		container: the container that containes the WindowPage that this is apart of
+		lanes: the number of lanes on the page. Defined as: lanes = (number of columns in WindowPage) * 3 + 1
 	*/
-	this.toHtml = function(container){
+	this.toHtml = function(container, lanes){
 
-		var dialogWidth = container.width()/5;
-		var dialogSep = container.width()/10;
+		var dialogWidth = container.width()/(lanes/2);
+		var dialogSep = container.width()/lanes;
 	
 		var htmlWindow = jQuery('<div/>', {
 			id: "dialogWindow"
@@ -144,16 +143,17 @@ function DialogWindow(contents){
 }
 
 $(document).ready(function(){
+
+	// create data
 	var slighter = new Character("Slighter", "Human", "Fighter");
 	var wiz = new Character("Wiz", "Elf", "Wizard");
 	var mearth = new Character("Mearth", "Human", "Cleric");
 	var snaggleTooth = new Character("SnaggleTooth", "Half-Orc", "Ranger");
-
 	var longsword = new Weapon("Longsword", "2d8", "11");
 	var mace = new Weapon("Mace", "2d6", "8");
-
 	var slighterCombatRose = new CombatRose("Slighter's Combat Chart:", "9", "+2", "7", "1 ft", "+5", "+4", "4", "2d8+2");
 
+	// create DialogWindows out of that data
 	var slighterWindow = new DialogWindow(slighter);
 	var wizWindow = new DialogWindow(wiz);
 	var mearthWindow = new DialogWindow(mearth);
@@ -162,6 +162,7 @@ $(document).ready(function(){
 	var maceWindow = new DialogWindow(mace);
 	var slighterCombatRoseWindow = new DialogWindow(slighterCombatRose);
 
+	// add DialogWindows to an array
 	var dialogWindows = new Array();
 	dialogWindows[0] = slighterWindow;
 	dialogWindows[1] = wizWindow;
@@ -171,8 +172,12 @@ $(document).ready(function(){
 	dialogWindows[5] = slighterCombatRoseWindow;
 	dialogWindows[6] = maceWindow;
 
-	var characterPage = new WindowPage(dialogWindows);
+	// pass the arrau along with a column amount to make a new WindowPage
+	// change the 5 on the following line to switch the number of columns to be displayd
+	var characterPage = new WindowPage(dialogWindows, 4);
 	var container = $(".bodyContainer");
+
+	//call toHtml() on characterPage to append it to the bodyContainer
 	characterPage.toHtml(container);
 });
 
@@ -187,6 +192,7 @@ border-width:5px;
 border-color:rgb(36,103,126);
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(225,225,225)));
 border-radius:35px;
+overflow: hidden;
 }
 
 #dialogWindow:hover{
@@ -194,8 +200,11 @@ background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(167,198,213)), t
 }
 
 .topBannerContainer{
-position: relative;
-width: 100%;
+position: fixed;
+top:0%;
+left:0%;
+z-index:3;
+width: 99%;
 height: 50px;
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(66,66,66)), to(rgb(126,126,126)));
 border-style:ridge;

@@ -98,12 +98,15 @@ function WindowPage(windows, columns){
 		return this.columns * 3 + 1;
 	}
 
+	var that = this;
+
 	/*
 	Arguments:
 		container: a jQuery html element that the WindowPage will be placed inside.
 	*/
 	this.toHtml = function(container){
 		// this function can be called and it will return html that can be inserted into the page.
+		container.empty();
 		var length = this.windows.length;
 		for(var i = 0; i<length; i++){
 			var dialog = this.windows[i].toHtml(container, this.lanes());
@@ -205,6 +208,9 @@ $(document).ready(function(){
 
 	//call toHtml() on characterPage to append it to the bodyContainer
 	characterPage.toHtml(container);
+	$(window).resize(function(){
+		characterPage.toHtml(container);
+	});
 });
 
 </script>

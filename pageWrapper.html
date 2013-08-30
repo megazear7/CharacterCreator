@@ -174,7 +174,7 @@ $(document).ready(function(){
 
 	// pass the arrau along with a column amount to make a new WindowPage
 	// change the 5 on the following line to switch the number of columns to be displayd
-	var characterPage = new WindowPage(dialogWindows, 4);
+	var characterPage = new WindowPage(dialogWindows, 5);
 	var container = $(".bodyContainer");
 
 	//call toHtml() on characterPage to append it to the bodyContainer
@@ -190,13 +190,14 @@ padding: 10px;
 border-style:ridge;
 border-width:5px;
 border-color:rgb(36,103,126);
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(225,225,225)));
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(115,115,115)), to(rgb(200,200,200)));
+/*background: -webkit-radial-gradient(10% 30%, rgb(150,150,150), rgb(225,225,225))*/
 border-radius:35px;
 overflow: hidden;
 }
 
 #dialogWindow:hover{
-background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(167,198,213)), to(rgb(225,225,225)));
+background: -webkit-gradient(linear, 100% 100%, 0% 0%,from(rgb(19,76,90)), to(rgb(225,225,225)));
 }
 
 .topBannerContainer{
@@ -206,14 +207,18 @@ left:0%;
 z-index:3;
 width: 99%;
 height: 50px;
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(66,66,66)), to(rgb(126,126,126)));
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(176,176,176)));
 border-style:ridge;
 border-width:5px;
 border-color:rgb(36,103,126);
 border-radius:20px;
 text-align:center;
 line-height: 10px;
-color:rgb(192,216,224);
+color:rgb(202,225,225);
+}
+
+.topBannerContainer:hover{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(162,176,191)));
 }
 
 .topBannerContainer .settings{
@@ -248,7 +253,7 @@ body {
 }
 
 body{
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(130,130,130)), to(rgb(220,220,220))) fixed;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(220,220,220))) fixed;
 }
 
 </style>

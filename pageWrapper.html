@@ -18,6 +18,10 @@ function Character(name, race, characterClass){
 	this.race = race;
 	this.characterClass = characterClass;
 
+	this.onClick = function(){
+		alert("in the " + this.name + " character");
+	}
+
 	/*
 	* this should return a html representation of whatever this data is representing, in this case: a character
 	*/
@@ -32,6 +36,10 @@ function Weapon(name, damage, speed){
 	this.name = name;
 	this.damage = damage;
 	this.speed = speed;
+
+	this.onClick = function(){
+		alert("in the " + this.name + " Weapon");
+	}
 
 	/*
 	* this should return a html representation of whatever this data is representing, in this case: a weapon
@@ -53,6 +61,10 @@ function CombatRose(name, speed, init, reach, topSave, attack, defense, damage, 
 	this.defense = defense;
 	this.damage = damage;
 	this.dmgReduction = dmgReduction;
+
+	this.onClick = function(){
+		alert("in CombatRose for " + this.name );
+	}
 
 	/*
 	* this should return a html representation of whatever this data is representing, in this case: a weapon
@@ -99,8 +111,6 @@ function WindowPage(windows, columns){
 			var row = Math.floor(i/this.columns + 1);	
 			var column = i%this.columns + 1;
 			var posRow = ((100/this.lanes())+(3*(100/this.lanes()*(column-1))));
-			//var posRow = (10+(30*(column-1)));
-			console.log("posRow = " + posRow);
 
 			dialog.css("left", posRow+"%");
 
@@ -116,10 +126,15 @@ function WindowPage(windows, columns){
 Constructor Arguments:
 	contents: contents is the data that goes inside this DialogWindow
 */
-function DialogWindow(contents){
+function DialogWindow(contents, clickEvent){
 	// given a contents we can create a DialogWindow of that content
 	this.contents = contents;
-	
+
+	this.onClick = function(){
+		this.contents.onClick();
+	}
+
+
 	/*
 	This function simply returns the html representation of the contents
 	This function should be called withen WindowPage so that it can fully figure out what
@@ -138,6 +153,10 @@ function DialogWindow(contents){
 
 		jQuery(this.contents.toHtml()).appendTo(htmlWindow);
 
+		// tie a click event of htmlWindow to the onClick function of this DialogWindow
+		var that = this;
+		htmlWindow.click(function(){that.onClick()});
+
 		return htmlWindow;
 	}
 }
@@ -152,15 +171,21 @@ $(document).ready(function(){
 	var longsword = new Weapon("Longsword", "2d8", "11");
 	var mace = new Weapon("Mace", "2d6", "8");
 	var slighterCombatRose = new CombatRose("Slighter's Combat Chart:", "9", "+2", "7", "1 ft", "+5", "+4", "4", "2d8+2");
+	var wizCombatRose = new CombatRose("Wiz's Combat Chart:", "9", "+2", "7", "1 ft", "+5", "+4", "4", "2d8+2");
+
+	var clickFunctionToPassIn = function(){
+		alert("overrided the basic click functionality of this window");	
+	}
 
 	// create DialogWindows out of that data
 	var slighterWindow = new DialogWindow(slighter);
-	var wizWindow = new DialogWindow(wiz);
-	var mearthWindow = new DialogWindow(mearth);
+	var wizWindow = new DialogWindow(wiz, clickFunctionToPassIn);
+	var mearthWindow = new DialogWindow(mearth, clickFunctionToPassIn);
 	var snaggleToothWindow = new DialogWindow(snaggleTooth);
-	var longswordWindow = new DialogWindow(longsword);
+	var longswordWindow = new DialogWindow(longsword, clickFunctionToPassIn);
 	var maceWindow = new DialogWindow(mace);
 	var slighterCombatRoseWindow = new DialogWindow(slighterCombatRose);
+	var wizCombatRoseWindow = new DialogWindow(wizCombatRose, clickFunctionToPassIn);
 
 	// add DialogWindows to an array
 	var dialogWindows = new Array();
@@ -170,7 +195,8 @@ $(document).ready(function(){
 	dialogWindows[3] = snaggleToothWindow;
 	dialogWindows[4] = longswordWindow;
 	dialogWindows[5] = slighterCombatRoseWindow;
-	dialogWindows[6] = maceWindow;
+	dialogWindows[6] = wizCombatRoseWindow;
+	dialogWindows[7] = maceWindow;
 
 	// pass the arrau along with a column amount to make a new WindowPage
 	// change the 5 on the following line to switch the number of columns to be displayd
@@ -191,7 +217,6 @@ border-style:ridge;
 border-width:5px;
 border-color:rgb(36,103,126);
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(115,115,115)), to(rgb(200,200,200)));
-/*background: -webkit-radial-gradient(10% 30%, rgb(150,150,150), rgb(225,225,225))*/
 border-radius:35px;
 overflow: hidden;
 }

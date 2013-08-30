@@ -8,6 +8,11 @@ Intial Creation
 Leveling Up
 Combat Calculator
 
+Next short term step:
+Give the DialogWindows functionality. I.e. if it is clicked make it capable of doing something
+possibly desired functionality:
+when the dialog window is clicked, take me to a new page, change the contents of the DialogWindow, ect..
+
 Steps:
 0) Decide whether to use Mongo or MySQL.
 1) Design what the character looks like on the data side.

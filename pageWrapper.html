@@ -139,6 +139,10 @@ function WindowPage(windows, columns){
 		return this.columns * 3 + 1;
 	}
 
+	this.changeSizes = function(container){
+		this.toHtml(container);
+	}
+
 	var that = this;
 
 	/*
@@ -205,8 +209,7 @@ function DialogWindow(contents, clickEvent){
 	}
 }
 
-$(document).ready(function(){
-
+var createExamplePage = function(){
 	// create data
 	var slighter = new Character("Slighter", "Human", "Fighter");
 	var wiz = new Character("Wiz", "Elf", "Wizard");
@@ -242,17 +245,22 @@ $(document).ready(function(){
 	dialogWindows[6] = wizCombatRoseWindow;
 	dialogWindows[7] = maceWindow;
 
-	// pass the arrau along with a column amount to make a new WindowPage
-	// change the 5 on the following line to switch the number of columns to be displayd
-	var characterPage = new WindowPage(dialogWindows, 5);
+	return dialogWindows;
+
+}
+
+$(document).ready(function(){
+	var characterPage = new WindowPage(createExamplePage(), 5);
 	var container = $(".bodyContainer");
 
-	//call toHtml() on characterPage to append it to the bodyContainer
+	//call toHtml() on characterPage to append it to the container
 	characterPage.toHtml(container);
 	$(window).resize(function(){
-		characterPage.toHtml(container);
+		characterPage.changeSizes(container);
 	});
-	$(".topDot").click(function(){
+
+	var that = this;
+	$(".topDot").on("click", function(event){
 		characterPage.changeColumns(1);
 	});
 	$(".twoDot").click(function(){
@@ -266,6 +274,9 @@ $(document).ready(function(){
 	});
 	$(".fiveDot").click(function(){
 		characterPage.changeColumns(5);
+	});
+	$(".sixDot").click(function(){
+		characterPage.changeColumns(6);
 	});
 });
 
@@ -373,7 +384,7 @@ background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), t
 
 .gridSelect{
 width: 10px;
-height: 101%;
+height: 70px;
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
 position: absolute;
 left:1.1%;
@@ -385,21 +396,23 @@ border-radius:7px;
 }
 
 .topDot{
-top: 1%;
+top: 2%;
 }
 .twoDot{
-top: 21%;
+top: 18%;
 }
 .threeDot{
-top: 41%;
+top: 34%;
 }
 .fourDot{
-top: 61%;
+top: 50%;
 }
 .fiveDot{
-top: 81%;
+top: 66%;
 }
-
+.sixDot{
+top: 82%;
+}
 .gridSelect{
 left: 0%;
 }
@@ -413,6 +426,7 @@ left: 0%;
 			<div class="gridSelectDot threeDot"></div>
 			<div class="gridSelectDot fourDot"></div>
 			<div class="gridSelectDot fiveDot"></div>
+			<div class="gridSelectDot sixDot"></div>
 		</div>
 		<p class="navLinks"><h1>Characters</h2></p>
 		<div class="settings smallButton"></div>

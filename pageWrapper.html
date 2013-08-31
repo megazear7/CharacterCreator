@@ -145,6 +145,25 @@ function WindowPage(windows, columns){
 
 	var that = this;
 
+	this.gridLayout = function(numberOfOptions, container){
+		var that = this;
+		var gridChanger = jQuery("<div>", {
+			class: "gridSelect",
+			height: numberOfOptions*11
+		});
+
+		for(var i = 0; i < numberOfOptions; i++){
+			var gridDot = jQuery("<div>", {
+				class: "gridSelectDot",
+				value: i+1
+			}).css("top", (((96/numberOfOptions)*i)+"%"));
+			gridChanger.append(gridDot);
+		}
+
+
+		return gridChanger;
+	}
+
 	/*
 	Arguments:
 		container: a jQuery html element that the WindowPage will be placed inside.
@@ -165,9 +184,42 @@ function WindowPage(windows, columns){
 
 			var posCol = (container.width() / 20) + (container.width() * (3/this.lanes()) * (row-1));
 
+
 			dialog.css("top",posCol);
 			container.append(dialog);
 		}
+
+		// change the value of the first param to gridLayout to change the number of options you have for column numbers
+		var gridLayout = this.gridLayout(10, container);
+		container.append(gridLayout);
+
+		// ok this deserves some explaining:
+		/*
+		jQuery .on("click" and .click and .bind ect... only apply to elements in the dom
+		that is why the .on click stuff has to be applied after container.append(gridLayout) is called
+		also, if the selector is removed from the dom ever, then the .click or .on or whatever will no longer
+		work unless it is also tied to something that does not get removed. that is why we have .gridSelect in the first
+		selector and .gridSelectDot in the second (although now that I think about it both of those often get removed, anyway
+		it does not matter here atleast
+		*/
+
+		// problem discovered here:
+		/*
+		every time I "rerender" the page everything is rebuilt. so when I try to highlight the active icon it
+		get highlighted but instantly destroyed and rebuilt. obviously this has "worse" implications than just
+		not being able to highlight a few things. can .toHtml() handle both the initial create and when the grid
+		needs re organized, or maybe needs slid off the screen so a new screen can show up? or does there 
+		need to be something along the line of .create and .update?
+		*/
+		var that = this;
+		$(".gridSelect").on("click", ".gridSelectDot", function(){
+			// this probably works as expected but as described above they are instantly destroyed and then rebuilt
+			$(this).siblings().css("background", 
+				"-webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(100,126,185)))");
+			that.changeColumns($(this).attr("value"));
+			$(this).css("background", 
+				"-webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185)))");
+		});
 	}
 }
 
@@ -257,26 +309,6 @@ $(document).ready(function(){
 	characterPage.toHtml(container);
 	$(window).resize(function(){
 		characterPage.changeSizes(container);
-	});
-
-	var that = this;
-	$(".topDot").on("click", function(event){
-		characterPage.changeColumns(1);
-	});
-	$(".twoDot").click(function(){
-		characterPage.changeColumns(2);
-	});
-	$(".threeDot").click(function(){
-		characterPage.changeColumns(3);
-	});
-	$(".fourDot").click(function(){
-		characterPage.changeColumns(4);
-	});
-	$(".fiveDot").click(function(){
-		characterPage.changeColumns(5);
-	});
-	$(".sixDot").click(function(){
-		characterPage.changeColumns(6);
 	});
 });
 
@@ -388,31 +420,13 @@ height: 70px;
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
 position: absolute;
 left:1.1%;
-top:130%;
+top:10%;
 border-style:ridge;
 border-width:2px;
 border-color:rgb(36,103,126);
 border-radius:7px;
 }
 
-.topDot{
-top: 2%;
-}
-.twoDot{
-top: 18%;
-}
-.threeDot{
-top: 34%;
-}
-.fourDot{
-top: 50%;
-}
-.fiveDot{
-top: 66%;
-}
-.sixDot{
-top: 82%;
-}
 .gridSelect{
 left: 0%;
 }
@@ -420,14 +434,6 @@ left: 0%;
 
 <div class="bodywrapper">
 	<div class="topBannerContainer">
-		<div class="gridSelect">
-			<div class="gridSelectDot topDot"></div>
-			<div class="gridSelectDot twoDot"></div>
-			<div class="gridSelectDot threeDot"></div>
-			<div class="gridSelectDot fourDot"></div>
-			<div class="gridSelectDot fiveDot"></div>
-			<div class="gridSelectDot sixDot"></div>
-		</div>
 		<p class="navLinks"><h1>Characters</h2></p>
 		<div class="settings smallButton"></div>
 	</div>

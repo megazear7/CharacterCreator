@@ -22,7 +22,8 @@ function Character(name, race, characterClass){
 		alert("in the " + this.name + " character");
 	}
 
-	this.buttonOne = function(){
+	this.buttonOne = function(event){
+		event.stopPropagation();
 		alert("editing " + this.name);
 	}
 
@@ -60,7 +61,8 @@ function Character(name, race, characterClass){
 		// domElement.click(function(){that.buttonOne()};
 		// otherDomElement.click(function(){that.buttonTwo()};
 		// anotherDomElement.click(function(){that.buttonThree()};
-		characterEditButton.click(function(){that.buttonOne()});
+		characterEditButton.click(function(event){that.buttonOne(event)});
+		internals.click(function(){that.onClick();});
 
 		return internals;
 	}
@@ -130,11 +132,6 @@ function WindowPage(windows, columns){
 	this.windows = windows;
 	this.container;
 
-	this.changeColumns = function(columns){
-		this.columns = columns;
-		this.toHtml(this.container);
-	}
-
 	this.lanes = function(){
 		return this.columns * 3 + 1;
 	}
@@ -162,6 +159,28 @@ function WindowPage(windows, columns){
 
 
 		return gridChanger;
+	}
+
+	this.changeColumns = function(columns){
+		this.columns = columns;
+		var container = this.container;
+		$(container).children().remove("#dialogWindow");
+		var length = this.windows.length;
+		for(var i = 0; i<length; i++){
+			var dialog = this.windows[i].toHtml(container, this.lanes());
+
+			var row = Math.floor(i/this.columns + 1);	
+			var column = i%this.columns + 1;
+			var posRow = ((100/this.lanes())+(3*(100/this.lanes()*(column-1))));
+
+			dialog.css("left", posRow+"%");
+
+			var posCol = (container.width() / 20) + (container.width() * (3/this.lanes()) * (row-1));
+
+
+			dialog.css("top",posCol);
+			container.append(dialog);
+		}
 	}
 
 	/*
@@ -211,14 +230,25 @@ function WindowPage(windows, columns){
 		needs re organized, or maybe needs slid off the screen so a new screen can show up? or does there 
 		need to be something along the line of .create and .update?
 		*/
+		// i.e. jquery event listeners need added here
 		var that = this;
 		$(".gridSelect").on("click", ".gridSelectDot", function(){
 			// this probably works as expected but as described above they are instantly destroyed and then rebuilt
+
 			$(this).siblings().css("background", 
 				"-webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(100,126,185)))");
+
 			that.changeColumns($(this).attr("value"));
+
 			$(this).css("background", 
-				"-webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185)))");
+				"-webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(225,225,225)))");
+		});
+
+		//$(container).child(".gridSelect").children().hover().css("background", 
+		//	"-webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(100,126,185)))");
+
+		$(window).on("resize", function(){
+				that.toHtml(container);
 		});
 	}
 }
@@ -255,7 +285,6 @@ function DialogWindow(contents, clickEvent){
 
 		// tie a click event of htmlWindow to the onClick function of this DialogWindow
 		var that = this;
-		htmlWindow.click(function(){that.onClick()});
 
 		return htmlWindow;
 	}
@@ -307,9 +336,6 @@ $(document).ready(function(){
 
 	//call toHtml() on characterPage to append it to the container
 	characterPage.toHtml(container);
-	$(window).resize(function(){
-		characterPage.changeSizes(container);
-	});
 });
 
 </script>
@@ -392,7 +418,7 @@ background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), t
 }
 
 .gridSelectDot:hover{
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185)));
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185))) !important;
 }
 
 .gridSelectDot{

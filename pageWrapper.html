@@ -1,6 +1,8 @@
 <html>
 <body>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="~/src/knockout-2.3.0.js"></script>
+
 
 <script>
 
@@ -18,8 +20,10 @@ function Character(name, race, characterClass){
 	this.race = race;
 	this.characterClass = characterClass;
 
-	this.onClick = function(){
-		alert("in the " + this.name + " character");
+	this.onClick = function(parentElem){
+		alert("heelo");
+		// need to hide character select page
+		// then reveal this.CharacterPage
 	}
 
 	this.buttonOne = function(event){
@@ -250,6 +254,7 @@ function WindowPage(windows, columns){
 		$(window).on("resize", function(){
 				that.toHtml(container);
 		});
+		return container;
 	}
 }
 
@@ -335,7 +340,8 @@ $(document).ready(function(){
 	var container = $(".bodyContainer");
 
 	//call toHtml() on characterPage to append it to the container
-	characterPage.toHtml(container);
+	var characterSelectPage = characterPage.toHtml(container);
+	
 });
 
 </script>

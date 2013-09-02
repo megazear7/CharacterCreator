@@ -1,0 +1,227 @@
+<html>
+<body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="../../knockout-2.3.0.js"></script>
+
+<style>
+
+.characterEditButton:hover{
+background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(130,180,225)), to(rgb(225,225,225)));
+}
+
+#dialogWindow{
+position: absolute;
+padding: 10px;
+border-style:ridge;
+border-width:5px;
+border-color:rgb(36,103,126);
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(115,115,115)), to(rgb(200,200,200)));
+border-radius:35px;
+overflow: hidden;
+}
+
+#dialogWindow:hover{
+background: -webkit-gradient(linear, 100% 100%, 0% 0%,from(rgb(19,76,90)), to(rgb(225,225,225)));
+}
+
+.smallButton{
+width: 15px;
+height: 15px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
+position: absolute;
+right:1.1%;
+top:32%;
+border-style:ridge;
+border-width:2px;
+border-color:rgb(36,103,126);
+border-radius:7px;
+line-height: 18px;
+color:rgb(11,52,104);
+}
+
+
+.topBannerContainer{
+position: fixed;
+top:0%;
+left:0%;
+z-index:3;
+width: 99%;
+height: 50px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(176,176,176)));
+border-style:ridge;
+border-width:5px;
+border-color:rgb(36,103,126);
+border-radius:20px;
+text-align:center;
+line-height: 10px;
+color:rgb(202,225,225);
+}
+
+.topBannerContainer:hover{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(169,176,182)));
+}
+
+.smallButton:hover{
+background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(177,208,225)), to(rgb(225,225,225)));
+color:rgb(93,23,216);
+border-color:rgb(36,103,126);
+}
+
+.bodyContainer{
+width: 100%;
+height: 100%;
+position: relative;
+}
+
+body {
+	margin:15px;
+}
+
+body{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(220,220,220))) fixed;
+}
+
+.gridSelectDot:hover{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185))) !important;
+}
+
+.gridSelectDot{
+width: 5px;
+height: 5px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(100,126,185)));
+position: absolute;
+left:1.1%;
+top:32%;
+border-style:ridge;
+border-width:2px;
+border-color:rgb(36,103,126);
+border-radius:7px;
+line-height: 18px;
+color:rgb(11,52,104);
+}
+
+.gridSelect:hover{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(169,176,225)));
+}
+
+.gridSelect{
+width: 10px;
+height: 70px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
+position: absolute;
+left:1.1%;
+top:10%;
+border-style:ridge;
+border-width:2px;
+border-color:rgb(36,103,126);
+border-radius:7px;
+}
+
+.gridSelect{
+left: 0%;
+}
+</style>
+
+
+
+<script>
+
+ko.bindingHandlers.DialogWindow = {
+    init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+		// To access all the bindings placed on this element do this:
+		//var allBindings = allBindingsAccessor();
+		//alert(allBindings.columns);
+
+		// To access the view model object pass to apply bindings. I.e. in here it is "Character"
+		//alert("viewModel = " +  viewModel.characterClass);
+		
+		// To access $root, $parent or $parents do this:
+		// alert(bindingContext.$root.columns());
+		
+		var width = bindingContext.$root.viewWidth();
+		console.log(width);
+		var totalColumns = bindingContext.$root.columns();
+		var lanes = bindingContext.$root.lanes();
+		var i = $(element).index();
+
+		var row = Math.floor(i/totalColumns + 1);	
+		var column = i%totalColumns + 1;
+
+		var posRow = ((100/lanes)+(3*(100/lanes*(column-1))));
+		var posCol = (width / 20) + (width * (3/lanes) * (row-1));
+
+		var dialogWidth = width/(lanes/2);
+
+		$(element).css("width", dialogWidth);
+		$(element).css("height", dialogWidth);
+		$(element).css("left", posRow+"%");
+		$(element).css("top",posCol);
+    },
+    update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+
+    }
+};
+
+function Character(name, race, characterClass){
+	// data for characters go in here
+	this.name = name;
+	this.race = race;
+	this.characterClass = characterClass;
+}
+
+function CharacterManagerViewModel() {
+	var self = this;
+	self.columns = ko.observable(5);
+
+	self.viewWidth = ko.computed(function(){
+		return $(".bodyContainer").width();
+	});
+
+	self.lanes = ko.computed(function(){
+		var lanes = 0;
+		var lanes = self.columns() * 3 + 1;
+		return lanes;
+	});
+
+	self.windows = ko.observableArray([
+		new Character("Slighter", "Human", "Fighter"),
+		new Character("Wiz", "Elf", "Wizard"),
+		new Character("Mearth", "Human", "Cleric"),
+		new Character("Mearth", "Human", "Cleric"),
+		new Character("Mearth", "Human", "Cleric"),
+		new Character("Mearth", "Human", "Cleric"),
+		new Character("Mearth", "Human", "Cleric"),
+		new Character("Mearth", "Human", "Cleric"),
+		new Character("Mearth", "Human", "Cleric"),
+		new Character("Mearth", "Human", "Cleric"),
+		new Character("Mearth", "Human", "Cleric")
+	]);
+
+	$(window).on("resize", function(){
+	});
+}
+
+$(document).ready(function(){
+	ko.applyBindings(new CharacterManagerViewModel());
+});
+
+</script>
+
+
+<div class="bodywrapper">
+	<div class="topBannerContainer">
+		<p class="navLinks"><h1>Characters</h2></p>
+		<div class="settings smallButton"></div>
+	</div>
+	<div data-bind="foreach: windows" class="bodyContainer">
+		<div data-bind="DialogWindow: true, columns: $root.columns()" id="dialogWindow">
+			<p data-bind="text: name"></p>
+			<p data-bind="text: race"></p>
+			<p data-bind="text: $root.columns"></p>
+			<p data-bind="text: characterClass"></p>
+		</div>
+	</div>
+</div>
+
+</html>
+</body>

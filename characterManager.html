@@ -139,7 +139,6 @@ ko.bindingHandlers.DialogWindow = {
 		// alert(bindingContext.$root.columns());
 		
 		var width = bindingContext.$root.viewWidth();
-		console.log(width);
 		var totalColumns = bindingContext.$root.columns();
 		var lanes = bindingContext.$root.lanes();
 		var i = $(element).index();
@@ -167,6 +166,27 @@ function Character(name, race, characterClass){
 	this.name = name;
 	this.race = race;
 	this.characterClass = characterClass;
+
+	this.internalHtml = function(){
+
+		var info = '<p data-bind = "text: race">' + "hello" + "</p><br/><b>" + this.race + "  " 
+			+ this.characterClass + "</b>";
+		
+		var internals = jQuery('<div>', {
+			class: "internalCharacter internalWindow",
+		});
+
+		var characterEditButton = jQuery('<div>', {
+			class: "characterEditButton smallButton",
+			//data-bind: "text: name"
+		}).css("left","80%").css("top","10%");
+
+		internals.append(info);
+		internals.append(characterEditButton);
+
+
+		return $(internals).html();
+	}
 }
 
 function CharacterManagerViewModel() {
@@ -215,10 +235,8 @@ $(document).ready(function(){
 	</div>
 	<div data-bind="foreach: windows" class="bodyContainer">
 		<div data-bind="DialogWindow: true, columns: $root.columns()" id="dialogWindow">
-			<p data-bind="text: name"></p>
 			<p data-bind="text: race"></p>
-			<p data-bind="text: $root.columns"></p>
-			<p data-bind="text: characterClass"></p>
+			<p data-bind="html: internalHtml()"></p>
 		</div>
 	</div>
 </div>

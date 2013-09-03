@@ -117,6 +117,7 @@ border-color:rgb(36,103,126);
 border-radius:7px;
 }
 
+
 .gridSelect{
 left: 0%;
 }
@@ -127,6 +128,7 @@ left: 0%;
 <script>
 
 ko.bindingHandlers.DialogWindow = {
+	//var self = this;
     init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 		// To access all the bindings placed on this element do this:
 		//var allBindings = allBindingsAccessor();
@@ -137,7 +139,12 @@ ko.bindingHandlers.DialogWindow = {
 		
 		// To access $root, $parent or $parents do this:
 		// alert(bindingContext.$root.columns());
+
+		//var internals = viewModel.contents.internalHtml(viewModel);
 		
+		//$(element).empty();		
+		//$(element).append(internals);
+
 		var width = bindingContext.$root.viewWidth();
 		var totalColumns = bindingContext.$root.columns();
 		var lanes = bindingContext.$root.lanes();
@@ -161,17 +168,35 @@ ko.bindingHandlers.DialogWindow = {
     }
 };
 
+function DialogWindow(contents){
+	// anything added here will apply to every DialogWindow
+	// whatever is in contents will apply to only that specific type of DialogWindow
+	this.contents = contents;
+}
+
 function Character(name, race, characterClass){
 	// data for characters go in here
-	this.name = name;
-	this.race = race;
-	this.characterClass = characterClass;
+	this.name = ko.observable(name);
+	this.race = ko.observable(race);
+	this.characterClass = ko.observable(characterClass);
 
-	this.internalHtml = function(){
+	this.rename = function(){
+		alert("hello");
+		this.name = "Bob";
+	}
 
-		var info = '<p data-bind = "text: race">' + "hello" + "</p><br/><b>" + this.race + "  " 
-			+ this.characterClass + "</b>";
-		
+	this.templateType = function(){
+		return "plainStats";
+	}
+
+	this.internalHtml = function(viewModel){
+
+		// the reason for this is that what if we want different type of internal html for different div elements withen the knockout foreach
+
+		var info = 	"<h1 data-bind = 'text: contents.name'></h2>" + 
+					"<p><div data-bind = 'text: contents.race'></div>" +
+					"<div data-bind = 'text: contents.characterClass'></div></p>";
+
 		var internals = jQuery('<div>', {
 			class: "internalCharacter internalWindow",
 		});
@@ -179,14 +204,15 @@ function Character(name, race, characterClass){
 		var characterEditButton = jQuery('<div>', {
 			class: "characterEditButton smallButton",
 			//data-bind: "text: name"
-		}).css("left","80%").css("top","10%");
+		}).css("left","80%").css("top","10%")
+			.attr("data-bind","click: contents.rename");
 
 		internals.append(info);
 		internals.append(characterEditButton);
-
+		
 
 		return $(internals).html();
-	}
+	};
 }
 
 function CharacterManagerViewModel() {
@@ -204,18 +230,22 @@ function CharacterManagerViewModel() {
 	});
 
 	self.windows = ko.observableArray([
-		new Character("Slighter", "Human", "Fighter"),
-		new Character("Wiz", "Elf", "Wizard"),
-		new Character("Mearth", "Human", "Cleric"),
-		new Character("Mearth", "Human", "Cleric"),
-		new Character("Mearth", "Human", "Cleric"),
-		new Character("Mearth", "Human", "Cleric"),
-		new Character("Mearth", "Human", "Cleric"),
-		new Character("Mearth", "Human", "Cleric"),
-		new Character("Mearth", "Human", "Cleric"),
-		new Character("Mearth", "Human", "Cleric"),
-		new Character("Mearth", "Human", "Cleric")
+		new DialogWindow(new Character("Slighter", "Human", "Fighter")),
+		new DialogWindow(new Character("Wiz", "Elf", "Wizard")),
+		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
+		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
+		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
+		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
+		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
+		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
+		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
+		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
+		new DialogWindow(new Character("Mearth", "Human", "Cleric"))
 	]);
+
+	this.templateType = function(item){
+		return item.contents.templateType();
+	}
 
 	$(window).on("resize", function(){
 	});
@@ -233,13 +263,20 @@ $(document).ready(function(){
 		<p class="navLinks"><h1>Characters</h2></p>
 		<div class="settings smallButton"></div>
 	</div>
-	<div data-bind="foreach: windows" class="bodyContainer">
-		<div data-bind="DialogWindow: true, columns: $root.columns()" id="dialogWindow">
-			<p data-bind="text: race"></p>
-			<p data-bind="html: internalHtml()"></p>
-		</div>
+	<div data-bind="template: { name: templateType, foreach: windows}" class="bodyContainer">
 	</div>
 </div>
+
+<script id="plainStats" type="text/html">
+    <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+        <h1 data-bind = 'text: contents.name'></h2>
+        <p>
+			<div data-bind = 'text: contents.race'></div>
+			<div data-bind = 'text: contents.characterClass'></div>
+		</p>
+		<div class = "characterEditButton smallButton" data-bind="click: contents.rename"></div>
+    </div>
+</script>
 
 </html>
 </body>

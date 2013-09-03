@@ -1,7 +1,8 @@
 <html>
 <body>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script type="text/javascript" src="../../knockout-2.3.0.js"></script>
+<script type="text/javascript" src="knockout-2.3.0.js"></script>
+<script type="text/javascript" src="sammy.js"></script>
 <link href="dialogWindow.css" rel="stylesheet" type="text/css">
 
 <script>
@@ -47,8 +48,6 @@ ko.bindingHandlers.DialogWindow = {
 		var totalColumns = bindingContext.$root.columns();
 		var lanes = bindingContext.$root.lanes();
 		var i = $(element).index();
-
-		console.log(width);
 
 		var row = Math.floor(i/totalColumns + 1);	
 		var column = i%totalColumns + 1;
@@ -155,6 +154,8 @@ function CharacterManagerViewModel() {
 	var self = this;
 	self.columns = ko.observable(5);
 	self.numberOfOptions = ko.observable(10);
+	self.chosenView = ko.observable();
+	self.chosenViewData = ko.observable();
 
 	self.viewWidth = ko.observable($(".bodyContainer").width());
 
@@ -181,7 +182,12 @@ function CharacterManagerViewModel() {
 		self.windows.valueHasMutated();
 	}
 
-	// TODO: figure out how to do the resize
+	self.goToView = function(folder) { 
+		console.log("hello");
+		self.chosenView(folder); 
+		self.chosenViewData(folder);
+	};
+
 	$(window).on("resize", function(){
 		self.viewWidth($(".bodyContainer").width());
 		self.windows.valueHasMutated();
@@ -194,24 +200,29 @@ $(document).ready(function(){
 
 </script>
 
-
 <div class="bodywrapper">
 	<div class="topBannerContainer">
 		<p class="navLinks"><h1>Characters</h2></p>
 		<div class="settings smallButton smallTopBannerButton"></div>
 	</div>
-	<div data-bind="template: { name: templateType, foreach: windows}" class="bodyContainer"></div>
-	<div data-bind="GridSelect: columns"></div>
+	<div class="outerContainer" data-bind="">
+		<div data-bind="template: { name: templateType, foreach: windows}" class="bodyContainer"></div>
+		<div data-bind="GridSelect: columns"></div>
+		<div class="characterView" data-bind="with: chosenViewData">
+			<div data-bind="template: { name: 'characterPage' }"><div>
+		</div>
+	</div>
 </div>
 
+<!-- templates  -->
 <script id="plainCharacter" type="text/html">
-  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
         <h1 data-bind = 'text: name'></h2>
         <p>
 			<div data-bind = 'text: race'></div>
 			<div data-bind = 'text: characterClass'></div>
 		</p>
-		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: $root.changeColumns"></div> 
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: rename"></div> 
    	 </div>
 </script>
 
@@ -235,6 +246,17 @@ $(document).ready(function(){
 		</p>
 		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
    	 </div>
+</script>
+
+<script id="characterPage" type="text/html">
+  		<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+        	<h1 data-bind = 'text: name'></h2>
+        	<p>
+				<div data-bind = 'text: race'></div>
+				<div data-bind = 'text: characterClass'></div>
+			</p>
+			<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: $root.changeColumns"></div> 
+		</div>
 </script>
 
 </html>

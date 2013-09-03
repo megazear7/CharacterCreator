@@ -180,39 +180,13 @@ function Character(name, race, characterClass){
 	this.race = ko.observable(race);
 	this.characterClass = ko.observable(characterClass);
 
-	this.rename = function(){
-		alert("hello");
-		this.name = "Bob";
+	this.rename = function(element){
+		this.name("Bob");
 	}
 
 	this.templateType = function(){
-		return "plainStats";
+		return "plainCharacter";
 	}
-
-	this.internalHtml = function(viewModel){
-
-		// the reason for this is that what if we want different type of internal html for different div elements withen the knockout foreach
-
-		var info = 	"<h1 data-bind = 'text: contents.name'></h2>" + 
-					"<p><div data-bind = 'text: contents.race'></div>" +
-					"<div data-bind = 'text: contents.characterClass'></div></p>";
-
-		var internals = jQuery('<div>', {
-			class: "internalCharacter internalWindow",
-		});
-
-		var characterEditButton = jQuery('<div>', {
-			class: "characterEditButton smallButton",
-			//data-bind: "text: name"
-		}).css("left","80%").css("top","10%")
-			.attr("data-bind","click: contents.rename");
-
-		internals.append(info);
-		internals.append(characterEditButton);
-		
-
-		return $(internals).html();
-	};
 }
 
 function CharacterManagerViewModel() {
@@ -230,21 +204,13 @@ function CharacterManagerViewModel() {
 	});
 
 	self.windows = ko.observableArray([
-		new DialogWindow(new Character("Slighter", "Human", "Fighter")),
-		new DialogWindow(new Character("Wiz", "Elf", "Wizard")),
-		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
-		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
-		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
-		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
-		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
-		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
-		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
-		new DialogWindow(new Character("Mearth", "Human", "Cleric")),
-		new DialogWindow(new Character("Mearth", "Human", "Cleric"))
+		new Character("Slighter", "Human", "Fighter"),
+		new Character("Wiz", "Elf", "Wizard"),
+		new Character("Mearth", "Human", "Cleric"),
 	]);
 
-	this.templateType = function(item){
-		return item.contents.templateType();
+	self.templateType = function(item){
+		return item.templateType();
 	}
 
 	$(window).on("resize", function(){
@@ -267,15 +233,15 @@ $(document).ready(function(){
 	</div>
 </div>
 
-<script id="plainStats" type="text/html">
-    <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
-        <h1 data-bind = 'text: contents.name'></h2>
+<script id="plainCharacter" type="text/html">
+  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+        <h1 data-bind = 'text: name'></h2>
         <p>
-			<div data-bind = 'text: contents.race'></div>
-			<div data-bind = 'text: contents.characterClass'></div>
+			<div data-bind = 'text: race'></div>
+			<div data-bind = 'text: characterClass'></div>
 		</p>
-		<div class = "characterEditButton smallButton" data-bind="click: contents.rename"></div>
-    </div>
+		<div class = "characterEditButton smallButton" data-bind="click: rename"></div> 
+   	 </div>
 </script>
 
 </html>

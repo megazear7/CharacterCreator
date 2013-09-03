@@ -100,8 +100,12 @@ line-height: 18px;
 color:rgb(11,52,104);
 }
 
-.gridSelect:hover{
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(169,176,225)));
+.hoverGridSelect{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(196,196,196)), to(rgb(169,176,225)));
+}
+
+.chosenGridSelect{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(0,0,0)), to(rgb(169,176,225)));
 }
 
 .gridSelect{
@@ -110,17 +114,13 @@ height: 70px;
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
 position: absolute;
 left:1.1%;
-top:10%;
+top:20%;
 border-style:ridge;
 border-width:2px;
 border-color:rgb(36,103,126);
 border-radius:7px;
 }
 
-
-.gridSelect{
-left: 0%;
-}
 </style>
 
 
@@ -184,6 +184,45 @@ ko.bindingHandlers.DialogWindow = {
     }
 };
 
+ko.bindingHandlers.GridSelect = {
+    init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+		var numberOfOptions = bindingContext.$root.numberOfOptions();
+
+		var that = this;
+		var gridChanger = jQuery("<div>", {
+			class: "gridSelect",
+			height: numberOfOptions*11
+		});
+
+		for(var i = 0; i < numberOfOptions; i++){
+			var gridDot = jQuery("<div>", {
+				class: "gridSelectDot",
+				value: i+1
+			}).css("top", (((96/numberOfOptions)*i)+"%"));
+			gridChanger.append(gridDot);
+		}
+		$(element).append(gridChanger);
+
+		$("div", gridChanger).each(function(index) {
+			$(this).hover(
+				function() { $(this).prevAll().add(this).addClass("hoverGridSelect") },
+                function() { $(this).prevAll().add(this).removeClass("hoverGridSelect") }                
+            ).click(function() { 
+				var columns = valueAccessor();
+                columns(index+1);               // Write the new rating to it
+				bindingContext.$root.windows.valueHasMutated();
+            });
+		});
+	},
+    update: function(element, valueAccessor) {
+        // Give the first x stars the "chosen" class, where x <= rating
+        var observable = valueAccessor();
+        $("div", element).each(function(index) {
+            $(this).toggleClass("chosenGridSelect", index < observable());
+        });
+    }
+};
+
 function Character(name, race, characterClass){
 	// data for characters go in here
 	this.name = ko.observable(name);
@@ -206,6 +245,7 @@ function Character(name, race, characterClass){
 function CharacterManagerViewModel() {
 	var self = this;
 	self.columns = ko.observable(5);
+	self.numberOfOptions = ko.observable(10);
 
 	self.viewWidth = ko.computed(function(){
 		return $(".bodyContainer").width();
@@ -228,7 +268,6 @@ function CharacterManagerViewModel() {
 	}
 
 	self.changeColumns = function() {
-		console.log("hello");
 		self.columns(3);
 		self.windows.valueHasMutated();
 	}
@@ -250,8 +289,8 @@ $(document).ready(function(){
 		<p class="navLinks"><h1>Characters</h2></p>
 		<div class="settings smallButton"></div>
 	</div>
-	<div data-bind="template: { name: templateType, foreach: windows}" class="bodyContainer">
-	</div>
+	<div data-bind="template: { name: templateType, foreach: windows}" class="bodyContainer"></div>
+	<div data-bind="GridSelect: columns"></div>
 </div>
 
 <script id="plainCharacter" type="text/html">
@@ -261,7 +300,7 @@ $(document).ready(function(){
 			<div data-bind = 'text: race'></div>
 			<div data-bind = 'text: characterClass'></div>
 		</p>
-		<div class = "characterEditButton smallButton" data-bind="click: $root.changeColumns"></div> 
+		<div class = "characterEditButton smallButton" data-bind="click: rename"></div> 
    	 </div>
 </script>
 

@@ -108,6 +108,7 @@ function Character(name, race, characterClass){
 	this.name = ko.observable(name);
 	this.race = ko.observable(race);
 	this.characterClass = ko.observable(characterClass);
+	this.type = ko.observable("characterPage");
 
 	// put functionality that is based on the character in here, then call it wherever it is needed
 	this.rename = function(element){
@@ -154,8 +155,7 @@ function CharacterManagerViewModel() {
 	var self = this;
 	self.columns = ko.observable(5);
 	self.numberOfOptions = ko.observable(10);
-	self.chosenView = ko.observable();
-	self.chosenViewData = ko.observable();
+
 
 	self.viewWidth = ko.observable($(".bodyContainer").width());
 
@@ -173,8 +173,15 @@ function CharacterManagerViewModel() {
 		new Spell("Fireball", "160", "Shoots an awesome fireball.")
 	]);
 
+	self.chosenView = ko.observable("characterList");
+	self.chosenViewData = ko.observable(this.windows());
+
 	self.templateType = function(item){
 		return item.templateType();
+	}
+
+	self.mainTemplateType = function(item){
+		return self.chosenView();
 	}
 
 	self.changeColumns = function() {
@@ -182,10 +189,16 @@ function CharacterManagerViewModel() {
 		self.windows.valueHasMutated();
 	}
 
-	self.goToView = function(folder) { 
-		console.log("hello");
-		self.chosenView(folder); 
+	self.goToView = function(folder, data) { 
+		console.log(folder.type());
+		console.log(folder);
+		self.chosenView(folder.type()); 
 		self.chosenViewData(folder);
+	};
+
+	self.goToCharacterList = function() {
+		self.chosenView("characterList"); 
+		self.chosenViewData(this.windows());
 	};
 
 	$(window).on("resize", function(){
@@ -206,15 +219,28 @@ $(document).ready(function(){
 		<div class="settings smallButton smallTopBannerButton"></div>
 	</div>
 	<div class="outerContainer" data-bind="">
-		<div data-bind="template: { name: templateType, foreach: windows}" class="bodyContainer"></div>
-		<div data-bind="GridSelect: columns"></div>
-		<div class="characterView" data-bind="with: chosenViewData">
-			<div data-bind="template: { name: 'characterPage' }"><div>
+		<div data-bind="template: { name: mainTemplateType}" class="bodyContainer"></div>
 		</div>
 	</div>
 </div>
 
 <!-- templates  -->
+<script id="characterList" type="text/html">
+		<div data-bind="template: { name: $root.templateType, foreach: chosenViewData}" class="bodyContainer"></div>
+		<div data-bind="GridSelect: columns"></div>
+</script>
+
+<script id="characterPage" type="text/html">
+		<input type="button" style="position: absolute;top: 100px;" data-bind="click: $root.goToCharacterList">go back</input>
+  		<div data-bind = "with: chosenViewData">
+			<h1 data-bind = ''></h2>
+			<p>
+				<div data-bind = ''></div>
+				<div data-bind = ''></div>
+			</p>
+		</div>
+</script>
+
 <script id="plainCharacter" type="text/html">
   	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
         <h1 data-bind = 'text: name'></h2>
@@ -222,7 +248,7 @@ $(document).ready(function(){
 			<div data-bind = 'text: race'></div>
 			<div data-bind = 'text: characterClass'></div>
 		</p>
-		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: rename"></div> 
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: rename, clickBubble: false"></div> 
    	 </div>
 </script>
 
@@ -248,16 +274,7 @@ $(document).ready(function(){
    	 </div>
 </script>
 
-<script id="characterPage" type="text/html">
-  		<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
-        	<h1 data-bind = 'text: name'></h2>
-        	<p>
-				<div data-bind = 'text: race'></div>
-				<div data-bind = 'text: characterClass'></div>
-			</p>
-			<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: $root.changeColumns"></div> 
-		</div>
-</script>
+
 
 </html>
 </body>

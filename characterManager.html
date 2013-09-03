@@ -2,128 +2,7 @@
 <body>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript" src="../../knockout-2.3.0.js"></script>
-
-<style>
-
-.characterEditButton:hover{
-background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(130,180,225)), to(rgb(225,225,225)));
-}
-
-#dialogWindow{
-position: absolute;
-padding: 10px;
-border-style:ridge;
-border-width:5px;
-border-color:rgb(36,103,126);
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(115,115,115)), to(rgb(200,200,200)));
-border-radius:35px;
-overflow: hidden;
-}
-
-#dialogWindow:hover{
-background: -webkit-gradient(linear, 100% 100%, 0% 0%,from(rgb(19,76,90)), to(rgb(225,225,225)));
-}
-
-.smallButton{
-width: 15px;
-height: 15px;
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
-position: absolute;
-right:1.1%;
-top:32%;
-border-style:ridge;
-border-width:2px;
-border-color:rgb(36,103,126);
-border-radius:7px;
-line-height: 18px;
-color:rgb(11,52,104);
-}
-
-
-.topBannerContainer{
-position: fixed;
-top:0%;
-left:0%;
-z-index:3;
-width: 99%;
-height: 50px;
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(176,176,176)));
-border-style:ridge;
-border-width:5px;
-border-color:rgb(36,103,126);
-border-radius:20px;
-text-align:center;
-line-height: 10px;
-color:rgb(202,225,225);
-}
-
-.topBannerContainer:hover{
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(169,176,182)));
-}
-
-.smallButton:hover{
-background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(177,208,225)), to(rgb(225,225,225)));
-color:rgb(93,23,216);
-border-color:rgb(36,103,126);
-}
-
-.bodyContainer{
-width: 100%;
-height: 100%;
-position: relative;
-}
-
-body {
-	margin:15px;
-}
-
-body{
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(220,220,220))) fixed;
-}
-
-.gridSelectDot:hover{
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185))) !important;
-}
-
-.gridSelectDot{
-width: 5px;
-height: 5px;
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(100,126,185)));
-position: absolute;
-left:1.1%;
-top:32%;
-border-style:ridge;
-border-width:2px;
-border-color:rgb(36,103,126);
-border-radius:7px;
-line-height: 18px;
-color:rgb(11,52,104);
-}
-
-.hoverGridSelect{
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(196,196,196)), to(rgb(169,176,225)));
-}
-
-.chosenGridSelect{
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(0,0,0)), to(rgb(169,176,225)));
-}
-
-.gridSelect{
-width: 10px;
-height: 70px;
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
-position: absolute;
-left:1.1%;
-top:20%;
-border-style:ridge;
-border-width:2px;
-border-color:rgb(36,103,126);
-border-radius:7px;
-}
-
-</style>
-
-
+<link href="dialogWindow.css" rel="stylesheet" type="text/css">
 
 <script>
 
@@ -242,6 +121,34 @@ function Character(name, race, characterClass){
 	}
 }
 
+function Spell(name, spellpoints, description){
+	this.name = ko.observable(name);
+	this.spellpoints = ko.observable(spellpoints);
+	this.description = ko.observable(description);
+
+	this.someFunction = function(element){
+		this.spellpoints("100");
+	}
+
+	this.templateType = function(){
+		return "plainSpell";
+	}
+}
+
+function Weapon(name, damage, speed){
+	this.name = ko.observable(name);
+	this.damage = ko.observable(damage);
+	this.speed = ko.observable(speed);
+
+	this.someFunction = function(element){
+		this.damage("2d6");
+	}
+
+	this.templateType = function(){
+		return "plainWeapon";
+	}
+}
+
 function CharacterManagerViewModel() {
 	var self = this;
 	self.columns = ko.observable(5);
@@ -261,6 +168,8 @@ function CharacterManagerViewModel() {
 		new Character("Slighter", "Human", "Fighter"),
 		new Character("Wiz", "Elf", "Wizard"),
 		new Character("Mearth", "Human", "Cleric"),
+		new Weapon("Longsword", "2d8", "12"),
+		new Spell("Fireball", "160", "Shoots an awesome fireball.")
 	]);
 
 	self.templateType = function(item){
@@ -287,7 +196,7 @@ $(document).ready(function(){
 <div class="bodywrapper">
 	<div class="topBannerContainer">
 		<p class="navLinks"><h1>Characters</h2></p>
-		<div class="settings smallButton"></div>
+		<div class="settings smallButton smallTopBannerButton"></div>
 	</div>
 	<div data-bind="template: { name: templateType, foreach: windows}" class="bodyContainer"></div>
 	<div data-bind="GridSelect: columns"></div>
@@ -300,7 +209,29 @@ $(document).ready(function(){
 			<div data-bind = 'text: race'></div>
 			<div data-bind = 'text: characterClass'></div>
 		</p>
-		<div class = "characterEditButton smallButton" data-bind="click: rename"></div> 
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: rename"></div> 
+   	 </div>
+</script>
+
+<script id="plainWeapon" type="text/html">
+  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Damage: <span data-bind = 'text: damage'></span><br/>
+			Speed: <span data-bind = 'text: speed'></span>
+		</p>
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
+   	 </div>
+</script>
+
+<script id="plainSpell" type="text/html">
+  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Spell Points: <span data-bind = 'text: spellpoints'></span><br/>
+			Description: <span data-bind = 'text: description'></span>
+		</p>
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
    	 </div>
 </script>
 

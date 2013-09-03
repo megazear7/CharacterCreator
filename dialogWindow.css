@@ -116,7 +116,7 @@ height: 70px;
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
 position: absolute;
 left:1.1%;
-top:20%;
+top:80px;
 border-style:ridge;
 border-width:2px;
 border-color:rgb(36,103,126);

@@ -33,7 +33,7 @@ ko.bindingHandlers.DialogWindow = {
 		var column = i%totalColumns + 1;
 
 		var posRow = ((100/lanes)+(3*(100/lanes*(column-1))));
-		var posCol = (width / 20) + (width * (3/lanes) * (row-1));
+		var posCol = ((width / 20) + (width * (3/lanes) * (row-1)))+40;
 
 		var dialogWidth = width/(lanes/2);
 
@@ -48,11 +48,13 @@ ko.bindingHandlers.DialogWindow = {
 		var lanes = bindingContext.$root.lanes();
 		var i = $(element).index();
 
+		console.log(width);
+
 		var row = Math.floor(i/totalColumns + 1);	
 		var column = i%totalColumns + 1;
 
 		var posRow = ((100/lanes)+(3*(100/lanes*(column-1))));
-		var posCol = (width / 20) + (width * (3/lanes) * (row-1));
+		var posCol = ((width / 20) + (width * (3/lanes) * (row-1)))+40;
 
 		var dialogWidth = width/(lanes/2);
 
@@ -154,9 +156,7 @@ function CharacterManagerViewModel() {
 	self.columns = ko.observable(5);
 	self.numberOfOptions = ko.observable(10);
 
-	self.viewWidth = ko.computed(function(){
-		return $(".bodyContainer").width();
-	});
+	self.viewWidth = ko.observable($(".bodyContainer").width());
 
 	self.lanes = ko.computed(function(){
 		var lanes = 0;
@@ -181,8 +181,10 @@ function CharacterManagerViewModel() {
 		self.windows.valueHasMutated();
 	}
 
-	// TODO: figure out how to do the resize, and how to change the column values;
+	// TODO: figure out how to do the resize
 	$(window).on("resize", function(){
+		self.viewWidth($(".bodyContainer").width());
+		self.windows.valueHasMutated();
 	});
 }
 
@@ -209,7 +211,7 @@ $(document).ready(function(){
 			<div data-bind = 'text: race'></div>
 			<div data-bind = 'text: characterClass'></div>
 		</p>
-		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: rename"></div> 
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: $root.changeColumns"></div> 
    	 </div>
 </script>
 

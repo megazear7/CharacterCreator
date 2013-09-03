@@ -164,15 +164,25 @@ ko.bindingHandlers.DialogWindow = {
 		$(element).css("top",posCol);
     },
     update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+		var width = bindingContext.$root.viewWidth();
+		var totalColumns = bindingContext.$root.columns();
+		var lanes = bindingContext.$root.lanes();
+		var i = $(element).index();
 
+		var row = Math.floor(i/totalColumns + 1);	
+		var column = i%totalColumns + 1;
+
+		var posRow = ((100/lanes)+(3*(100/lanes*(column-1))));
+		var posCol = (width / 20) + (width * (3/lanes) * (row-1));
+
+		var dialogWidth = width/(lanes/2);
+
+		$(element).css("width", dialogWidth);
+		$(element).css("height", dialogWidth);
+		$(element).css("left", posRow+"%");
+		$(element).css("top",posCol);
     }
 };
-
-function DialogWindow(contents){
-	// anything added here will apply to every DialogWindow
-	// whatever is in contents will apply to only that specific type of DialogWindow
-	this.contents = contents;
-}
 
 function Character(name, race, characterClass){
 	// data for characters go in here
@@ -180,10 +190,14 @@ function Character(name, race, characterClass){
 	this.race = ko.observable(race);
 	this.characterClass = ko.observable(characterClass);
 
+	// put functionality that is based on the character in here, then call it wherever it is needed
 	this.rename = function(element){
 		this.name("Bob");
 	}
 
+	// this function could be smart and determine the returned template type in some non static way
+	// or new objects could be created (weapon, spell, ect.. ) and they could return different template type
+	// there template could utalize different variables instead of name race and characterClass
 	this.templateType = function(){
 		return "plainCharacter";
 	}
@@ -213,6 +227,13 @@ function CharacterManagerViewModel() {
 		return item.templateType();
 	}
 
+	self.changeColumns = function() {
+		console.log("hello");
+		self.columns(3);
+		self.windows.valueHasMutated();
+	}
+
+	// TODO: figure out how to do the resize, and how to change the column values;
 	$(window).on("resize", function(){
 	});
 }
@@ -240,7 +261,7 @@ $(document).ready(function(){
 			<div data-bind = 'text: race'></div>
 			<div data-bind = 'text: characterClass'></div>
 		</p>
-		<div class = "characterEditButton smallButton" data-bind="click: rename"></div> 
+		<div class = "characterEditButton smallButton" data-bind="click: $root.changeColumns"></div> 
    	 </div>
 </script>
 

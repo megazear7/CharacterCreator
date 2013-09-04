@@ -19,6 +19,11 @@ my $db = $connection->get_database( 'test' );
 # Collection
 my $collection = $db->get_collection ('test');
  
+# find one entry
+my $entry = $collection->findOne();
+print $entry;
+
+
 # Query
 my $result = $collection->find();
  

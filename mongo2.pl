@@ -12,7 +12,10 @@ my $db   = $conn->get_database( 'test' ) ;
 my $coll = $db->get_collection( 'test' );
 
 my $all = $coll->find();
-my $dts = $all->next;
+
+my $dts;
+
+while ($dts = $all->next ){
 print Dumper $dts;
 
 my @a = keys %$dts;
@@ -27,3 +30,5 @@ my $str = '{ "' .
 print  "\n";
 print "The JSON version: \n";
 print $str;
+print  "\n";
+}

@@ -1,0 +1,263 @@
+<html>
+<body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="knockout-2.3.0.js"></script>
+<script type="text/javascript" src="sammy.js"></script>
+<link href="dialogWindow.css" rel="stylesheet" type="text/css">
+
+<script>
+
+ko.bindingHandlers.DialogWindow = {
+	//var self = this;
+    init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+		// To access all the bindings placed on this element do this:
+		//var allBindings = allBindingsAccessor();
+		//alert(allBindings.columns);
+
+		// To access the view model object pass to apply bindings. I.e. in here it is "Character"
+		//alert("viewModel = " +  viewModel.characterClass);
+		
+		// To access $root, $parent or $parents do this:
+		// alert(bindingContext.$root.columns());
+
+		//var internals = viewModel.contents.internalHtml(viewModel);
+		
+		//$(element).empty();		
+		//$(element).append(internals);
+
+		var width = bindingContext.$root.viewWidth();
+		var totalColumns = bindingContext.$root.columns();
+		var lanes = bindingContext.$root.lanes();
+		var i = $(element).index();
+
+		var row = Math.floor(i/totalColumns + 1);	
+		var column = i%totalColumns + 1;
+
+		var posRow = ((100/lanes)+(3*(100/lanes*(column-1))));
+		var posCol = ((width / 20) + (width * (3/lanes) * (row-1)))+40;
+
+		var dialogWidth = width/(lanes/2);
+
+		$(element).css("width", dialogWidth);
+		$(element).css("height", dialogWidth);
+		$(element).css("left", posRow+"%");
+		$(element).css("top",posCol);
+    },
+    update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+		var width = bindingContext.$root.viewWidth();
+		var totalColumns = bindingContext.$root.columns();
+		var lanes = bindingContext.$root.lanes();
+		var i = $(element).index();
+
+		var row = Math.floor(i/totalColumns + 1);	
+		var column = i%totalColumns + 1;
+
+		var posRow = ((100/lanes)+(3*(100/lanes*(column-1))));
+		var posCol = ((width / 20) + (width * (3/lanes) * (row-1)))+40;
+
+		var dialogWidth = width/(lanes/2);
+
+		$(element).css("width", dialogWidth);
+		$(element).css("height", dialogWidth);
+		$(element).css("left", posRow+"%");
+		$(element).css("top",posCol);
+    }
+};
+
+ko.bindingHandlers.GridSelect = {
+    init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+		var numberOfOptions = bindingContext.$root.numberOfOptions();
+
+		var that = this;
+		var gridChanger = jQuery("<div>", {
+			class: "gridSelect",
+			height: numberOfOptions*11
+		});
+
+		for(var i = 0; i < numberOfOptions; i++){
+			var gridDot = jQuery("<div>", {
+				class: "gridSelectDot",
+				value: i+1
+			}).css("top", (((96/numberOfOptions)*i)+"%"));
+			gridChanger.append(gridDot);
+		}
+		$(element).append(gridChanger);
+
+		$("div", gridChanger).each(function(index) {
+			$(this).hover(
+				function() { $(this).prevAll().add(this).addClass("hoverGridSelect") },
+                function() { $(this).prevAll().add(this).removeClass("hoverGridSelect") }                
+            ).click(function() { 
+				var columns = valueAccessor();
+                columns(index+1);               // Write the new rating to it
+				bindingContext.$root.windows.valueHasMutated();
+            });
+		});
+	},
+    update: function(element, valueAccessor) {
+        // Give the first x stars the "chosen" class, where x <= rating
+        var observable = valueAccessor();
+        $("div", element).each(function(index) {
+            $(this).toggleClass("chosenGridSelect", index < observable());
+        });
+    }
+};
+
+function Character(name, race, characterClass){
+	// data for characters go in here
+	this.name = ko.observable(name);
+	this.race = ko.observable(race);
+	this.characterClass = ko.observable(characterClass);
+
+	// put functionality that is based on the character in here, then call it wherever it is needed
+	this.rename = function(element){
+		this.name("Bob");
+	}
+
+	// this function could be smart and determine the returned template type in some non static way
+	// or new objects could be created (weapon, spell, ect.. ) and they could return different template type
+	// there template could utalize different variables instead of name race and characterClass
+	this.templateType = function(){
+		return "plainCharacter";
+	}
+}
+
+function Spell(name, spellpoints, description){
+	this.name = ko.observable(name);
+	this.spellpoints = ko.observable(spellpoints);
+	this.description = ko.observable(description);
+
+	this.someFunction = function(element){
+		this.spellpoints("100");
+	}
+
+	this.templateType = function(){
+		return "plainSpell";
+	}
+}
+
+function Weapon(name, damage, speed){
+	this.name = ko.observable(name);
+	this.damage = ko.observable(damage);
+	this.speed = ko.observable(speed);
+
+	this.someFunction = function(element){
+		this.damage("2d6");
+	}
+
+	this.templateType = function(){
+		return "plainWeapon";
+	}
+}
+
+function CharacterManagerViewModel() {
+	var self = this;
+	self.columns = ko.observable(5);
+	self.numberOfOptions = ko.observable(10);
+	self.chosenView = ko.observable();
+	self.chosenViewData = ko.observable();
+
+	self.viewWidth = ko.observable($(".bodyContainer").width());
+
+	self.lanes = ko.computed(function(){
+		var lanes = 0;
+		var lanes = self.columns() * 3 + 1;
+		return lanes;
+	});
+
+	self.windows = ko.observableArray([
+		new Character("Slighter", "Human", "Fighter"),
+		new Character("Wiz", "Elf", "Wizard"),
+		new Character("Mearth", "Human", "Cleric"),
+		new Weapon("Longsword", "2d8", "12"),
+		new Spell("Fireball", "160", "Shoots an awesome fireball.")
+	]);
+
+	self.templateType = function(item){
+		return item.templateType();
+	}
+
+	self.changeColumns = function() {
+		self.columns(3);
+		self.windows.valueHasMutated();
+	}
+
+	self.goToView = function(folder) { 
+		console.log("hello");
+		self.chosenView(folder); 
+		self.chosenViewData(folder);
+	};
+
+	$(window).on("resize", function(){
+		self.viewWidth($(".bodyContainer").width());
+		self.windows.valueHasMutated();
+	});
+}
+
+$(document).ready(function(){
+	ko.applyBindings(new CharacterManagerViewModel());
+});
+
+</script>
+
+<div class="bodywrapper">
+	<div class="topBannerContainer">
+		<p class="navLinks"><h1>Characters</h2></p>
+		<div class="settings smallButton smallTopBannerButton"></div>
+	</div>
+	<div class="outerContainer" data-bind="">
+		<div data-bind="template: { name: templateType, foreach: windows}" class="bodyContainer"></div>
+		<div data-bind="GridSelect: columns"></div>
+		<div class="characterView" data-bind="with: chosenViewData">
+			<div data-bind="template: { name: 'characterPage' }"><div>
+		</div>
+	</div>
+</div>
+
+<!-- templates  -->
+<script id="plainCharacter" type="text/html">
+  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			<div data-bind = 'text: race'></div>
+			<div data-bind = 'text: characterClass'></div>
+		</p>
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: rename"></div> 
+   	 </div>
+</script>
+
+<script id="plainWeapon" type="text/html">
+  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Damage: <span data-bind = 'text: damage'></span><br/>
+			Speed: <span data-bind = 'text: speed'></span>
+		</p>
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
+   	 </div>
+</script>
+
+<script id="plainSpell" type="text/html">
+  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Spell Points: <span data-bind = 'text: spellpoints'></span><br/>
+			Description: <span data-bind = 'text: description'></span>
+		</p>
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
+   	 </div>
+</script>
+
+<script id="characterPage" type="text/html">
+  		<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+        	<h1 data-bind = 'text: name'></h2>
+        	<p>
+				<div data-bind = 'text: race'></div>
+				<div data-bind = 'text: characterClass'></div>
+			</p>
+			<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: $root.changeColumns"></div> 
+		</div>
+</script>
+
+</html>
+</body>

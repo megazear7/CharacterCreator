@@ -1,0 +1,126 @@
+<style>
+
+.characterEditButton:hover{
+background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(130,180,225)), to(rgb(225,225,225)));
+}
+
+#dialogWindow{
+position: absolute;
+padding: 10px;
+border-style:ridge;
+border-width:5px;
+border-color:rgb(36,103,126);
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(115,115,115)), to(rgb(200,200,200)));
+border-radius:35px;
+overflow: hidden;
+}
+
+#dialogWindow:hover{
+background: -webkit-gradient(linear, 100% 100%, 0% 0%,from(rgb(19,76,90)), to(rgb(225,225,225)));
+}
+
+.smallButton{
+width: 15px;
+height: 15px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
+position: absolute;
+border-style:ridge;
+border-width:2px;
+border-color:rgb(36,103,126);
+border-radius:7px;
+line-height: 18px;
+color:rgb(11,52,104);
+}
+
+.smallDialogWindowButton{
+right:8%;
+top:8%;
+}
+
+.smallTopBannerButton{
+right:1.1%;
+top:12%;
+}
+
+.topBannerContainer{
+position: fixed;
+top:0%;
+left:0%;
+z-index:3;
+width: 99%;
+height: 50px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(176,176,176)));
+border-style:ridge;
+border-width:5px;
+border-color:rgb(36,103,126);
+border-radius:20px;
+text-align:center;
+line-height: 10px;
+color:rgb(202,225,225);
+}
+
+.topBannerContainer:hover{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(116,116,116)), to(rgb(169,176,182)));
+}
+
+.smallButton:hover{
+background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(177,208,225)), to(rgb(225,225,225)));
+color:rgb(93,23,216);
+border-color:rgb(36,103,126);
+}
+
+.bodyContainer{
+width: 100%;
+height: 100%;
+position: relative;
+}
+
+body {
+	margin:15px;
+}
+
+body{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(220,220,220))) fixed;
+}
+
+.gridSelectDot:hover{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185))) !important;
+}
+
+.gridSelectDot{
+width: 5px;
+height: 5px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(100,126,185)));
+position: absolute;
+left:1.1%;
+top:32%;
+border-style:ridge;
+border-width:2px;
+border-color:rgb(36,103,126);
+border-radius:7px;
+line-height: 18px;
+color:rgb(11,52,104);
+}
+
+.hoverGridSelect{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(196,196,196)), to(rgb(169,176,225)));
+}
+
+.chosenGridSelect{
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(0,0,0)), to(rgb(169,176,225)));
+}
+
+.gridSelect{
+width: 10px;
+height: 70px;
+background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(300,300,300)));
+position: absolute;
+left:1.1%;
+top:80px;
+border-style:ridge;
+border-width:2px;
+border-color:rgb(36,103,126);
+border-radius:7px;
+}
+
+</style>

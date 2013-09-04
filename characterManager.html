@@ -185,11 +185,15 @@ function CharacterManagerViewModel() {
 		new newCharacter()
 	]);
 
-	self.windows = ko.observableArray([
-		new Weapon("Step 1", "placeholder", "12"),
-		new Weapon("Step 2", "place", "these should be replaced by a new option that takes you to a page which you can do certain steps of making a character on"),
-		new Weapon("Step ect...", "placeholder", "12"),
-		new Weapon("Finish Character Creation", "this needs to be a actual finish button", "12")
+	self.createOptions = ko.observableArray([
+		new Weapon("Step 1", "placeholder", ""),
+		new Weapon("Step 2", "placeholder", "these should be replaced by a new option that takes you to a page which you can do certain steps of making a character on"),
+		new Weapon("Step 3", "placeholder", ""),
+		new Weapon("Step 4", "placeholder", ""),
+		new Weapon("Step 5", "placeholder", ""),
+		new Weapon("Step 6", "placeholder", ""),
+		new Weapon("ect...", "placeholder", ""),
+		new Weapon("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "")
 	]);
 
 	self.chosenView = ko.observable("characterList").extend({ throttle: 1 });
@@ -211,9 +215,12 @@ function CharacterManagerViewModel() {
 	self.goToView = function(folder, data) { 
 		self.chosenView(folder.type()); 
 		self.chosenViewData(folder);
+		self.navSummary("Character - " + folder.name());
 	};
 
 	self.goToCharacterList = function() {
+		self.navSummary("Character");
+		console.log(self.navSummary());
 		self.chosenView("characterList"); 
 		self.chosenViewData(self.windows());
 	};
@@ -221,6 +228,7 @@ function CharacterManagerViewModel() {
 	self.goToCharacterCreate = function() {
 		self.chosenView("characterCreate"); 
 		self.chosenViewData(self.createOptions());
+		self.navSummary("Character - Create");
 	};
 
 	$(window).on("resize", function(){
@@ -237,7 +245,7 @@ $(document).ready(function(){
 
 <div class="bodywrapper">
 	<div class="topBannerContainer">
-		<p class="navLinks" data-bind="text: navSummary"><h1></h2></p>
+		<h2 class="navLinks" data-bind="text: navSummary"></h2>
 		<div class="settings smallButton smallTopBannerButton"></div>
 	</div>
 	<div class="outerContainer" data-bind="">
@@ -304,7 +312,7 @@ $(document).ready(function(){
 
 <script id="newCharacter" type="text/html">
   	<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
-		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
+	<h1>Create New Character</h1>
    	</div>
 </script>
 

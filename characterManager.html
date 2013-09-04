@@ -166,6 +166,7 @@ function CharacterManagerViewModel() {
 	self.columns = ko.observable(5);
 	self.numberOfOptions = ko.observable(10);
 
+	self.navSummary = ko.observable("Character");
 
 	self.viewWidth = ko.observable($(".bodyContainer").width());
 
@@ -236,7 +237,7 @@ $(document).ready(function(){
 
 <div class="bodywrapper">
 	<div class="topBannerContainer">
-		<p class="navLinks"><h1>Characters</h2></p>
+		<p class="navLinks" data-bind="text: navSummary"><h1></h2></p>
 		<div class="settings smallButton smallTopBannerButton"></div>
 	</div>
 	<div class="outerContainer" data-bind="">

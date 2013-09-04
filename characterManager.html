@@ -151,6 +151,16 @@ function Weapon(name, damage, speed){
 	}
 }
 
+function newCharacter(){
+
+	this.someFunction = function(element){
+	}
+
+	this.dialogWindowTemplateType = function(){
+		return "newCharacter";
+	}
+}
+
 function CharacterManagerViewModel() {
 	var self = this;
 	self.columns = ko.observable(5);
@@ -170,7 +180,15 @@ function CharacterManagerViewModel() {
 		new Character("Wiz", "Elf", "Wizard"),
 		new Character("Mearth", "Human", "Cleric"),
 		new Weapon("Longsword", "2d8", "12"),
-		new Spell("Fireball", "160", "Shoots an awesome fireball.")
+		new Spell("Fireball", "160", "Shoots an awesome fireball."),
+		new newCharacter()
+	]);
+
+	self.windows = ko.observableArray([
+		new Weapon("Step 1", "placeholder", "12"),
+		new Weapon("Step 2", "place", "these should be replaced by a new option that takes you to a page which you can do certain steps of making a character on"),
+		new Weapon("Step ect...", "placeholder", "12"),
+		new Weapon("Finish Character Creation", "this needs to be a actual finish button", "12")
 	]);
 
 	self.chosenView = ko.observable("characterList").extend({ throttle: 1 });
@@ -197,6 +215,11 @@ function CharacterManagerViewModel() {
 	self.goToCharacterList = function() {
 		self.chosenView("characterList"); 
 		self.chosenViewData(self.windows());
+	};
+
+	self.goToCharacterCreate = function() {
+		self.chosenView("characterCreate"); 
+		self.chosenViewData(self.createOptions());
 	};
 
 	$(window).on("resize", function(){
@@ -239,6 +262,12 @@ $(document).ready(function(){
 		</div>
 </script>
 
+<script id="characterCreate" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
+	<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
+	<div data-bind="GridSelect: columns"></div>
+</script>
+
 <script id="plainCharacter" type="text/html">
   	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
         <h1 data-bind = 'text: name'></h2>
@@ -272,7 +301,11 @@ $(document).ready(function(){
    	 </div>
 </script>
 
-
+<script id="newCharacter" type="text/html">
+  	<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
+   	</div>
+</script>
 
 </html>
 </body>

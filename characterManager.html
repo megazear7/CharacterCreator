@@ -197,8 +197,9 @@ function CharacterManagerViewModel() {
 	};
 
 	self.goToCharacterList = function() {
+		console.log(self.windows());
 		self.chosenView("characterList"); 
-		self.chosenViewData(this.windows());
+		self.chosenViewData(self.windows());
 	};
 
 	$(window).on("resize", function(){

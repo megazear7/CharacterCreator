@@ -204,12 +204,10 @@ function CharacterManagerViewModel() {
 	}
 
 	self.mainTemplateType = function(item){
-		console.log(self.chosenView());
 		return self.chosenView();
 	}
 
 	self.changeColumns = function() {
-		alert("hello");
 		self.columns(3);
 		self.windows.valueHasMutated();
 	}

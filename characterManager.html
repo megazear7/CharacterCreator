@@ -151,6 +151,26 @@ function Weapon(name, damage, speed){
 	}
 }
 
+function characterCreationStep(name, description, stepName){
+	var self = this;
+	this.name = ko.observable(name);
+	this.stepName = ko.observable(stepName);
+	this.description = ko.observable(description);
+	this.message = ko.observable();
+	
+	this.type = function(){
+		return self.stepName();	
+	}	
+
+	this.dialogWindowTemplateType = function(){
+		return "characterCreationStepDialog";
+	}
+
+	this.someFunction = function(e){
+		this.message("You marked this as complete");
+	}
+}
+
 function newCharacter(){
 
 	this.someFunction = function(element){
@@ -186,14 +206,19 @@ function CharacterManagerViewModel() {
 	]);
 
 	self.createOptions = ko.observableArray([
-		new Weapon("Step 1", "placeholder", ""),
-		new Weapon("Step 2", "placeholder", "these should be replaced by a new option that takes you to a page which you can do certain steps of making a character on"),
-		new Weapon("Step 3", "placeholder", ""),
-		new Weapon("Step 4", "placeholder", ""),
-		new Weapon("Step 5", "placeholder", ""),
-		new Weapon("Step 6", "placeholder", ""),
-		new Weapon("ect...", "placeholder", ""),
-		new Weapon("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "")
+		new characterCreationStep("Step 1", "Recieve Building Points", "step1"),
+		new characterCreationStep("Step 2", "Roll Ability Scores", "step2"),
+		new characterCreationStep("Step 3", "Arange Ability Scores", "step3"),
+		new characterCreationStep("Step 4", "Chose a Race", "step4"),
+		new characterCreationStep("Step 5", "Finalize Ability Scores and Other Adjustments", "step5"),
+		new characterCreationStep("Step 6", "Choose a Class and Alignment", "step6"),
+		new characterCreationStep("Step 7", "Determine Priors and Particulers", "step7"),
+		new characterCreationStep("Step 8", "Determine Quirks and Flaws", "step8"),
+		new characterCreationStep("Step 9", "Calculate Starting Honor", "step9"),
+		new characterCreationStep("Step 10", "Purchase Skills Talents and Proficiencies", "step10"),
+		new characterCreationStep("Step 11", "Roll Hit Points", "step11"),
+		new characterCreationStep("Step 12", "Recueve Starting Money and Equip Character", "step12"),
+		new characterCreationStep("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
 	]);
 
 	self.chosenView = ko.observable("characterList").extend({ throttle: 1 });
@@ -309,10 +334,180 @@ $(document).ready(function(){
    	 </div>
 </script>
 
+<script id="characterCreationStepDialog" type="text/html">
+  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
+   	 </div>
+</script>
+
 <script id="newCharacter" type="text/html">
   	<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
 	<h1>Create New Character</h1>
    	</div>
+</script>
+
+<!-- Character creation step templates, each step neads a template because each step is different  -->
+<script id="step1" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step2" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step3" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step4" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step5" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step6" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step7" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step8" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step9" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step10" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step11" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step12" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
 </script>
 
 </html>

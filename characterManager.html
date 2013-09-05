@@ -204,10 +204,12 @@ function CharacterManagerViewModel() {
 	}
 
 	self.mainTemplateType = function(item){
+		console.log(self.chosenView());
 		return self.chosenView();
 	}
 
 	self.changeColumns = function() {
+		alert("hello");
 		self.columns(3);
 		self.windows.valueHasMutated();
 	}
@@ -220,7 +222,6 @@ function CharacterManagerViewModel() {
 
 	self.goToCharacterList = function() {
 		self.navSummary("Character");
-		console.log(self.navSummary());
 		self.chosenView("characterList"); 
 		self.chosenViewData(self.windows());
 	};
@@ -261,19 +262,19 @@ $(document).ready(function(){
 </script>
 
 <script id="characterPage" type="text/html">
-		<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
-  		<div data-bind = "with: chosenViewData">
-			<br/>
-			<br/>
-			<h1 data-bind = 'text: name'></h2>
-			<div data-bind = 'text: race'></div>
-			<div data-bind = 'text: characterClass'></div>
-		</div>
+	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
+	<div data-bind = "with: chosenViewData">
+		<br/>
+		<br/>
+		<h1 data-bind = 'text: name'></h2>
+		<div data-bind = 'text: race'></div>
+		<div data-bind = 'text: characterClass'></div>
+	</div>
 </script>
 
 <script id="characterCreate" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
 	<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
+	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
 	<div data-bind="GridSelect: columns"></div>
 </script>
 

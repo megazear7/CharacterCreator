@@ -128,11 +128,11 @@ background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(145,182,211)), t
 }
 
 .arrow_box {
-top: 90%;
+bottom: 10%;
 left: 25px;
 width:50px;
 height: 30px;
-position: relative;
+position: absolute;
 background: #93b8d5;
 border: 3px solid #c2e1f5;
 }

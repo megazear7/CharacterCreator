@@ -1,0 +1,257 @@
+Some ideas on what the json could look like for storing data. These are all
+just quick notes and quick ideas. Under what is written here we would need the
+following collections:
+
+members
+characters
+items
+itemIdentifiers
+
+-------------------------------------------
+An idea for how characters could be saved
+
+considerations:
+any application pulling data from here will need to take in the stats, and
+apply adjustments on needed stats for every level the character has.
+
+current health is not recorded, rather, a max health is given, and then wounds
+will need cycled through to find current health.
+
+the idea is that data is not copied to multiple places in the database. in
+this way there will be a less likely chance to get bad data. The data is in
+one place, and stuff might need added together, or changed around to find
+the representation of the data that is desired.
+
+weapons will need some level of encoding. The question is how far do we want
+to go with the encoding? An example of how this encoding could work is given:
+
+Example 1:
+"<itemName>-<magicalBonus>-<uniqueIdentifier>"
+In this way a normal +4 longsword would be: "longsword-4-0"
+where the itemName and magicalBonus are self explanetory and uniqueIdentifier
+is a code that a application could use to apply special modifications to this
+item. Maybe this longsword is a longsword of speed. A application could take
+this uniqueIdentifier (which is a number) and then query a seperate table /
+collection to figure out what that uniqueIdentifier represents.
+
+{
+
+_id: "",
+name: "",
+level: "",
+race: "",
+class: "",
+health: "",
+strength: "",
+strengthPercent: "",
+wisdom: "",
+wisdomPercent: "",
+intelegence: "",
+intelegencePercent: "",
+dextarity: "",
+dextarityPercent: "",
+charisma: "",
+charismaPercent: "",
+looks: "",
+looksPercent: "",
+honor: "",
+honorPercent: "",
+buildingPoints: "",
+
+levelUps:{
+	levelTwo: {
+		strength: "",
+		strengthPercent: "",
+		wisdom: "",
+		wisdomPercent: "",
+		intelegence: "",
+		intelegencePercent: "",
+		dextarity: "",
+		dextarityPercent: "",
+		charisma: "",
+		charismaPercent: "",
+		looks: "",
+		looksPercent: "",
+		speed: "",
+		attack: "",
+		initiative: ""
+	},
+	levelThree: {
+		strength: "",
+		strengthPercent: "",
+		wisdom: "",
+		wisdomPercent: "",
+		intelegence: "",
+		intelegencePercent: "",
+		dextarity: "",
+		dextarityPercent: "",
+		charisma: "",
+		charismaPercent: "",
+		looks: "",
+		looksPercent: "",
+		speed: "",
+		attack: "",
+		initiative: ""
+	},
+	levelFour: {
+		strength: "",
+		strengthPercent: "",
+		wisdom: "",
+		wisdomPercent: "",
+		intelegence: "",
+		intelegencePercent: "",
+		dextarity: "",
+		dextarityPercent: "",
+		charisma: "",
+		charismaPercent: "",
+		looks: "",
+		looksPercent: "",
+		speed: "",
+		attack: "",
+		initiative: ""
+	},
+	levelFive: {
+		strength: "",
+		strengthPercent: "",
+		wisdom: "",
+		wisdomPercent: "",
+		intelegence: "",
+		intelegencePercent: "",
+		dextarity: "",
+		dextarityPercent: "",
+		charisma: "",
+		charismaPercent: "",
+		looks: "",
+		looksPercent: "",
+		speed: "",
+		attack: "",
+		initiative: ""
+	}
+	levelSix: {
+		strength: "",
+		strengthPercent: "",
+		wisdom: "",
+		wisdomPercent: "",
+		intelegence: "",
+		intelegencePercent: "",
+		dextarity: "",
+		dextarityPercent: "",
+		charisma: "",
+		charismaPercent: "",
+		looks: "",
+		looksPercent: "",
+		speed: "",
+		attack: "",
+		initiative: ""
+	}
+},
+
+skills: {
+	skillName: "",
+	otherSkillName: "",
+	yetAnotherSkillName: ""
+},
+
+equipment: {[
+	"longsword-3-2",
+	"smallShield-0-0",
+	"dagger-0-0",
+	"rations0-0",
+	"leatherArmor-0-0",
+]},
+
+worn: {
+	body: "leatherArmor0-0",
+	leftArm: "smallShield-0-0",
+	rightArm: "longsword-3-2",
+	feat: "",
+	hands: "",
+	head: "",
+	leftHandFinger: "",
+	rightHandFinger: "",
+	amulet: "",
+},
+
+wounds: {[
+	5,
+	11,
+	2,
+	4
+]}
+
+}
+
+--------------------------------------------------------------------------
+we will need a collection for weapons. A weapon could look like the following
+in mongo:
+
+{
+
+name: "",
+damage: "",
+speed: "",
+defenseAdjustment: "",
+speedAdjustment: "",
+size: "",
+
+}
+
+that is meant to be all inclusive, an idividual weapon could have less fields,
+two examples are given:
+
+{
+name: "longsword",
+damage: "2d8p",
+speed: "12"
+}
+
+{
+name: "leatherArmor",
+defenseAdjustment: "-3",
+speedAdjustment: "+1"
+}
+
+-----------------------------------------------------------------------------
+
+under the first given idea for some sort of weapon ecoding we need something
+that tells us what the special adjustments mean, we would need a
+collection with documents like the following:
+
+{
+name: "of speed",
+speedAdjustment: "+1"
+}
+
+note that there could be all sorts of adjustments, and that name is simply for
+display purposes.
+
+---------------------------------------------------------------------------------
+
+some sort of idea for what a member would look like:
+
+{
+firstName: "",
+lastName: "",
+email: "",
+characters: {[
+	"4f4wt5ww555556gs",
+	"dd3wtdfw4fge6gw5",
+	"324f4fwfc4wt5553",
+]}
+}
+
+characters here is just an array of id's, doesn't have to be like this though.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

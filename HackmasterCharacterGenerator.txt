@@ -1,38 +1,48 @@
 Hackmaster character manager
 
-I am thinking php and mysql on linux, but I am open to just about anything you want to do
-We can do this in phases as well... first thing is a character generator that when given a class and race will generate an acceptable character.
-Then we can work on managing build points and stats as the character levels up.
- 
-Intial Creation
-Leveling Up
-Combat Calculator
-
-Next short term step:
-Give the DialogWindows functionality. I.e. if it is clicked make it capable of doing something
-possibly desired functionality:
-when the dialog window is clicked, take me to a new page, change the contents of the DialogWindow, ect..
+Short Term Steps:
+1) Try out different ideas using the current components, such as:
+	A page that combines the button grid section and another section
+2) Implement combat grid dialogWindows, as well as items, spells, ect...
+3) Add to the character page to make it a full fledged page. this should be
+	high priority
+4) Split up javascript, template, and html files
 
 Steps:
-0) Decide whether to use Mongo or MySQL.
-1) Design what the character looks like on the data side.
-2) Design a Character Object that can be used all over to retrieve and manipulate character data.
-3) Make a Character Creator Object that creates Character Objects given certain data.
-4) Design a web interface which retrieves info from user and gives it to the backend Character Creator Object.
-5) Add leveling up functionality to the Character Creator Object.
-6) Make a web interface for leveling up characters.
-7) Make "Combat Calculator", a functionality that, given a character and a selection of items and armor and weapons, spits out a combat rose or stat grid
-8) Make a front end experience to use the Combat Calculator.
+1) More fully implement the character page
+2) Implement a basic character creation process
+3) Have perl read and write to mongo
+4) For the data issue: store all the data from initial creation, and then
+	store new data for every level up. When the page loads the character object
+	loads in all the data, then computed observables are set up for the acutaly
+	(current) strength and stuff. This way perl is simply an in between between
+	the client and mongo. And all the calculations are done client side in js.
+	Knockout is smart enough to know to not recalculate things unless something
+	changes. Awesome!!!
+5) Store data in a level up fasion in mongo. initial creation, and then all
+	the changes from each level up
+6) JS can write the entire character back to the server after leveling up, and
+	after initial creation. And other than that only smaller amounts can be sent
+	back. If a user spends building points in between levels then the could go in
+	the current max level box. I.e. if a character is level 7 and he spent
+	building points some time after he did the level 7 level up, then any changes
+	due to his spending of building points would be added to the level 7 section.
+	And these type of changes, or changes with what weapons they have or what item
+	configurations they have ect... would only write small bits of data back to
+	perl / mongo.
+7) Make a option on the character page to view a printable version of the
+	character. It may be possible to wrap everything that the user sees in a "hide
+	from the printer" attribute and then have html that is hidden from the user
+	that is printer friendly (i.e. designed to be printed) that way the user can
+	just print the charactr page and get a printable character.
+	Or there could be a button that takes you to a printable page.
+	Also the options for what item configurations you want listed on the character
+	sheet needs to be in there (combat grid options, combat rose options, what
+	armor to hae listed, as well as spells for mages. The user needs to be able to
+	pick all of this)
 
 What do yo think about the outline I have below? Obviously we don't need to do all of it, but I was just trying to come up with something
-that is clean and simply (for the user) and that also is expandable with new pages / dialogs / options. Basically tring to keep he front end 
-design and the back end design expandable. There is a lot in the outline, thats more of a wishlist of functionality, maybe having a smaller 
-simpler step one outline would be good. Any way what do you think?
-
-Backend:
-Character
-CharacterCreator
-CombatCalculator
+that is clean and simply (for the user) and that also is expandable with new pages / dialogs / options.
 
 Frontend:
  - When coming to the website asked to either sign in or create an account.
@@ -94,19 +104,3 @@ Frontend:
  		  given
 	      Navigation: "Characters - <CharacterName>"
 
-How the page is created on the front end:
-
-Javascript classes:
-	dialogWindow: 	This is a class that creates a block of html that is essentially a wrapper. So many of the pages described above have
-					a grid layout of options. These grids are a grid of 3 rows and any number of columns. The grid is a grid of squares
-					and anything can be put inside of them really. So the "Characters" page is a grid of dialogWindows and inside each
-					dialogWindow is a character (maybe name, race, class and health or something). Plus one additional dialogWindow that simply
-					says "create new character". And takes you to character creation.	
-
-	windowPage:		This is a class that contains zero or more dialogWindows. This is a sequence of dialogWindows where the dialogWindow at position
-					0 goes into the 0,0 spot of the grid, and the dialogWindow at position 1 goes in the 1,0 position in the grid, ect... 
-					windowPage creates all the html needed for the "grid" section of the page.
-
-
-Non grid pages (as well as the html that goes inside dialogWindows):
-	These pages may just be custom html for each page needed without useing dynamicly created html like dialogWindow and windowPage.

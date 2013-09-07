@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="jquery-2.0.3.min.js"></script>
+<script src="knockout-2.3.0.js"></script>
+<script src="json-example.js"></script>
+</head>
+<body>
+<button type="Button" id="button" onclick="saveEvent()">Save</button>
+<p>First name: <strong data-bind="text: firstName"></strong></p>
+<p>Last name: <strong data-bind="text: lastName"></strong></p>
+<p/>
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+<script>
+ko.applyBindings(AppViewModel);
+</script> 
+</body>
+</html>

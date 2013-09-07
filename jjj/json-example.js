@@ -9,23 +9,21 @@ AppViewModel.hasALotOfPets = ko.computed(function() {
     return this.pets().length > 2
 }, AppViewModel)
 
-
-// This contains a mix of observables, computed observables, 
-// observable arrays, and plain values. You can convert it
-// to a JSON string suitable for sending to the server using
-// ko.toJSON as follows:
-
-var jsonData = ko.toJSON(AppViewModel);
+function loadEvent(){
+    jQuery.getJSON("/cgi-bin/echo.cgi", function(jsonData) {
+        //  update posts using returned json DAta   
+        var parsed = JSON.parse(jsonData);
  
-// Result: jsonData is now a string equal to the following value
-// '{"firstName":"Bert","lastName":"Smith","pets":["Cat","Dog","Fish"],"type":"Customer","hasALotOfPets":true}'
-
-
-function saveEvent(){
-    jQuery.post("/cgi-bin/echo.pl", jsonData, function(returnedData) {
-        // This callback is executed if the post was successful    
+        // Update view model properties
+        AppViewModel.firstName(parsed.firstName);
+        AppViewModel.pets(parsed.pets);
     })
 }
 
-
+function saveEvent(){
+    var jsonData = ko.toJSON(AppViewModel);
+    jQuery.post("/cgi-bin/echo.cgi", jsonData, function(returnedData) {
+        // This callback is executed if the post was successful    
+    })
+}
 

@@ -104,12 +104,90 @@ ko.bindingHandlers.GridSelect = {
 };
 
 function Character(name, race, characterClass){
-	// data for characters go in here
-	this.name = ko.observable(name);
-	this.race = ko.observable(race);
-	this.characterClass = ko.observable(characterClass);
+	var self = this;
+	this.strength = ko.observable(0);
+	this.name = ko.observable("");
+	this.race = ko.observable("");
+	this.characterClass = ko.observable("");
+	this.level = ko.observable(0);
+	this.maxHealth = ko.observable(0);
+	this.strength(0);
+	this.constitution = ko.observable(0);
+	this.dextarity = ko.observable(0);
+	this.wisdom = ko.observable(0);
+	this.intelegence = ko.observable(0);
+	this.charisma = ko.observable(0);
+	this.looks = ko.observable(0);
+	this.honor = ko.observable(0);
+
+	this.constructor = function(name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor){
+		// Data from mongo:
+		this.name(name);
+		this.race(race);
+		this.characterClass(characterClass);
+		this.level(level);
+		this.maxHealth(maxHealth);
+		this.strength(strength);
+		this.constitution(constitution);
+		this.dextarity(dextarity);
+		this.wisdom(wisdom);
+		this.intelegence(intelegence);
+		this.charisma(charisma);
+		this.looks(looks);
+		this.honor(honor);
+	}
+
 	this.type = ko.observable("characterPage");
 
+	// put values that are computed from the data here
+	this.strInt = ko.computed(function(){
+		return Math.floor(self.strength());
+	});
+	this.dexInt = ko.computed(function(){
+		return Math.floor(self.dextarity());
+	});
+	this.intInt = ko.computed(function(){
+		return Math.floor(self.intelegence());
+	});
+	this.wisInt = ko.computed(function(){
+		return Math.floor(self.wisdom());
+	});
+	this.conInt = ko.computed(function(){
+		return Math.floor(self.constitution());
+	});
+	this.charInt = ko.computed(function(){
+		return Math.floor(self.charisma());
+	});
+	this.looksInt = ko.computed(function(){
+		return Math.floor(self.looks());
+	});
+	this.honorInt = ko.computed(function(){
+		return Math.floor(self.honor());
+	});
+	this.strDec = ko.computed(function(){
+		return Math.floor(((self.strength() % 1).toFixed(2))*100);
+	});
+	this.dexDec = ko.computed(function(){
+		return Math.floor(((self.dextarity() % 1).toFixed(2))*100);
+	});
+	this.intDec = ko.computed(function(){
+		return Math.floor(((self.intelegence() % 1).toFixed(2))*100);
+	});
+	this.wisDec = ko.computed(function(){
+		return Math.floor(((self.wisdom() % 1).toFixed(2))*100);
+	});
+	this.conDec = ko.computed(function(){
+		return Math.floor(((self.constitution() % 1).toFixed(2))*100);
+	});
+	this.charDec = ko.computed(function(){
+		return Math.floor(((self.charisma() % 1).toFixed(2))*100);
+	});
+	this.looksDec = ko.computed(function(){
+		return Math.floor(((self.looks() % 1).toFixed(2))*100);
+	});
+	this.honorDec = ko.computed(function(){
+		return Math.floor(((self.honor() % 1).toFixed(2))*100);
+	});
 	// put functionality that is based on the character in here, then call it wherever it is needed
 	this.rename = function(element){
 		this.name("Bob");
@@ -151,6 +229,26 @@ function Weapon(name, damage, speed){
 	}
 }
 
+function characterCreationStep(name, description, stepName){
+	var self = this;
+	this.name = ko.observable(name);
+	this.stepName = ko.observable(stepName);
+	this.description = ko.observable(description);
+	this.message = ko.observable();
+	
+	this.type = function(){
+		return self.stepName();	
+	}	
+
+	this.dialogWindowTemplateType = function(){
+		return "characterCreationStepDialog";
+	}
+
+	this.someFunction = function(e){
+		this.message("You marked this as complete");
+	}
+}
+
 function newCharacter(){
 
 	this.someFunction = function(element){
@@ -177,23 +275,42 @@ function CharacterManagerViewModel() {
 	});
 
 	self.windows = ko.observableArray([
-		new Character("Slighter", "Human", "Fighter"),
-		new Character("Wiz", "Elf", "Wizard"),
-		new Character("Mearth", "Human", "Cleric"),
-		new Weapon("Longsword", "2d8", "12"),
-		new Spell("Fireball", "160", "Shoots an awesome fireball."),
-		new newCharacter()
 	]);
 
+	self.initializeWindows = function(){
+		// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
+		var temp = new Character();
+		temp.constructor("Slighter", "Human", "Fighter", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
+		self.windows.push(temp);
+		temp = new Character();
+		temp.constructor("Wiz", "Elf", "Wizard", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
+		self.windows.push(temp);
+		temp = new Character();
+		temp.constructor("Mearth", "Human", "Cleric", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
+		self.windows.push(temp);
+		temp = new Weapon("Longsword", "2d8", "12");
+		self.windows.push(temp);			
+		temp = new Spell("Fireball", "160", "Shoots an awesome fireball");
+		self.windows.push(temp);				
+		temp = new newCharacter()
+		self.windows.push(temp);	
+	}
+	self.initializeWindows();
+
 	self.createOptions = ko.observableArray([
-		new Weapon("Step 1", "placeholder", ""),
-		new Weapon("Step 2", "placeholder", "these should be replaced by a new option that takes you to a page which you can do certain steps of making a character on"),
-		new Weapon("Step 3", "placeholder", ""),
-		new Weapon("Step 4", "placeholder", ""),
-		new Weapon("Step 5", "placeholder", ""),
-		new Weapon("Step 6", "placeholder", ""),
-		new Weapon("ect...", "placeholder", ""),
-		new Weapon("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "")
+		new characterCreationStep("Step 1", "Recieve Building Points", "step1"),
+		new characterCreationStep("Step 2", "Roll Ability Scores", "step2"),
+		new characterCreationStep("Step 3", "Arange Ability Scores", "step3"),
+		new characterCreationStep("Step 4", "Chose a Race", "step4"),
+		new characterCreationStep("Step 5", "Finalize Ability Scores and Other Adjustments", "step5"),
+		new characterCreationStep("Step 6", "Choose a Class and Alignment", "step6"),
+		new characterCreationStep("Step 7", "Determine Priors and Particulers", "step7"),
+		new characterCreationStep("Step 8", "Determine Quirks and Flaws", "step8"),
+		new characterCreationStep("Step 9", "Calculate Starting Honor", "step9"),
+		new characterCreationStep("Step 10", "Purchase Skills Talents and Proficiencies", "step10"),
+		new characterCreationStep("Step 11", "Roll Hit Points", "step11"),
+		new characterCreationStep("Step 12", "Recueve Starting Money and Equip Character", "step12"),
+		new characterCreationStep("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
 	]);
 
 	self.chosenView = ko.observable("characterList").extend({ throttle: 1 });
@@ -265,8 +382,43 @@ $(document).ready(function(){
 		<br/>
 		<br/>
 		<h1 data-bind = 'text: name'></h2>
-		<div data-bind = 'text: race'></div>
-		<div data-bind = 'text: characterClass'></div>
+		<span data-bind = 'text: race'></span>
+		<span data-bind = 'text: characterClass'></span>
+		<table text-align="left">
+			<tr>
+				<td text-align="left">Strength: </td>
+				<td data-bind = 'text: strInt'></td>
+				<td><span data-bind="text: strDec"></span>%</td>
+			</tr><tr>
+				<td>Dextarity: </td>
+				<td data-bind = 'text: dexInt'></td>
+				<td><span data-bind="text: dexDec"></span>%</td>
+			</tr><tr>
+				<td>Wisdom: </td>
+				<td data-bind = 'text: wisInt'></td>
+				<td><span data-bind="text: wisDec"></span>%</td>
+			</tr><tr>
+				<td>Intellegence: </td>
+				<td data-bind = 'text: intInt'>
+				<td><span data-bind="text: intDec"></span>%</td>
+			</tr><tr>
+				<td>Constitution: </td>
+				<td data-bind = 'text: conInt'>
+				<td><span data-bind="text: conDec"></span>%</td>
+			</tr><tr>
+				<td>Charisma: </td>
+				<td data-bind = 'text: charInt'></td>
+				<td><span data-bind="text: charDec"></span>%</td>
+			</tr><tr>
+				<td>Looks: </td>
+				<td data-bind = 'text: dexInt'></td>
+				<td><span data-bind="text: dexDec"></span>%</td>
+			</tr><tr>
+				<td>Honor: </td>
+				<td data-bind = 'text: honorInt'></td>
+				<td><span data-bind="text: honorDec"></span>%</td>
+			</tr>
+		</table>
 	</div>
 </script>
 
@@ -309,10 +461,180 @@ $(document).ready(function(){
    	 </div>
 </script>
 
+<script id="characterCreationStepDialog" type="text/html">
+  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
+   	 </div>
+</script>
+
 <script id="newCharacter" type="text/html">
   	<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
 	<h1>Create New Character</h1>
    	</div>
+</script>
+
+<!-- Character creation step templates, each step neads a template because each step is different  -->
+<script id="step1" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step2" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step3" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step4" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step5" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step6" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step7" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step8" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step9" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step10" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step11" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
+</script>
+
+<script id="step12" type="text/html">
+	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
+	<div data-bind="with: chosenViewData">
+		<h1 data-bind = 'text: name'></h2>
+		<p>
+			Description: <span data-bind = 'text: description'></span>
+			<br/>
+			<br/>
+			<span data-bind = 'text: message'></span>
+		</p>
+	</div>
 </script>
 
 </html>

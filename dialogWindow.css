@@ -76,13 +76,11 @@ position: relative;
 }
 
 body {
-	margin:15px;
-}
-
-body{
+margin:15px;
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(220,220,220))) fixed;
 }
 
+/* grid select css */
 .gridSelectDot:hover{
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185))) !important;
 }
@@ -123,6 +121,7 @@ border-color:rgb(36,103,126);
 border-radius:7px;
 }
 
+/* back arrow css */
 .arrow_box:hover{
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(145,182,211)), to(rgb(191,222,241)));
 }

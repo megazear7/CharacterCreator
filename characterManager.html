@@ -75,12 +75,14 @@
 </script>
 
 <script id="characterCreate" type="text/html">
+	<!-- this is the character create home page -->
 	<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
 	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
 	<div data-bind="GridSelect: columns"></div>
 </script>
 
 <script id="plainCharacter" type="text/html">
+	<!-- this is the character dialog button -->
   	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
         <h1 data-bind = 'text: name'></h2>
         <p>
@@ -92,6 +94,7 @@
 </script>
 
 <script id="plainWeapon" type="text/html">
+	<!-- this is the weapon dialogButton -->
   	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
         <h1 data-bind = 'text: name'></h2>
         <p>
@@ -103,6 +106,7 @@
 </script>
 
 <script id="plainSpell" type="text/html">
+	<!-- this is the spell dialog button -->
   	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
         <h1 data-bind = 'text: name'></h2>
         <p>
@@ -114,6 +118,7 @@
 </script>
 
 <script id="characterCreationStepDialog" type="text/html">
+	<!-- this is the dialog button for the character creation step -->
   	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
         <h1 data-bind = 'text: name'></h2>
         <p>
@@ -127,6 +132,7 @@
 </script>
 
 <script id="newCharacter" type="text/html">
+	<!-- this is the create new character dialog button -->
   	<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
 	<h1>Create New Character</h1>
    	</div>

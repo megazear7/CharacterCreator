@@ -1,3 +1,6 @@
+// View Model code. This is what holds and modifies the data based off of user interaction.
+
+// custom bindingHandlers. One for the dialog window, one for the grid select
 ko.bindingHandlers.DialogWindow = {
 	//var self = this;
     init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -94,6 +97,8 @@ ko.bindingHandlers.GridSelect = {
     }
 };
 
+// This is a character object. It hold weapon data, this could return different template names for if you want to view 
+// a entire page of this character or just a dialogWindow representation of this object or something else
 function Character(name, race, characterClass){
 	var self = this;
 	this.strength = ko.observable(0);
@@ -192,6 +197,8 @@ function Character(name, race, characterClass){
 	}
 }
 
+// This is a spell object. It hold weapon data, this could return different template names for if you want to view 
+// a entire page of this spell or just a dialogWindow representation of this object or something else
 function Spell(name, spellpoints, description){
 	this.name = ko.observable(name);
 	this.spellpoints = ko.observable(spellpoints);
@@ -206,6 +213,8 @@ function Spell(name, spellpoints, description){
 	}
 }
 
+// This is a weapon object. It hold weapon data, this could return different template names for if you want to view 
+// a entire page of this weapon or just a dialogWindow representation of this object or something else
 function Weapon(name, damage, speed){
 	this.name = ko.observable(name);
 	this.damage = ko.observable(damage);
@@ -220,6 +229,8 @@ function Weapon(name, damage, speed){
 	}
 }
 
+// This is a object that is a character creator step. For customized steps the templates need changed, and then create a 
+// new instance of this object with a stepName coorosponding to the template
 function characterCreationStep(name, description, stepName){
 	var self = this;
 	this.name = ko.observable(name);
@@ -240,6 +251,7 @@ function characterCreationStep(name, description, stepName){
 	}
 }
 
+// This is the new character button
 function newCharacter(){
 
 	this.someFunction = function(element){
@@ -250,6 +262,7 @@ function newCharacter(){
 	}
 }
 
+// This is the view model, from here all the functionality and data lies somewhere down stream
 function CharacterManagerViewModel() {
 	var self = this;
 	self.columns = ko.observable(5);

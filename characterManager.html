@@ -2,7 +2,8 @@
 <body>
 
 <!-- stylesheet -->
-<link href="dialogWindow.css" rel="stylesheet" type="text/css">
+<link href="css/dialogWindow.css" rel="stylesheet" type="text/css">
+<!--<link href="css/characterView.css" rel="stylesheet" type="text/css">-->
 
 <!-- javascript dependencies -->
 <script src="jjj/jquery-2.0.3.min.js"></script>
@@ -36,41 +37,43 @@
 		<h1 data-bind = 'text: name'></h2>
 		<span data-bind = 'text: race'></span>
 		<span data-bind = 'text: characterClass'></span>
-		<table text-align="left">
-			<tr>
-				<td text-align="left">Strength: </td>
-				<td data-bind = 'text: strInt'></td>
-				<td><span data-bind="text: strDec"></span>%</td>
-			</tr><tr>
-				<td>Dextarity: </td>
-				<td data-bind = 'text: dexInt'></td>
-				<td><span data-bind="text: dexDec"></span>%</td>
-			</tr><tr>
-				<td>Wisdom: </td>
-				<td data-bind = 'text: wisInt'></td>
-				<td><span data-bind="text: wisDec"></span>%</td>
-			</tr><tr>
-				<td>Intellegence: </td>
-				<td data-bind = 'text: intInt'>
-				<td><span data-bind="text: intDec"></span>%</td>
-			</tr><tr>
-				<td>Constitution: </td>
-				<td data-bind = 'text: conInt'>
-				<td><span data-bind="text: conDec"></span>%</td>
-			</tr><tr>
-				<td>Charisma: </td>
-				<td data-bind = 'text: charInt'></td>
-				<td><span data-bind="text: charDec"></span>%</td>
-			</tr><tr>
-				<td>Looks: </td>
-				<td data-bind = 'text: dexInt'></td>
-				<td><span data-bind="text: dexDec"></span>%</td>
-			</tr><tr>
-				<td>Honor: </td>
-				<td data-bind = 'text: honorInt'></td>
-				<td><span data-bind="text: honorDec"></span>%</td>
-			</tr>
-		</table>
+		<div class = "test"><!-- why will this css not apply??? -->
+			<table border="1" text-align="left">
+				<tr>
+					<td text-align="left">Strength: </td>
+					<td data-bind = 'text: strInt'></td>
+					<td><span data-bind="text: strDec"></span>%</td>
+				</tr><tr>
+					<td>Dextarity: </td>
+					<td data-bind = 'text: dexInt'></td>
+					<td><span data-bind="text: dexDec"></span>%</td>
+				</tr><tr>
+					<td>Wisdom: </td>
+					<td data-bind = 'text: wisInt'></td>
+					<td><span data-bind="text: wisDec"></span>%</td>
+				</tr><tr>
+					<td>Intellegence: </td>
+					<td data-bind = 'text: intInt'>
+					<td><span data-bind="text: intDec"></span>%</td>
+				</tr><tr>
+					<td>Constitution: </td>
+					<td data-bind = 'text: conInt'>
+					<td><span data-bind="text: conDec"></span>%</td>
+				</tr><tr>
+					<td>Charisma: </td>
+					<td data-bind = 'text: charInt'></td>
+					<td><span data-bind="text: charDec"></span>%</td>
+				</tr><tr>
+					<td>Looks: </td>
+					<td data-bind = 'text: dexInt'></td>
+					<td><span data-bind="text: dexDec"></span>%</td>
+				</tr><tr>
+					<td>Honor: </td>
+					<td data-bind = 'text: honorInt'></td>
+					<td><span data-bind="text: honorDec"></span>%</td>
+				</tr>
+			</table>
+		</div>
 	</div>
 </script>
 
@@ -83,7 +86,7 @@
 
 <script id="plainCharacter" type="text/html">
 	<!-- this is the character dialog button -->
-  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
         <h1 data-bind = 'text: name'></h2>
         <p>
 			<div data-bind = 'text: race'></div>
@@ -95,7 +98,7 @@
 
 <script id="plainWeapon" type="text/html">
 	<!-- this is the weapon dialogButton -->
-  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
         <h1 data-bind = 'text: name'></h2>
         <p>
 			Damage: <span data-bind = 'text: damage'></span><br/>
@@ -107,7 +110,7 @@
 
 <script id="plainSpell" type="text/html">
 	<!-- this is the spell dialog button -->
-  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
         <h1 data-bind = 'text: name'></h2>
         <p>
 			Spell Points: <span data-bind = 'text: spellpoints'></span><br/>
@@ -119,7 +122,7 @@
 
 <script id="characterCreationStepDialog" type="text/html">
 	<!-- this is the dialog button for the character creation step -->
-  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
         <h1 data-bind = 'text: name'></h2>
         <p>
 			Description: <span data-bind = 'text: description'></span>
@@ -133,7 +136,7 @@
 
 <script id="newCharacter" type="text/html">
 	<!-- this is the create new character dialog button -->
-  	<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
+  	<div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
 	<h1>Create New Character</h1>
    	</div>
 </script>

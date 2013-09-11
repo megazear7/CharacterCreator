@@ -84,7 +84,7 @@ ko.bindingHandlers.GridSelect = {
             ).click(function() { 
 				var columns = valueAccessor();
                 columns(index+1);               // Write the new rating to it
-				bindingContext.$root.windows.valueHasMutated();
+				bindingContext.$root.characterList.valueHasMutated();
             });
 		});
 	},
@@ -279,26 +279,26 @@ function CharacterManagerViewModel() {
 	});
 
 	// I think this should be renamed to characters
-	self.windows = ko.observableArray([
+	self.characterList = ko.observableArray([
 	]);
 
 	self.initializeWindows = function(){
 		// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
 		var temp = new Character();
 		temp.constructor("Slighter", "Human", "Fighter", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.windows.push(temp);
+		self.characterList.push(temp);
 		temp = new Character();
 		temp.constructor("Wiz", "Elf", "Wizard", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.windows.push(temp);
+		self.characterList.push(temp);
 		temp = new Character();
 		temp.constructor("Mearth", "Human", "Cleric", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.windows.push(temp);
+		self.characterList.push(temp);
 		temp = new Weapon("Longsword", "2d8", "12");
-		self.windows.push(temp);			
+		self.characterList.push(temp);			
 		temp = new Spell("Fireball", "160", "Shoots an awesome fireball");
-		self.windows.push(temp);				
+		self.characterList.push(temp);				
 		temp = new newCharacter()
-		self.windows.push(temp);	
+		self.characterList.push(temp);	
 	}
 	self.initializeWindows();
 
@@ -319,7 +319,7 @@ function CharacterManagerViewModel() {
 	]);
 
 	self.chosenView = ko.observable("characterList").extend({ throttle: 1 });
-	self.chosenViewData = ko.observable(this.windows());
+	self.chosenViewData = ko.observable(this.characterList());
 
 	self.dialogWindowTemplateType = function(item){
 		return item.dialogWindowTemplateType();
@@ -331,7 +331,7 @@ function CharacterManagerViewModel() {
 
 	self.changeColumns = function() {
 		self.columns(3);
-		self.windows.valueHasMutated();
+		self.characterList.valueHasMutated();
 	}
 
 	self.goToView = function(folder, data) { 
@@ -343,7 +343,7 @@ function CharacterManagerViewModel() {
 	self.goToCharacterList = function() {
 		self.navSummary("Character");
 		self.chosenView("characterList"); 
-		self.chosenViewData(self.windows());
+		self.chosenViewData(self.characterList());
 	};
 
 	self.goToCharacterCreate = function() {
@@ -354,8 +354,28 @@ function CharacterManagerViewModel() {
 
 	$(window).on("resize", function(){
 		self.viewWidth($(".bodyContainer").width());
-		self.windows.valueHasMutated();
+		self.characterList.valueHasMutated();
 	});
+
+	// Client-side routes    
+	// this is not yet implemented. The problem is the "this.get" methods need to have data passes in (i.e. the data that will replace the modelViewData
+	// but as of not the only paramaters the callback function has is the string that comes after the "#"
+	Sammy(function() {
+		this.get('#:folder', function() {
+			self.chosenFolderId(this.params.folder);
+			self.chosenMailData(null);
+			$.get("/mail", { folder: this.params.folder }, self.chosenFolderData);
+		});
+
+		this.get('#:folder/:mailId', function() {
+			self.chosenFolderId(this.params.folder);
+			self.chosenFolderData(null);
+			$.get("/mail", { mailId: this.params.mailId }, self.chosenMailData);
+		});
+
+		this.get('', function() { this.app.runRoute('get', '#Inbox') });
+	}).run(); 
+
 }
 
 $(document).ready(function(){

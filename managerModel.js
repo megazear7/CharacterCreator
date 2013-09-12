@@ -347,6 +347,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(folder);
 		self.chosenView(folder.type()); 
 		self.navSummary("Character List - " + folder.name());
+		location.hash = "character/"+folder.name();
 	};
 
 	/*
@@ -357,6 +358,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.characterList());
 		self.chosenView("characterList"); 
 		self.navSummary("Character List");
+		location.hash = "characterList";
 	};
 
 	/*
@@ -367,6 +369,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.createOptions());
 		self.chosenView("characterCreate"); 
 		self.navSummary("Character - Create");
+		location.hash = "characterList";
 	};
 
 	/*
@@ -382,16 +385,17 @@ function CharacterManagerViewModel() {
 	// but as of not the only paramaters the callback function has is the string that comes after the "#"
 	/*
 	Sammy(function() {
-		this.get('#:characterList', function() {
-			self.chosenFolderId(this.params.folder);
-			self.chosenMailData(null);
-			$.get("/mail", { folder: this.params.folder }, self.chosenFolderData);
+		this.get('#:characterList', function(context) {
+			console.log(context);
+			console.log(self.characterList());
 		});
-
+		this.get('#:characterList/:characterName', function() {
+			console.log(self.characterList[this.params.characterName]);
+		});
 		this.get('#:folder/:mailId', function() {
-			self.chosenFolderId(this.params.folder);
-			self.chosenFolderData(null);
-			$.get("/mail", { mailId: this.params.mailId }, self.chosenMailData);
+			//self.chosenFolderId(this.params.folder);
+			//self.chosenFolderData(null);
+			//$.get("/mail", { mailId: this.params.mailId }, self.chosenMailData);
 		});
 
 		this.get('', function() { this.app.runRoute('get', '#Inbox') });
@@ -403,4 +407,3 @@ function CharacterManagerViewModel() {
 $(document).ready(function(){
 	ko.applyBindings(new CharacterManagerViewModel());
 });
-

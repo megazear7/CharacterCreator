@@ -72,7 +72,7 @@ ko.bindingHandlers.GridSelect = {
 			var gridDot = jQuery("<div>", {
 				class: "gridSelectDot",
 				value: i+1
-			}).css("top", (((96/numberOfOptions)*i)+"%"));
+			}).css("top", ((((96/numberOfOptions)*i)+2)+"%"));
 			gridChanger.append(gridDot);
 		}
 		$(element).append(gridChanger);

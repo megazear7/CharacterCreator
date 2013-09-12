@@ -90,11 +90,11 @@ background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), t
 }
 
 .gridSelectDot{
-width: 5px;
+width: 6px;
 height: 5px;
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(100,126,185)));
 position: absolute;
-left:1.1%;
+left:3.5%;
 top:32%;
 border-style:ridge;
 border-width:2px;

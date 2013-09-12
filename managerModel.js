@@ -268,7 +268,7 @@ function CharacterManagerViewModel() {
 	self.columns = ko.observable(5);
 	self.numberOfOptions = ko.observable(10);
 
-	self.navSummary = ko.observable("Character");
+	self.navSummary = ko.observable("Character List");
 
 	self.viewWidth = ko.observable($(".bodyContainer").width());
 
@@ -318,7 +318,7 @@ function CharacterManagerViewModel() {
 		new characterCreationStep("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
 	]);
 
-	self.chosenView = ko.observable("characterList").extend({ throttle: 1 });
+	self.chosenView = ko.observable("characterList");
 	self.chosenViewData = ko.observable(this.characterList());
 
 	self.dialogWindowTemplateType = function(item){
@@ -329,29 +329,49 @@ function CharacterManagerViewModel() {
 		return self.chosenView();
 	}
 
-	self.changeColumns = function() {
-		self.columns(3);
-		self.characterList.valueHasMutated();
-	}
+	/*
+	 * View Changes. This is where any "routes" should be put. I.e. if you add a new page it should either using a route that already exists here, or a new one
+	 * will be needed to allow the user to get to the new page.
+	 */
 
+	/*
+	 * Standard go to view. This is the standard go to view, whatever is given as folder will need to return its type, which is the template name required for the
+	 * data in folder to be correctly viewed.
+	 */
 	self.goToView = function(folder, data) { 
-		self.chosenView(folder.type()); 
+		// this is required because the chosen view (folder.type()) is dependant upon the data (folder), however the data is also dependant on the chosen view.
+		// So the best way to avoid error is to set the view to the empty view which has no dependencies. Then change the data, then change the view to match.
+		// Lastly change the navSummary to reflect the changes. Make sure these steps are followed in this manor. There should never be anything other than these
+		// four steps in these "view change" methods.
+		self.chosenView("emptyView"); 
 		self.chosenViewData(folder);
-		self.navSummary("Character - " + folder.name());
+		self.chosenView(folder.type()); 
+		self.navSummary("Character List - " + folder.name());
 	};
 
+	/*
+	 * This is the standard "go home" type of button. This always takes you to the character list screen
+	 */
 	self.goToCharacterList = function() {
-		self.navSummary("Character");
-		self.chosenView("characterList"); 
+		self.chosenView("emptyView"); 
 		self.chosenViewData(self.characterList());
+		self.chosenView("characterList"); 
+		self.navSummary("Character List");
 	};
 
+	/*
+	 * This is the go to character create. This will put you at the character create screen.
+	 */
 	self.goToCharacterCreate = function() {
-		self.chosenView("characterCreate"); 
+		self.chosenView("emptyView"); 
 		self.chosenViewData(self.createOptions());
+		self.chosenView("characterCreate"); 
 		self.navSummary("Character - Create");
 	};
 
+	/*
+	 * This changes the grid pages on page resizes.
+	 */
 	$(window).on("resize", function(){
 		self.viewWidth($(".bodyContainer").width());
 		self.characterList.valueHasMutated();
@@ -360,8 +380,9 @@ function CharacterManagerViewModel() {
 	// Client-side routes    
 	// this is not yet implemented. The problem is the "this.get" methods need to have data passes in (i.e. the data that will replace the modelViewData
 	// but as of not the only paramaters the callback function has is the string that comes after the "#"
+	/*
 	Sammy(function() {
-		this.get('#:folder', function() {
+		this.get('#:characterList', function() {
 			self.chosenFolderId(this.params.folder);
 			self.chosenMailData(null);
 			$.get("/mail", { folder: this.params.folder }, self.chosenFolderData);
@@ -375,6 +396,7 @@ function CharacterManagerViewModel() {
 
 		this.get('', function() { this.app.runRoute('get', '#Inbox') });
 	}).run(); 
+	*/
 
 }
 

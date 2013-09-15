@@ -1,10 +1,14 @@
 <style>
 
+.test{
+border-width: 10px;
+}
+
 .characterEditButton:hover{
 background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(130,180,225)), to(rgb(225,225,225)));
 }
 
-#dialogWindow{
+.dialogWindow{
 position: absolute;
 padding: 10px;
 border-style:ridge;
@@ -15,7 +19,7 @@ border-radius:35px;
 overflow: hidden;
 }
 
-#dialogWindow:hover{
+.dialogWindow:hover{
 background: -webkit-gradient(linear, 100% 100%, 0% 0%,from(rgb(19,76,90)), to(rgb(225,225,225)));
 }
 
@@ -76,23 +80,21 @@ position: relative;
 }
 
 body {
-	margin:15px;
-}
-
-body{
+margin:15px;
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(220,220,220))) fixed;
 }
 
+/* grid select css */
 .gridSelectDot:hover{
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(225,225,255)), to(rgb(100,126,185))) !important;
 }
 
 .gridSelectDot{
-width: 5px;
+width: 6px;
 height: 5px;
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(100,100,100)), to(rgb(100,126,185)));
 position: absolute;
-left:1.1%;
+left:3.5%;
 top:32%;
 border-style:ridge;
 border-width:2px;
@@ -123,6 +125,7 @@ border-color:rgb(36,103,126);
 border-radius:7px;
 }
 
+/* back arrow css */
 .arrow_box:hover{
 background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(145,182,211)), to(rgb(191,222,241)));
 }

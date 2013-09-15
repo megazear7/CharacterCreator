@@ -1,364 +1,16 @@
 <html>
 <body>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<!-- stylesheet -->
+<link href="css/dialogWindow.css" rel="stylesheet" type="text/css">
+<!--<link href="css/characterView.css" rel="stylesheet" type="text/css">-->
+
+<!-- javascript dependencies -->
+<script src="jjj/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="knockout-2.3.0.js"></script>
-<script type="text/javascript" src="sammy.js"></script>
-<link href="dialogWindow.css" rel="stylesheet" type="text/css">
+<script src="managerModel.js"></script>
 
-<script>
-
-ko.bindingHandlers.DialogWindow = {
-	//var self = this;
-    init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-		// To access all the bindings placed on this element do this:
-		//var allBindings = allBindingsAccessor();
-		//alert(allBindings.columns);
-
-		// To access the view model object pass to apply bindings. I.e. in here it is "Character"
-		//alert("viewModel = " +  viewModel.characterClass);
-		
-		// To access $root, $parent or $parents do this:
-		// alert(bindingContext.$root.columns());
-
-		//var internals = viewModel.contents.internalHtml(viewModel);
-		
-		//$(element).empty();		
-		//$(element).append(internals);
-
-		var width = bindingContext.$root.viewWidth();
-		var totalColumns = bindingContext.$root.columns();
-		var lanes = bindingContext.$root.lanes();
-		var i = $(element).index();
-
-		var row = Math.floor(i/totalColumns + 1);	
-		var column = i%totalColumns + 1;
-
-		var posRow = ((100/lanes)+(3*(100/lanes*(column-1))));
-		var posCol = ((width / 20) + (width * (3/lanes) * (row-1)))+40;
-
-		var dialogWidth = width/(lanes/2);
-
-		$(element).css("width", dialogWidth);
-		$(element).css("height", dialogWidth);
-		$(element).css("left", posRow+"%");
-		$(element).css("top",posCol);
-    },
-    update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-		var width = bindingContext.$root.viewWidth();
-		var totalColumns = bindingContext.$root.columns();
-		var lanes = bindingContext.$root.lanes();
-		var i = $(element).index();
-
-		var row = Math.floor(i/totalColumns + 1);	
-		var column = i%totalColumns + 1;
-
-		var posRow = ((100/lanes)+(3*(100/lanes*(column-1))));
-		var posCol = ((width / 20) + (width * (3/lanes) * (row-1)))+40;
-
-		var dialogWidth = width/(lanes/2);
-
-		$(element).css("width", dialogWidth);
-		$(element).css("height", dialogWidth);
-		$(element).css("left", posRow+"%");
-		$(element).css("top",posCol);
-    }
-};
-
-ko.bindingHandlers.GridSelect = {
-    init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-		var numberOfOptions = bindingContext.$root.numberOfOptions();
-
-		var that = this;
-		var gridChanger = jQuery("<div>", {
-			class: "gridSelect",
-			height: numberOfOptions*11
-		});
-
-		for(var i = 0; i < numberOfOptions; i++){
-			var gridDot = jQuery("<div>", {
-				class: "gridSelectDot",
-				value: i+1
-			}).css("top", (((96/numberOfOptions)*i)+"%"));
-			gridChanger.append(gridDot);
-		}
-		$(element).append(gridChanger);
-
-		$("div", gridChanger).each(function(index) {
-			$(this).hover(
-				function() { $(this).prevAll().add(this).addClass("hoverGridSelect") },
-                function() { $(this).prevAll().add(this).removeClass("hoverGridSelect") }                
-            ).click(function() { 
-				var columns = valueAccessor();
-                columns(index+1);               // Write the new rating to it
-				bindingContext.$root.windows.valueHasMutated();
-            });
-		});
-	},
-    update: function(element, valueAccessor) {
-        // Give the first x stars the "chosen" class, where x <= rating
-        var observable = valueAccessor();
-        $("div", element).each(function(index) {
-            $(this).toggleClass("chosenGridSelect", index < observable());
-        });
-    }
-};
-
-function Character(name, race, characterClass){
-	var self = this;
-	this.strength = ko.observable(0);
-	this.name = ko.observable("");
-	this.race = ko.observable("");
-	this.characterClass = ko.observable("");
-	this.level = ko.observable(0);
-	this.maxHealth = ko.observable(0);
-	this.strength(0);
-	this.constitution = ko.observable(0);
-	this.dextarity = ko.observable(0);
-	this.wisdom = ko.observable(0);
-	this.intelegence = ko.observable(0);
-	this.charisma = ko.observable(0);
-	this.looks = ko.observable(0);
-	this.honor = ko.observable(0);
-
-	this.constructor = function(name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor){
-		// Data from mongo:
-		this.name(name);
-		this.race(race);
-		this.characterClass(characterClass);
-		this.level(level);
-		this.maxHealth(maxHealth);
-		this.strength(strength);
-		this.constitution(constitution);
-		this.dextarity(dextarity);
-		this.wisdom(wisdom);
-		this.intelegence(intelegence);
-		this.charisma(charisma);
-		this.looks(looks);
-		this.honor(honor);
-	}
-
-	this.type = ko.observable("characterPage");
-
-	// put values that are computed from the data here
-	this.strInt = ko.computed(function(){
-		return Math.floor(self.strength());
-	});
-	this.dexInt = ko.computed(function(){
-		return Math.floor(self.dextarity());
-	});
-	this.intInt = ko.computed(function(){
-		return Math.floor(self.intelegence());
-	});
-	this.wisInt = ko.computed(function(){
-		return Math.floor(self.wisdom());
-	});
-	this.conInt = ko.computed(function(){
-		return Math.floor(self.constitution());
-	});
-	this.charInt = ko.computed(function(){
-		return Math.floor(self.charisma());
-	});
-	this.looksInt = ko.computed(function(){
-		return Math.floor(self.looks());
-	});
-	this.honorInt = ko.computed(function(){
-		return Math.floor(self.honor());
-	});
-	this.strDec = ko.computed(function(){
-		return Math.floor(((self.strength() % 1).toFixed(2))*100);
-	});
-	this.dexDec = ko.computed(function(){
-		return Math.floor(((self.dextarity() % 1).toFixed(2))*100);
-	});
-	this.intDec = ko.computed(function(){
-		return Math.floor(((self.intelegence() % 1).toFixed(2))*100);
-	});
-	this.wisDec = ko.computed(function(){
-		return Math.floor(((self.wisdom() % 1).toFixed(2))*100);
-	});
-	this.conDec = ko.computed(function(){
-		return Math.floor(((self.constitution() % 1).toFixed(2))*100);
-	});
-	this.charDec = ko.computed(function(){
-		return Math.floor(((self.charisma() % 1).toFixed(2))*100);
-	});
-	this.looksDec = ko.computed(function(){
-		return Math.floor(((self.looks() % 1).toFixed(2))*100);
-	});
-	this.honorDec = ko.computed(function(){
-		return Math.floor(((self.honor() % 1).toFixed(2))*100);
-	});
-	// put functionality that is based on the character in here, then call it wherever it is needed
-	this.rename = function(element){
-		this.name("Bob");
-	}
-
-	// this function could be smart and determine the returned template type in some non static way
-	// or new objects could be created (weapon, spell, ect.. ) and they could return different template type
-	// there template could utalize different variables instead of name race and characterClass
-	this.dialogWindowTemplateType = function(){
-		return "plainCharacter";
-	}
-}
-
-function Spell(name, spellpoints, description){
-	this.name = ko.observable(name);
-	this.spellpoints = ko.observable(spellpoints);
-	this.description = ko.observable(description);
-
-	this.someFunction = function(element){
-		this.spellpoints("100");
-	}
-
-	this.dialogWindowTemplateType = function(){
-		return "plainSpell";
-	}
-}
-
-function Weapon(name, damage, speed){
-	this.name = ko.observable(name);
-	this.damage = ko.observable(damage);
-	this.speed = ko.observable(speed);
-
-	this.someFunction = function(element){
-		this.damage("2d6");
-	}
-
-	this.dialogWindowTemplateType = function(){
-		return "plainWeapon";
-	}
-}
-
-function characterCreationStep(name, description, stepName){
-	var self = this;
-	this.name = ko.observable(name);
-	this.stepName = ko.observable(stepName);
-	this.description = ko.observable(description);
-	this.message = ko.observable();
-	
-	this.type = function(){
-		return self.stepName();	
-	}	
-
-	this.dialogWindowTemplateType = function(){
-		return "characterCreationStepDialog";
-	}
-
-	this.someFunction = function(e){
-		this.message("You marked this as complete");
-	}
-}
-
-function newCharacter(){
-
-	this.someFunction = function(element){
-	}
-
-	this.dialogWindowTemplateType = function(){
-		return "newCharacter";
-	}
-}
-
-function CharacterManagerViewModel() {
-	var self = this;
-	self.columns = ko.observable(5);
-	self.numberOfOptions = ko.observable(10);
-
-	self.navSummary = ko.observable("Character");
-
-	self.viewWidth = ko.observable($(".bodyContainer").width());
-
-	self.lanes = ko.computed(function(){
-		var lanes = 0;
-		var lanes = self.columns() * 3 + 1;
-		return lanes;
-	});
-
-	self.windows = ko.observableArray([
-	]);
-
-	self.initializeWindows = function(){
-		// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
-		var temp = new Character();
-		temp.constructor("Slighter", "Human", "Fighter", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.windows.push(temp);
-		temp = new Character();
-		temp.constructor("Wiz", "Elf", "Wizard", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.windows.push(temp);
-		temp = new Character();
-		temp.constructor("Mearth", "Human", "Cleric", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.windows.push(temp);
-		temp = new Weapon("Longsword", "2d8", "12");
-		self.windows.push(temp);			
-		temp = new Spell("Fireball", "160", "Shoots an awesome fireball");
-		self.windows.push(temp);				
-		temp = new newCharacter()
-		self.windows.push(temp);	
-	}
-	self.initializeWindows();
-
-	self.createOptions = ko.observableArray([
-		new characterCreationStep("Step 1", "Recieve Building Points", "step1"),
-		new characterCreationStep("Step 2", "Roll Ability Scores", "step2"),
-		new characterCreationStep("Step 3", "Arange Ability Scores", "step3"),
-		new characterCreationStep("Step 4", "Chose a Race", "step4"),
-		new characterCreationStep("Step 5", "Finalize Ability Scores and Other Adjustments", "step5"),
-		new characterCreationStep("Step 6", "Choose a Class and Alignment", "step6"),
-		new characterCreationStep("Step 7", "Determine Priors and Particulers", "step7"),
-		new characterCreationStep("Step 8", "Determine Quirks and Flaws", "step8"),
-		new characterCreationStep("Step 9", "Calculate Starting Honor", "step9"),
-		new characterCreationStep("Step 10", "Purchase Skills Talents and Proficiencies", "step10"),
-		new characterCreationStep("Step 11", "Roll Hit Points", "step11"),
-		new characterCreationStep("Step 12", "Recueve Starting Money and Equip Character", "step12"),
-		new characterCreationStep("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
-	]);
-
-	self.chosenView = ko.observable("characterList").extend({ throttle: 1 });
-	self.chosenViewData = ko.observable(this.windows());
-
-	self.dialogWindowTemplateType = function(item){
-		return item.dialogWindowTemplateType();
-	}
-
-	self.mainTemplateType = function(item){
-		return self.chosenView();
-	}
-
-	self.changeColumns = function() {
-		self.columns(3);
-		self.windows.valueHasMutated();
-	}
-
-	self.goToView = function(folder, data) { 
-		self.chosenView(folder.type()); 
-		self.chosenViewData(folder);
-		self.navSummary("Character - " + folder.name());
-	};
-
-	self.goToCharacterList = function() {
-		self.navSummary("Character");
-		self.chosenView("characterList"); 
-		self.chosenViewData(self.windows());
-	};
-
-	self.goToCharacterCreate = function() {
-		self.chosenView("characterCreate"); 
-		self.chosenViewData(self.createOptions());
-		self.navSummary("Character - Create");
-	};
-
-	$(window).on("resize", function(){
-		self.viewWidth($(".bodyContainer").width());
-		self.windows.valueHasMutated();
-	});
-}
-
-$(document).ready(function(){
-	ko.applyBindings(new CharacterManagerViewModel());
-});
-
-</script>
-
+<!-- Body Skeleton -->
 <div class="bodywrapper">
 	<div class="topBannerContainer">
 		<h2 class="navLinks" data-bind="text: navSummary"></h2>
@@ -384,52 +36,58 @@ $(document).ready(function(){
 		<h1 data-bind = 'text: name'></h2>
 		<span data-bind = 'text: race'></span>
 		<span data-bind = 'text: characterClass'></span>
-		<table text-align="left">
-			<tr>
-				<td text-align="left">Strength: </td>
-				<td data-bind = 'text: strInt'></td>
-				<td><span data-bind="text: strDec"></span>%</td>
-			</tr><tr>
-				<td>Dextarity: </td>
-				<td data-bind = 'text: dexInt'></td>
-				<td><span data-bind="text: dexDec"></span>%</td>
-			</tr><tr>
-				<td>Wisdom: </td>
-				<td data-bind = 'text: wisInt'></td>
-				<td><span data-bind="text: wisDec"></span>%</td>
-			</tr><tr>
-				<td>Intellegence: </td>
-				<td data-bind = 'text: intInt'>
-				<td><span data-bind="text: intDec"></span>%</td>
-			</tr><tr>
-				<td>Constitution: </td>
-				<td data-bind = 'text: conInt'>
-				<td><span data-bind="text: conDec"></span>%</td>
-			</tr><tr>
-				<td>Charisma: </td>
-				<td data-bind = 'text: charInt'></td>
-				<td><span data-bind="text: charDec"></span>%</td>
-			</tr><tr>
-				<td>Looks: </td>
-				<td data-bind = 'text: dexInt'></td>
-				<td><span data-bind="text: dexDec"></span>%</td>
-			</tr><tr>
-				<td>Honor: </td>
-				<td data-bind = 'text: honorInt'></td>
-				<td><span data-bind="text: honorDec"></span>%</td>
-			</tr>
-		</table>
+		<div class = "test"><!-- why will this css not apply??? -->
+			<table border="1" text-align="left">
+				<tr>
+					<td text-align="left">Strength: </td>
+					<td data-bind = 'text: strInt'></td>
+					<td><span data-bind="text: strDec"></span>%</td>
+				</tr><tr>
+					<td>Dextarity: </td>
+					<td data-bind = 'text: dexInt'></td>
+					<td><span data-bind="text: dexDec"></span>%</td>
+				</tr><tr>
+					<td>Wisdom: </td>
+					<td data-bind = 'text: wisInt'></td>
+					<td><span data-bind="text: wisDec"></span>%</td>
+				</tr><tr>
+					<td>Intellegence: </td>
+					<td data-bind = 'text: intInt'>
+					<td><span data-bind="text: intDec"></span>%</td>
+				</tr><tr>
+					<td>Constitution: </td>
+					<td data-bind = 'text: conInt'>
+					<td><span data-bind="text: conDec"></span>%</td>
+				</tr><tr>
+					<td>Charisma: </td>
+					<td data-bind = 'text: charInt'></td>
+					<td><span data-bind="text: charDec"></span>%</td>
+				</tr><tr>
+					<td>Looks: </td>
+					<td data-bind = 'text: dexInt'></td>
+					<td><span data-bind="text: dexDec"></span>%</td>
+				</tr><tr>
+					<td>Honor: </td>
+					<td data-bind = 'text: honorInt'></td>
+					<td><span data-bind="text: honorDec"></span>%</td>
+				</tr>
+			</table>
+		</div>
 	</div>
 </script>
 
+<script id="emptyView" type="text/html"></script>
+
 <script id="characterCreate" type="text/html">
+	<!-- this is the character create home page -->
 	<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
 	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
 	<div data-bind="GridSelect: columns"></div>
 </script>
 
 <script id="plainCharacter" type="text/html">
-  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
+	<!-- this is the character dialog button -->
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
         <h1 data-bind = 'text: name'></h2>
         <p>
 			<div data-bind = 'text: race'></div>
@@ -440,7 +98,8 @@ $(document).ready(function(){
 </script>
 
 <script id="plainWeapon" type="text/html">
-  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+	<!-- this is the weapon dialogButton -->
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
         <h1 data-bind = 'text: name'></h2>
         <p>
 			Damage: <span data-bind = 'text: damage'></span><br/>
@@ -451,7 +110,8 @@ $(document).ready(function(){
 </script>
 
 <script id="plainSpell" type="text/html">
-  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true">
+	<!-- this is the spell dialog button -->
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
         <h1 data-bind = 'text: name'></h2>
         <p>
 			Spell Points: <span data-bind = 'text: spellpoints'></span><br/>
@@ -462,7 +122,8 @@ $(document).ready(function(){
 </script>
 
 <script id="characterCreationStepDialog" type="text/html">
-  	  <div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
+	<!-- this is the dialog button for the character creation step -->
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToView">
         <h1 data-bind = 'text: name'></h2>
         <p>
 			Description: <span data-bind = 'text: description'></span>
@@ -475,7 +136,8 @@ $(document).ready(function(){
 </script>
 
 <script id="newCharacter" type="text/html">
-  	<div class="internalCharacter internalWindow" id="dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
+	<!-- this is the create new character dialog button -->
+  	<div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
 	<h1>Create New Character</h1>
    	</div>
 </script>

@@ -1,19 +1,77 @@
 <!DOCTYPE html>
 <html>
-<head>
-<script src="jquery-2.0.3.min.js"></script>
-<script src="knockout-2.3.0.js"></script>
-<script src="json-example.js"></script>
-</head>
-<body>
-<button type="Button" id="saveButton" onclick="saveEvent()">Save</button>
-<button type="Button" id="loadButton" onclick="loadEvent()">Load</button>
-<p>First name: <strong data-bind="text: firstName"></strong></p>
-<p>Last name: <strong data-bind="text: lastName"></strong></p>
-<p/>
-<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
-<script>
-ko.applyBindings(AppViewModel);
-</script> 
-</body>
+  <head>
+    <script src="jquery-2.0.3.min.js"></script>
+    <script src="knockout-2.3.0.js"></script>
+    <script src="json-example.js"></script>
+  </head>
+  <body>
+
+    <!-- login view
+      Everything to do with the user is here.  -->
+    <div id="login" style="float: right">
+      <div id="login">
+        <table>
+         <td>
+          <tr>
+	    <input data-bind="value: emailname" />
+          </tr>
+          <tr>
+            <input data-bind="value: password" />
+          </tr>
+          <tr>
+            <button type="Button" id="loginBtn" onclick="login()">Login</button>
+          </tr>
+          <tr>
+            <button type="Button" id="regBtn" onclick="register()">Register</button>
+          </tr>
+          <tr>
+            <button type="Button" id="forgotBtn" onclick="forgot()">Forgot</button>
+          </tr>
+          <tr>
+            <button type="Button" id="updateBtn" onclick="update()">Update</button>
+          </tr>
+        </td>
+       </table> 
+
+        <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+      </div>
+    
+      <div id="logout"  style="display:none;">
+        <table>
+         <td>
+          <tr>
+	    Welcome, <strong data-bind="text: emailname"></strong>
+          </tr>
+          <tr>
+            <button type="Button" id="logoutBtn" onclick="logout()">Logout</button>
+          </tr>
+        </td>
+       </table> 
+      </div>
+    </div>
+
+    <!-- document manager view
+      Everything to do with the managing Document is here. -->
+    <div id="docManager">
+        <button type="Button" id="saveBtn" onclick="saveDoc()">Save</button>
+        <button type="Button" id="loadBtn" onclick="loadDoc()">Load</button>
+    </div>
+
+    <!-- document view
+      Everything to do with the current Document is here. -->
+    <div id="doc">
+      <p>First name: <strong data-bind="text: firstName"></strong></p>
+      <p>Last name: <strong data-bind="text: lastName"></strong></p>
+      <p/>
+      <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+    </div>
+
+
+    <script>
+      ko.applyBindings(userModel, document.getElementById("login") );
+      ko.applyBindings(AppViewModel, document.getElementById("doc") );
+    </script> 
+
+  </body>
 </html>

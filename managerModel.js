@@ -139,6 +139,9 @@ function Character(name, race, characterClass){
 	this.strInt = ko.computed(function(){
 		return Math.floor(self.strength());
 	});
+	this.strDmgMod = ko.computed(function(){
+		return Math.floor(3);
+	})
 	this.dexInt = ko.computed(function(){
 		return Math.floor(self.dextarity());
 	});
@@ -347,7 +350,8 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(folder);
 		self.chosenView(folder.type()); 
 		self.navSummary("Character List - " + folder.name());
-		location.hash = "character/"+folder.name();
+		// pushState does not work on the file:// url scheme. So I can't test it right now
+		history.pushState({id: 'someid'}, '', 'file:///C:/Users/Alex/src/CharacterCreator/characterManager.html/' + folder.type() + '/' + folder.name());
 	};
 
 	/*
@@ -358,7 +362,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.characterList());
 		self.chosenView("characterList"); 
 		self.navSummary("Character List");
-		location.hash = "characterList";
+		history.pushState({id: 'someid'}, '', 'file:///C:/Users/Alex/src/CharacterCreator/characterManager.html/characterList');
 	};
 
 	/*
@@ -369,7 +373,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.createOptions());
 		self.chosenView("characterCreate"); 
 		self.navSummary("Character - Create");
-		location.hash = "characterList";
+		history.pushState({id: 'someid'}, '', 'file:///C:/Users/Alex/src/CharacterCreator/characterManager.html/create');
 	};
 
 	/*

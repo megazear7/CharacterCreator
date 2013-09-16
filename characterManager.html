@@ -2,8 +2,8 @@
 <body>
 
 <!-- stylesheet -->
+<link href="css/characterView.css" rel="stylesheet" type="text/css">
 <link href="css/dialogWindow.css" rel="stylesheet" type="text/css">
-<!--<link href="css/characterView.css" rel="stylesheet" type="text/css">-->
 
 <!-- javascript dependencies -->
 <script src="jjj/jquery-2.0.3.min.js"></script>
@@ -34,26 +34,44 @@
 		<br/>
 		<br/>
 		<h1 data-bind = 'text: name'></h2>
-		<span data-bind = 'text: race'></span>
-		<span data-bind = 'text: characterClass'></span>
-		<div class = "test"><!-- why will this css not apply??? -->
-			<table border="1" text-align="left">
+		<div class="characterSubInfo">
+			<span data-bind = 'text: race'></span>
+			<span data-bind = 'text: characterClass'></span>
+		</div>
+		<div class = "statSheet">
+			<table text-align="left">
 				<tr>
 					<td text-align="left">Strength: </td>
-					<td data-bind = 'text: strInt'></td>
-					<td><span data-bind="text: strDec"></span>%</td>
+					<td><span data-bind = 'text: strInt'></span> / <span data-bind="text: strDec"></span>%</td>
+					<td>Dmg: +<span data-bind="text: strDmgMod"></span></td>
+					<td>Feat Of Strength: +<span data-bind="text: strInt"></span></td>
+					<td>Lift (lbs): <span data-bind="text: strInt"></span></td>
+					<td>Carry (lbs): <span data-bind="text: strInt"></span></td>
+					<td>Drag (lbs): <span data-bind="text: strInt"></span></td>
 				</tr><tr>
 					<td>Dextarity: </td>
 					<td data-bind = 'text: dexInt'></td>
 					<td><span data-bind="text: dexDec"></span>%</td>
+					<td>Init: +<span data-bind="text: strInt"></span></td>
+					<td>Attak: +<span data-bind="text: strInt"></span></td>
+					<td>Defense: +<span data-bind="text: strInt"></span></td>
+					<td></td>
 				</tr><tr>
 					<td>Wisdom: </td>
 					<td data-bind = 'text: wisInt'></td>
 					<td><span data-bind="text: wisDec"></span>%</td>
+					<td>Init: +<span data-bind="text: strInt"></span></td>
+					<td>Defense: +<span data-bind="text: strInt"></span></td>
+					<td></td>
+					<td></td>
 				</tr><tr>
 					<td>Intellegence: </td>
 					<td data-bind = 'text: intInt'>
 					<td><span data-bind="text: intDec"></span>%</td>
+					<td>Attack: +<span data-bind="text: strInt"></span></td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr><tr>
 					<td>Constitution: </td>
 					<td data-bind = 'text: conInt'>
@@ -72,6 +90,10 @@
 					<td><span data-bind="text: honorDec"></span>%</td>
 				</tr>
 			</table>
+			<div class = "hitpoints hoverDrop">Hit Points: <span data-bind="text: maxHealth"><span></div>
+			<div class = "threshhold hoverDrop">Threshold of Pain: <span data-bind="text: maxHealth"><span></div>
+			<div class = "threshholdCheck hoverDrop">Threshold Check: <span data-bind="text: maxHealth"><span></div>
+			<div class = "buildingPoints hoverDrop">Building Points: <span data-bind="text: maxHealth"><span></div>
 		</div>
 	</div>
 </script>

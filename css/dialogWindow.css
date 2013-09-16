@@ -1,11 +1,9 @@
-<style>
-
-.test{
-border-width: 10px;
-}
-
 .characterEditButton:hover{
 background: -webkit-gradient(linear, 100% 100%, 0% 0%, from(rgb(130,180,225)), to(rgb(225,225,225)));
+}
+
+.hoverDrop: hover{
+background-color: red;
 }
 
 .dialogWindow{
@@ -163,5 +161,3 @@ border-width: 34px;
 top: 50%;
 margin-top: -34px;
 }
-
-</style>

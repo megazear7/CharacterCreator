@@ -73,7 +73,8 @@ background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), t
 
 .weaponsMarketList {
 position:absolute;
-width: 100%;
+width: 50%;
 height: 50%;
 bottom:0px;
+left: 50%;
 }

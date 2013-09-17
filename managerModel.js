@@ -19,7 +19,7 @@ ko.bindingHandlers.DialogWindow = {
 		//$(element).empty();		
 		//$(element).append(internals);
 
-		var width = bindingContext.$root.viewWidth();
+		var width = $(element).parent().width();
 		var totalColumns = bindingContext.$root.columns();
 		var lanes = bindingContext.$root.lanes();
 		var i = $(element).index();
@@ -38,7 +38,7 @@ ko.bindingHandlers.DialogWindow = {
 		$(element).css("top",posCol);
     },
     update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-		var width = bindingContext.$root.viewWidth();
+		var width = $(element).parent().width();
 		var totalColumns = bindingContext.$root.columns();
 		var lanes = bindingContext.$root.lanes();
 		var i = $(element).index();

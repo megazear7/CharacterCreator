@@ -9,12 +9,14 @@
 <script src="jjj/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="knockout-2.3.0.js"></script>
 <script src="managerModel.js"></script>
+<script src="managerLoader.js"></script>
 
 <!-- Body Skeleton -->
 <div class="bodywrapper">
 	<div class="topBannerContainer">
 		<h2 class="navLinks" data-bind="text: navSummary"></h2>
 		<div class="settings smallButton smallTopBannerButton"></div>
+		<div class="memberInfo" data-bind="template: {name: $root.loggedInMember().template}"></div>
 	</div>
 	<div class="outerContainer" data-bind="">
 		<div data-bind="template: { name: mainTemplateType}" class="bodyContainer"></div>
@@ -25,6 +27,14 @@
 <script id="characterList" type="text/html">
 		<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
 		<div data-bind="GridSelect: columns"></div>
+</script>
+
+<script id="loggedIn" type="text/html">
+	<span>Currently Logged In as: <span data-bind="text: $root.loggedInMember().username"></span></span>
+</script>
+
+<script id="notLoggedIn" type="text/html">
+	<span>Not Logged In</span>
 </script>
 
 <script id="loginPage" type="text/html">
@@ -97,7 +107,7 @@
 					<td><span data-bind="text: honorDec"></span>%</td>
 				</tr>
 			</table>
-			<div class = "hitpoints hoverDrop">Hit Points: <span data-bind="text: maxHealth"><span></div>
+			<div class = "hitpoints hoverDrop">Hit Points: <span data-bind="text: maxHealth, click: $root.listWeapons"><span></div>
 			<div class = "threshhold hoverDrop">Threshold of Pain: <span data-bind="text: maxHealth"><span></div>
 			<div class = "threshholdCheck hoverDrop">Threshold Check: <span data-bind="text: maxHealth"><span></div>
 			<div class = "buildingPoints hoverDrop">Building Points: <span data-bind="text: maxHealth"><span></div>
@@ -105,6 +115,7 @@
 		<div class="combatProfilesList">
 		
 		</div>
+		<div class="weaponsMarketList" data-bind="template: {name:'combatInfo', foreach: $root.weaponList}"></div>
 	</div>
 </script>
 

@@ -97,6 +97,22 @@ ko.bindingHandlers.GridSelect = {
     }
 };
 
+function Member(){
+	var self = this;
+	this.username = ko.observable("");
+	this.isLoggedIn = ko.observable("notLoggedIn");
+
+	this.constructor = function(username){
+		this.username(username);
+		this.isLoggedIn("loggedIn");
+	}
+
+	this.template = function(){
+		return self.isLoggedIn();
+	}
+
+}
+
 // This is a character object. It hold weapon data, this could return different template names for if you want to view 
 // a entire page of this character or just a dialogWindow representation of this object or something else
 function Character(name, race, characterClass){
@@ -289,29 +305,19 @@ function CharacterManagerViewModel() {
 		return lanes;
 	});
 
-	// I think this should be renamed to characters
+	self.loggedInMember = ko.observable(new Member());
+
 	self.characterList = ko.observableArray([
 	]);
 
-	self.initializeWindows = function(){
-		// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
-		var temp = new Character();
-		temp.constructor("Slighter", "Human", "Fighter", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.characterList.push(temp);
-		temp = new Character();
-		temp.constructor("Wiz", "Elf", "Wizard", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.characterList.push(temp);
-		temp = new Character();
-		temp.constructor("Mearth", "Human", "Cleric", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.characterList.push(temp);
-		temp = new Weapon("Longsword", "2d8", "12");
-		self.characterList.push(temp);			
-		temp = new Spell("Fireball", "160", "Shoots an awesome fireball");
-		self.characterList.push(temp);				
-		temp = new newCharacter()
-		self.characterList.push(temp);	
-	}
-	self.initializeWindows();
+	self.weaponList = ko.observableArray([
+	]);
+
+	self.spellList = ko.observableArray([
+	]);
+
+	self.monsterList = ko.observableArray([
+	]);
 
 	self.createOptions = ko.observableArray([
 		new characterCreationStep("Step 1", "Recieve Building Points", "step1"),
@@ -332,6 +338,15 @@ function CharacterManagerViewModel() {
 	self.loadInitData = function(){
 		// in here load all the data you can before the user even logs in. This could be 
 		// weapons, spells, monsters, and any sort of reference material
+		loadWeaponData(this);
+		loadSpellData(this);
+	}
+
+	self.login = function(){
+		// right here you need to populate the view model with everything that is related to the member that just logged in
+		loadMemberData(self);
+		loadMemberCharacterData(self);
+		self.goToCharacterList();
 	}
 
 	// Do this on initial creation of the view model
@@ -345,11 +360,6 @@ function CharacterManagerViewModel() {
 
 	self.mainTemplateType = function(item){
 		return self.chosenView();
-	}
-
-	self.login = function(){
-		// right here you need to populate the view model with everything that is related to the member that just logged in
-		self.goToCharacterList();
 	}
 
 	/*

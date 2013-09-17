@@ -135,7 +135,6 @@ function Character(name, race, characterClass){
 
 	this.type = ko.observable("characterPage");
 
-	// put values that are computed from the data here
 	this.strInt = ko.computed(function(){
 		return Math.floor(self.strength());
 	});
@@ -187,6 +186,7 @@ function Character(name, race, characterClass){
 	this.honorDec = ko.computed(function(){
 		return Math.floor(((self.honor() % 1).toFixed(2))*100);
 	});
+
 	// put functionality that is based on the character in here, then call it wherever it is needed
 	this.rename = function(element){
 		this.name("Bob");
@@ -198,6 +198,14 @@ function Character(name, race, characterClass){
 	this.dialogWindowTemplateType = function(){
 		return "plainCharacter";
 	}
+}
+
+function combatProfile(character, weapon, armor, offHand, otherStatBonuses){
+	this.character = character;
+	this.weapon = weapon;
+	this.armor = armor;
+	this.offHand = offHand;
+	this.otherStatBonuses = otherStatBonues;
 }
 
 // This is a spell object. It hold weapon data, this could return different template names for if you want to view 
@@ -228,7 +236,7 @@ function Weapon(name, damage, speed){
 	}
 
 	this.dialogWindowTemplateType = function(){
-		return "plainWeapon";
+		return "combatInfo";
 	}
 }
 
@@ -321,8 +329,15 @@ function CharacterManagerViewModel() {
 		new characterCreationStep("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
 	]);
 
-	self.chosenView = ko.observable("characterList");
-	self.chosenViewData = ko.observable(this.characterList());
+	self.loadInitData = function(){
+		// in here load all the data you can before the user even logs in. This could be 
+		// weapons, spells, monsters, and any sort of reference material
+	}
+
+	// Do this on initial creation of the view model
+	self.chosenView = ko.observable("loginPage");
+	self.chosenViewData = ko.observable();
+	self.loadInitData();
 
 	self.dialogWindowTemplateType = function(item){
 		return item.dialogWindowTemplateType();
@@ -330,6 +345,11 @@ function CharacterManagerViewModel() {
 
 	self.mainTemplateType = function(item){
 		return self.chosenView();
+	}
+
+	self.login = function(){
+		// right here you need to populate the view model with everything that is related to the member that just logged in
+		self.goToCharacterList();
 	}
 
 	/*
@@ -410,4 +430,5 @@ function CharacterManagerViewModel() {
 
 $(document).ready(function(){
 	ko.applyBindings(new CharacterManagerViewModel());
+
 });

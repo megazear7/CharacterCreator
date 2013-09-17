@@ -18,7 +18,6 @@
 	</div>
 	<div class="outerContainer" data-bind="">
 		<div data-bind="template: { name: mainTemplateType}" class="bodyContainer"></div>
-		</div>
 	</div>
 </div>
 
@@ -26,6 +25,14 @@
 <script id="characterList" type="text/html">
 		<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
 		<div data-bind="GridSelect: columns"></div>
+</script>
+
+<script id="loginPage" type="text/html">
+  	<div class="loginContainer">
+		<div>username: <input type="text"></input></div>
+		<div>password: <input type="text"></input></div>
+		<div><input data-bind="click: $root.login" type="button" value="Login"></input></div>
+	</div>
 </script>
 
 <script id="characterPage" type="text/html">
@@ -95,6 +102,9 @@
 			<div class = "threshholdCheck hoverDrop">Threshold Check: <span data-bind="text: maxHealth"><span></div>
 			<div class = "buildingPoints hoverDrop">Building Points: <span data-bind="text: maxHealth"><span></div>
 		</div>
+		<div class="combatProfilesList">
+		
+		</div>
 	</div>
 </script>
 
@@ -120,6 +130,40 @@
 </script>
 
 <script id="plainWeapon" type="text/html">
+	<!-- this is the weapon dialogButton -->
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Damage: <span data-bind = 'text: damage'></span><br/>
+			Speed: <span data-bind = 'text: speed'></span>
+		</p>
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
+   	 </div>
+</script>
+
+<script id="combatInfo" type="text/html">
+	<div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
+		<div class="combatInfo">
+			<div class="combatTabs">
+				<span class="combatRoseTab"><b>Combat Rose</b></span>		
+				<span class="combatProfileTab"><b>Full Profile</b></span>		
+			</div>
+			<div class="combatDisplay" data-bind='template: {name: "combatRose"}'>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script id="combatRose" type="text/html">
+	<!-- this is the weapon dialogButton -->
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Damage: <span data-bind = 'text: damage'></span><br/>
+			Speed: <span data-bind = 'text: speed'></span>
+		</p>
+</script>
+
+<script id="combatProfile" type="text/html">
 	<!-- this is the weapon dialogButton -->
   	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
         <h1 data-bind = 'text: name'></h2>

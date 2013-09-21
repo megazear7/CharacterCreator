@@ -2,23 +2,24 @@
 <body>
 
 <!-- stylesheet -->
+<link href="css/characterView.css" rel="stylesheet" type="text/css">
 <link href="css/dialogWindow.css" rel="stylesheet" type="text/css">
-<!--<link href="css/characterView.css" rel="stylesheet" type="text/css">-->
 
 <!-- javascript dependencies -->
 <script src="jjj/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="knockout-2.3.0.js"></script>
 <script src="managerModel.js"></script>
+<script src="managerLoader.js"></script>
 
 <!-- Body Skeleton -->
 <div class="bodywrapper">
 	<div class="topBannerContainer">
 		<h2 class="navLinks" data-bind="text: navSummary"></h2>
 		<div class="settings smallButton smallTopBannerButton"></div>
+		<div class="memberInfo" data-bind="template: {name: $root.loggedInMember().template}"></div>
 	</div>
 	<div class="outerContainer" data-bind="">
 		<div data-bind="template: { name: mainTemplateType}" class="bodyContainer"></div>
-		</div>
 	</div>
 </div>
 
@@ -28,32 +29,66 @@
 		<div data-bind="GridSelect: columns"></div>
 </script>
 
+<script id="loggedIn" type="text/html">
+	<span>Currently Logged In as: <span data-bind="text: $root.loggedInMember().username"></span></span>
+</script>
+
+<script id="notLoggedIn" type="text/html">
+	<span>Not Logged In</span>
+</script>
+
+<script id="loginPage" type="text/html">
+  	<div class="loginContainer">
+		<div>username: <input type="text"></input></div>
+		<div>password: <input type="text"></input></div>
+		<div><input data-bind="click: $root.login" type="button" value="Login"></input></div>
+	</div>
+</script>
+
 <script id="characterPage" type="text/html">
 	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
 	<div data-bind = "with: chosenViewData">
 		<br/>
 		<br/>
 		<h1 data-bind = 'text: name'></h2>
-		<span data-bind = 'text: race'></span>
-		<span data-bind = 'text: characterClass'></span>
-		<div class = "test"><!-- why will this css not apply??? -->
-			<table border="1" text-align="left">
+		<div class="characterSubInfo">
+			<span data-bind = 'text: race'></span>
+			<span data-bind = 'text: characterClass'></span>
+		</div>
+		<div class = "statSheet">
+			<table text-align="left">
 				<tr>
 					<td text-align="left">Strength: </td>
-					<td data-bind = 'text: strInt'></td>
-					<td><span data-bind="text: strDec"></span>%</td>
+					<td><span data-bind = 'text: strInt'></span> / <span data-bind="text: strDec"></span>%</td>
+					<td>Dmg: +<span data-bind="text: strDmgMod"></span></td>
+					<td>Feat Of Strength: +<span data-bind="text: strInt"></span></td>
+					<td>Lift (lbs): <span data-bind="text: strInt"></span></td>
+					<td>Carry (lbs): <span data-bind="text: strInt"></span></td>
+					<td>Drag (lbs): <span data-bind="text: strInt"></span></td>
 				</tr><tr>
 					<td>Dextarity: </td>
 					<td data-bind = 'text: dexInt'></td>
 					<td><span data-bind="text: dexDec"></span>%</td>
+					<td>Init: +<span data-bind="text: strInt"></span></td>
+					<td>Attak: +<span data-bind="text: strInt"></span></td>
+					<td>Defense: +<span data-bind="text: strInt"></span></td>
+					<td></td>
 				</tr><tr>
 					<td>Wisdom: </td>
 					<td data-bind = 'text: wisInt'></td>
 					<td><span data-bind="text: wisDec"></span>%</td>
+					<td>Init: +<span data-bind="text: strInt"></span></td>
+					<td>Defense: +<span data-bind="text: strInt"></span></td>
+					<td></td>
+					<td></td>
 				</tr><tr>
 					<td>Intellegence: </td>
 					<td data-bind = 'text: intInt'>
 					<td><span data-bind="text: intDec"></span>%</td>
+					<td>Attack: +<span data-bind="text: strInt"></span></td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr><tr>
 					<td>Constitution: </td>
 					<td data-bind = 'text: conInt'>
@@ -72,7 +107,15 @@
 					<td><span data-bind="text: honorDec"></span>%</td>
 				</tr>
 			</table>
+			<div class = "hitpoints hoverDrop">Hit Points: <span data-bind="text: maxHealth, click: $root.listWeapons"><span></div>
+			<div class = "threshhold hoverDrop">Threshold of Pain: <span data-bind="text: maxHealth"><span></div>
+			<div class = "threshholdCheck hoverDrop">Threshold Check: <span data-bind="text: maxHealth"><span></div>
+			<div class = "buildingPoints hoverDrop">Building Points: <span data-bind="text: maxHealth"><span></div>
 		</div>
+		<div class="combatProfilesList">
+		
+		</div>
+		<div class="weaponsMarketList" data-bind="template: {name:'plainWeapon', foreach: $root.weaponList}"></div>
 	</div>
 </script>
 
@@ -98,6 +141,40 @@
 </script>
 
 <script id="plainWeapon" type="text/html">
+	<!-- this is the weapon dialogButton -->
+  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Damage: <span data-bind = 'text: damage'></span><br/>
+			Speed: <span data-bind = 'text: speed'></span>
+		</p>
+		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
+   	 </div>
+</script>
+
+<script id="combatInfo" type="text/html">
+	<div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
+		<div class="combatInfo">
+			<div class="combatTabs">
+				<span class="combatRoseTab"><b>Combat Rose</b></span>		
+				<span class="combatProfileTab"><b>Full Profile</b></span>		
+			</div>
+			<div class="combatDisplay" data-bind='template: {name: "combatRose"}'>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script id="combatRose" type="text/html">
+	<!-- this is the weapon dialogButton -->
+        <h1 data-bind = 'text: name'></h2>
+        <p>
+			Damage: <span data-bind = 'text: damage'></span><br/>
+			Speed: <span data-bind = 'text: speed'></span>
+		</p>
+</script>
+
+<script id="combatProfile" type="text/html">
 	<!-- this is the weapon dialogButton -->
   	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true">
         <h1 data-bind = 'text: name'></h2>

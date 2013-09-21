@@ -19,7 +19,7 @@ ko.bindingHandlers.DialogWindow = {
 		//$(element).empty();		
 		//$(element).append(internals);
 
-		var width = bindingContext.$root.viewWidth();
+		var width = $(element).parent().width();
 		var totalColumns = bindingContext.$root.columns();
 		var lanes = bindingContext.$root.lanes();
 		var i = $(element).index();
@@ -38,7 +38,7 @@ ko.bindingHandlers.DialogWindow = {
 		$(element).css("top",posCol);
     },
     update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-		var width = bindingContext.$root.viewWidth();
+		var width = $(element).parent().width();
 		var totalColumns = bindingContext.$root.columns();
 		var lanes = bindingContext.$root.lanes();
 		var i = $(element).index();
@@ -97,6 +97,22 @@ ko.bindingHandlers.GridSelect = {
     }
 };
 
+function Member(){
+	var self = this;
+	this.username = ko.observable("");
+	this.isLoggedIn = ko.observable("notLoggedIn");
+
+	this.constructor = function(username){
+		this.username(username);
+		this.isLoggedIn("loggedIn");
+	}
+
+	this.template = function(){
+		return self.isLoggedIn();
+	}
+
+}
+
 // This is a character object. It hold weapon data, this could return different template names for if you want to view 
 // a entire page of this character or just a dialogWindow representation of this object or something else
 function Character(name, race, characterClass){
@@ -135,10 +151,12 @@ function Character(name, race, characterClass){
 
 	this.type = ko.observable("characterPage");
 
-	// put values that are computed from the data here
 	this.strInt = ko.computed(function(){
 		return Math.floor(self.strength());
 	});
+	this.strDmgMod = ko.computed(function(){
+		return Math.floor(3);
+	})
 	this.dexInt = ko.computed(function(){
 		return Math.floor(self.dextarity());
 	});
@@ -184,6 +202,7 @@ function Character(name, race, characterClass){
 	this.honorDec = ko.computed(function(){
 		return Math.floor(((self.honor() % 1).toFixed(2))*100);
 	});
+
 	// put functionality that is based on the character in here, then call it wherever it is needed
 	this.rename = function(element){
 		this.name("Bob");
@@ -195,6 +214,14 @@ function Character(name, race, characterClass){
 	this.dialogWindowTemplateType = function(){
 		return "plainCharacter";
 	}
+}
+
+function combatProfile(character, weapon, armor, offHand, otherStatBonuses){
+	this.character = character;
+	this.weapon = weapon;
+	this.armor = armor;
+	this.offHand = offHand;
+	this.otherStatBonuses = otherStatBonues;
 }
 
 // This is a spell object. It hold weapon data, this could return different template names for if you want to view 
@@ -225,7 +252,7 @@ function Weapon(name, damage, speed){
 	}
 
 	this.dialogWindowTemplateType = function(){
-		return "plainWeapon";
+		return "combatInfo";
 	}
 }
 
@@ -278,29 +305,19 @@ function CharacterManagerViewModel() {
 		return lanes;
 	});
 
-	// I think this should be renamed to characters
+	self.loggedInMember = ko.observable(new Member());
+
 	self.characterList = ko.observableArray([
 	]);
 
-	self.initializeWindows = function(){
-		// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
-		var temp = new Character();
-		temp.constructor("Slighter", "Human", "Fighter", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.characterList.push(temp);
-		temp = new Character();
-		temp.constructor("Wiz", "Elf", "Wizard", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.characterList.push(temp);
-		temp = new Character();
-		temp.constructor("Mearth", "Human", "Cleric", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		self.characterList.push(temp);
-		temp = new Weapon("Longsword", "2d8", "12");
-		self.characterList.push(temp);			
-		temp = new Spell("Fireball", "160", "Shoots an awesome fireball");
-		self.characterList.push(temp);				
-		temp = new newCharacter()
-		self.characterList.push(temp);	
-	}
-	self.initializeWindows();
+	self.weaponList = ko.observableArray([
+	]);
+
+	self.spellList = ko.observableArray([
+	]);
+
+	self.monsterList = ko.observableArray([
+	]);
 
 	self.createOptions = ko.observableArray([
 		new characterCreationStep("Step 1", "Recieve Building Points", "step1"),
@@ -318,8 +335,24 @@ function CharacterManagerViewModel() {
 		new characterCreationStep("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
 	]);
 
-	self.chosenView = ko.observable("characterList");
-	self.chosenViewData = ko.observable(this.characterList());
+	self.loadInitData = function(){
+		// in here load all the data you can before the user even logs in. This could be 
+		// weapons, spells, monsters, and any sort of reference material
+		loadWeaponData(this);
+		loadSpellData(this);
+	}
+
+	self.login = function(){
+		// right here you need to populate the view model with everything that is related to the member that just logged in
+		loadMemberData(self);
+		loadMemberCharacterData(self);
+		self.goToCharacterList();
+	}
+
+	// Do this on initial creation of the view model
+	self.chosenView = ko.observable("loginPage");
+	self.chosenViewData = ko.observable();
+	self.loadInitData();
 
 	self.dialogWindowTemplateType = function(item){
 		return item.dialogWindowTemplateType();
@@ -347,7 +380,8 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(folder);
 		self.chosenView(folder.type()); 
 		self.navSummary("Character List - " + folder.name());
-		location.hash = "character/"+folder.name();
+		// pushState does not work on the file:// url scheme. So I can't test it right now
+		history.pushState({id: 'someid'}, '', 'file:///C:/Users/Alex/src/CharacterCreator/characterManager.html/' + folder.type() + '/' + folder.name());
 	};
 
 	/*
@@ -358,7 +392,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.characterList());
 		self.chosenView("characterList"); 
 		self.navSummary("Character List");
-		location.hash = "characterList";
+		history.pushState({id: 'someid'}, '', 'file:///C:/Users/Alex/src/CharacterCreator/characterManager.html/characterList');
 	};
 
 	/*
@@ -369,7 +403,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.createOptions());
 		self.chosenView("characterCreate"); 
 		self.navSummary("Character - Create");
-		location.hash = "characterList";
+		history.pushState({id: 'someid'}, '', 'file:///C:/Users/Alex/src/CharacterCreator/characterManager.html/create');
 	};
 
 	/*
@@ -406,4 +440,5 @@ function CharacterManagerViewModel() {
 
 $(document).ready(function(){
 	ko.applyBindings(new CharacterManagerViewModel());
+
 });

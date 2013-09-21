@@ -381,7 +381,7 @@ function CharacterManagerViewModel() {
 		self.chosenView(folder.type()); 
 		self.navSummary("Character List - " + folder.name());
 		// pushState does not work on the file:// url scheme. So I can't test it right now
-		history.pushState({id: 'someid'}, '', 'file:///C:/Users/Alex/src/CharacterCreator/characterManager.html/' + folder.type() + '/' + folder.name());
+		history.pushState(null, null, folder.type() + '/' + folder.name());
 	};
 
 	/*
@@ -392,7 +392,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.characterList());
 		self.chosenView("characterList"); 
 		self.navSummary("Character List");
-		history.pushState({id: 'someid'}, '', 'file:///C:/Users/Alex/src/CharacterCreator/characterManager.html/characterList');
+		history.pushState(null, null, 'characterList');
 	};
 
 	/*
@@ -403,7 +403,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.createOptions());
 		self.chosenView("characterCreate"); 
 		self.navSummary("Character - Create");
-		history.pushState({id: 'someid'}, '', 'file:///C:/Users/Alex/src/CharacterCreator/characterManager.html/create');
+		history.pushState(null, null, 'create');
 	};
 
 	/*

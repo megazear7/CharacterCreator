@@ -24,10 +24,25 @@ function loadSpellData(viewModel){
 	viewModel.spellList.push(temp);
 }
 
-function loadMemberData(viewModel){
+function loadMemberDataStatic(viewModel){
 	var temp = new Member();
 	temp.constructor("Megazear7");
 	viewModel.loggedInMember(temp);
+}
+
+function loadMemberData(viewModel){
+	var emailname = $(".loginEmailname").attr("value");
+	var password = $(".loginPassword").attr("value");
+    jQuery.getJSON("/cgi-bin/response.cgi?request=login&emailname="
+    	+ emailname +"&password=" + password,
+        function(jsonData) {
+			var temp = new Member();
+			temp.constructor("Megazear7");
+			// will this reference to viewmodel here work inside a call back function?
+			// the jsonData that we get back from here needs to add the newly created member
+			// to the view model
+			viewModel.loggedInMember(temp);
+    })
 }
 
 function loadMemberCharacterData(viewModel){

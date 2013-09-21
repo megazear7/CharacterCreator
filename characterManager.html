@@ -39,9 +39,28 @@
 
 <script id="loginPage" type="text/html">
   	<div class="loginContainer">
-		<div>username: <input type="text"></input></div>
-		<div>password: <input type="text"></input></div>
-		<div><input data-bind="click: $root.login" type="button" value="Login"></input></div>
+        <table>
+         <td>
+          <tr>
+	    	<input class="loginEmailname" data-bind="" />
+          </tr>
+          <tr>
+            <input class="loginPassword" data-bind="" />
+          </tr>
+          <tr>
+            <button type="Button" id="loginBtn" data-bind="click: $root.login">Login</button>
+          </tr>
+          <tr>
+            <button type="Button" id="regBtn" onclick="register()">Register</button>
+          </tr>
+          <tr>
+            <button type="Button" id="forgotBtn" onclick="forgot()">Forgot</button>
+          </tr>
+          <tr>
+            <button type="Button" id="updateBtn" onclick="update()">Update</button>
+          </tr>
+        </td>
+       </table> 
 	</div>
 </script>
 

@@ -65,7 +65,6 @@
 </script>
 
 <script id="characterPage" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
 	<div data-bind = "with: chosenViewData">
 		<br/>
 		<br/>
@@ -143,7 +142,6 @@
 <script id="characterCreate" type="text/html">
 	<!-- this is the character create home page -->
 	<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
-	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
 	<div data-bind="GridSelect: columns"></div>
 </script>
 

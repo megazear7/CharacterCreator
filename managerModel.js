@@ -349,10 +349,7 @@ function CharacterManagerViewModel() {
 		self.goToCharacterList();
 	}
 
-	// Do this on initial creation of the view model
-	self.chosenView = ko.observable("loginPage");
-	self.chosenViewData = ko.observable();
-	self.loadInitData();
+
 
 	self.dialogWindowTemplateType = function(item){
 		return item.dialogWindowTemplateType();
@@ -381,8 +378,15 @@ function CharacterManagerViewModel() {
 		self.chosenView(folder.type()); 
 		self.navSummary("Character List - " + folder.name());
 		// pushState does not work on the file:// url scheme. So I can't test it right now
-		history.pushState(null, null, folder.type() + '/' + folder.name());
+		history.pushState({location: "view"}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
 	};
+
+	self.goToLogin = function(){
+		self.chosenView("emptyView"); 
+		self.chosenView("loginPage"); 
+		self.navSummary("Login");
+		history.pushState({location: "login"}, 'login', 'login');
+	}
 
 	/*
 	 * This is the standard "go home" type of button. This always takes you to the character list screen
@@ -392,7 +396,7 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.characterList());
 		self.chosenView("characterList"); 
 		self.navSummary("Character List");
-		history.pushState(null, null, 'characterList');
+		history.pushState({location: "characterList"}, 'characterList', 'characterList');
 	};
 
 	/*
@@ -403,8 +407,27 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.createOptions());
 		self.chosenView("characterCreate"); 
 		self.navSummary("Character - Create");
-		history.pushState(null, null, 'create');
+		history.pushState({location: "create"}, 'create', 'create');
 	};
+
+	window.addEventListener('popstate', function(event) {
+		if(history.state){
+			console.log(event.state.location);
+			if(event.state.location == "characterList"){
+				self.goToCharacterList();
+			}
+			if(event.state.location == "view"){
+				self.goToView();
+			}
+			if(event.state.location == "create"){
+				self.goToCharacterCreate();
+			}
+			if(event.state.location == "login"){
+				self.goToLogin();
+			}
+		}
+		console.log(history);
+	});
 
 	/*
 	 * This changes the grid pages on page resizes.
@@ -414,27 +437,11 @@ function CharacterManagerViewModel() {
 		self.characterList.valueHasMutated();
 	});
 
-	// Client-side routes    
-	// this is not yet implemented. The problem is the "this.get" methods need to have data passes in (i.e. the data that will replace the modelViewData
-	// but as of not the only paramaters the callback function has is the string that comes after the "#"
-	/*
-	Sammy(function() {
-		this.get('#:characterList', function(context) {
-			console.log(context);
-			console.log(self.characterList());
-		});
-		this.get('#:characterList/:characterName', function() {
-			console.log(self.characterList[this.params.characterName]);
-		});
-		this.get('#:folder/:mailId', function() {
-			//self.chosenFolderId(this.params.folder);
-			//self.chosenFolderData(null);
-			//$.get("/mail", { mailId: this.params.mailId }, self.chosenMailData);
-		});
-
-		this.get('', function() { this.app.runRoute('get', '#Inbox') });
-	}).run(); 
-	*/
+	// Do this on initial creation of the view model
+	self.chosenView = ko.observable("loginPage");
+	self.chosenViewData = ko.observable();
+	self.loadInitData();
+	self.goToLogin();
 
 }
 

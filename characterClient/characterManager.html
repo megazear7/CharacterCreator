@@ -143,6 +143,7 @@
 	<!-- this is the character create home page -->
 	<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
 	<div data-bind="GridSelect: columns"></div>
+	<div class="arrow_box" data-bind="click: $root.goToCharacterList"></div>
 </script>
 
 <script id="plainCharacter" type="text/html">
@@ -238,7 +239,6 @@
 
 <!-- Character creation step templates, each step neads a template because each step is different  -->
 <script id="step1" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -251,7 +251,6 @@
 </script>
 
 <script id="step2" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -264,7 +263,6 @@
 </script>
 
 <script id="step3" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -277,7 +275,6 @@
 </script>
 
 <script id="step4" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -290,7 +287,6 @@
 </script>
 
 <script id="step5" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -303,7 +299,6 @@
 </script>
 
 <script id="step6" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -316,7 +311,6 @@
 </script>
 
 <script id="step7" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -329,7 +323,6 @@
 </script>
 
 <script id="step8" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -342,7 +335,6 @@
 </script>
 
 <script id="step9" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -355,7 +347,6 @@
 </script>
 
 <script id="step10" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -368,7 +359,6 @@
 </script>
 
 <script id="step11" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
@@ -381,7 +371,6 @@
 </script>
 
 <script id="step12" type="text/html">
-	<div class="arrow_box" data-bind="click: $root.goToCharacterCreate"></div>
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>

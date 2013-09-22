@@ -349,8 +349,6 @@ function CharacterManagerViewModel() {
 		self.goToCharacterList();
 	}
 
-
-
 	self.dialogWindowTemplateType = function(item){
 		return item.dialogWindowTemplateType();
 	}
@@ -379,6 +377,7 @@ function CharacterManagerViewModel() {
 		self.navSummary("Character List - " + folder.name());
 		// pushState does not work on the file:// url scheme. So I can't test it right now
 		history.pushState({location: "view"}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
+		console.log(history.length);
 	};
 
 	self.goToLogin = function(){
@@ -386,6 +385,8 @@ function CharacterManagerViewModel() {
 		self.chosenView("loginPage"); 
 		self.navSummary("Login");
 		history.pushState({location: "login"}, 'login', 'login');
+		history.pushState({location: "login"}, 'login', 'login');
+		console.log(history.length);
 	}
 
 	/*
@@ -397,6 +398,7 @@ function CharacterManagerViewModel() {
 		self.chosenView("characterList"); 
 		self.navSummary("Character List");
 		history.pushState({location: "characterList"}, 'characterList', 'characterList');
+		console.log(history.length);
 	};
 
 	/*
@@ -408,9 +410,14 @@ function CharacterManagerViewModel() {
 		self.chosenView("characterCreate"); 
 		self.navSummary("Character - Create");
 		history.pushState({location: "create"}, 'create', 'create');
+		console.log(history.length);
 	};
 
 	window.addEventListener('popstate', function(event) {
+		// every time a goTo method is called, a new state should be added to the history
+		// either when the user clicks something to go to a new page, or they click back
+		// to go back to a previous page. a new state should always be pushed, and the length
+		// of history should always increase. That is not currently the case.
 		if(history.state && event.state){
 			if(event.state.location == "characterList"){
 				self.goToCharacterList();
@@ -425,7 +432,6 @@ function CharacterManagerViewModel() {
 				self.goToLogin();
 			}
 		}
-		console.log(history);
 	});
 
 	/*

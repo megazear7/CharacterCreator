@@ -411,8 +411,7 @@ function CharacterManagerViewModel() {
 	};
 
 	window.addEventListener('popstate', function(event) {
-		if(history.state){
-			console.log(event.state.location);
+		if(history.state && event.state){
 			if(event.state.location == "characterList"){
 				self.goToCharacterList();
 			}

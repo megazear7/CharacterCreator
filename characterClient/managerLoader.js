@@ -24,13 +24,13 @@ function loadSpellData(viewModel){
 	viewModel.spellList.push(temp);
 }
 
-function loadMemberDataStatic(viewModel){
+function loadMemberData(viewModel){
 	var temp = new Member();
 	temp.constructor("Megazear7");
 	viewModel.loggedInMember(temp);
 }
 
-function loadMemberData(viewModel){
+function loadMemberDataNew(viewModel){
 	var emailname = $(".loginEmailname").attr("value");
 	var password = $(".loginPassword").attr("value");
     jQuery.getJSON("/cgi-bin/response.cgi?request=login&emailname="

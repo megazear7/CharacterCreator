@@ -366,54 +366,52 @@ function CharacterManagerViewModel() {
 	 * Standard go to view. This is the standard go to view, whatever is given as folder will need to return its type, which is the template name required for the
 	 * data in folder to be correctly viewed.
 	 */
-	self.goToView = function(folder, data) { 
-		// this is required because the chosen view (folder.type()) is dependant upon the data (folder), however the data is also dependant on the chosen view.
-		// So the best way to avoid error is to set the view to the empty view which has no dependencies. Then change the data, then change the view to match.
-		// Lastly change the navSummary to reflect the changes. Make sure these steps are followed in this manor. There should never be anything other than these
-		// four steps in these "view change" methods.
+	self.goToView = function(folder) { 
+		self.goToViewChangeView(folder);
+		history.pushState({location: "view"}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
+	};
+	self.goToViewChangeView = function(folder) { 
 		self.chosenView("emptyView"); 
 		self.chosenViewData(folder);
 		self.chosenView(folder.type()); 
 		self.navSummary("Character List - " + folder.name());
-		// pushState does not work on the file:// url scheme. So I can't test it right now
-		console.log("\n" + history.length);
-		history.pushState({location: "view"}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
-		console.log(history.length + "\n");
 	};
 
 	self.goToLogin = function(){
+		self.goToLoginChangeView();
+		history.pushState({location: "login"}, 'login', 'login');
+	}
+	self.goToLoginChangeView = function(){
 		self.chosenView("emptyView"); 
 		self.chosenView("loginPage"); 
 		self.navSummary("Login");
-		console.log("\n" + history.length);
-		history.pushState({location: "login"}, 'login', 'login');
-		console.log(history.length + "\n");
 	}
 
 	/*
 	 * This is the standard "go home" type of button. This always takes you to the character list screen
 	 */
 	self.goToCharacterList = function() {
+		self.goToCharacterListChangeView();
+		history.pushState({location: "characterList"}, 'characterList', 'characterList');
+	};
+	self.goToCharacterListChangeView = function() {
 		self.chosenView("emptyView"); 
 		self.chosenViewData(self.characterList());
 		self.chosenView("characterList"); 
 		self.navSummary("Character List");
-		console.log("\n" + history.length);
-		history.pushState({location: "characterList"}, 'characterList', 'characterList');
-		console.log(history.length + "\n");
 	};
-
 	/*
 	 * This is the go to character create. This will put you at the character create screen.
 	 */
 	self.goToCharacterCreate = function() {
+		self.goToCharacterCreateChangeView();
+		history.pushState({location: "create"}, 'create', 'create');
+	};
+	self.goToCharacterCreateChangeView = function() {
 		self.chosenView("emptyView"); 
 		self.chosenViewData(self.createOptions());
 		self.chosenView("characterCreate"); 
 		self.navSummary("Character - Create");
-		console.log("\n" + history.length);
-		history.pushState({location: "create"}, 'create', 'create');
-		console.log(history.length + "\n");
 	};
 
 	window.addEventListener('popstate', function(event) {
@@ -423,27 +421,16 @@ function CharacterManagerViewModel() {
 		// of history should always increase. That is not currently the case.
 		if(history.state && event.state){
 			if(event.state.location == "characterList"){
-				self.chosenView("emptyView"); 
-				self.chosenViewData(self.characterList());
-				self.chosenView("characterList"); 
-				self.navSummary("Character List");
+				self.goToCharacterListChangeView();
 			}
 			if(event.state.location == "view"){
-				self.chosenView("emptyView"); 
-				self.chosenViewData(folder);
-				self.chosenView(folder.type()); 
-				self.navSummary("Character List - " + folder.name());
+				self.goToViewChangeView();
 			}
 			if(event.state.location == "create"){
-				self.chosenView("emptyView"); 
-				self.chosenViewData(self.createOptions());
-				self.chosenView("characterCreate"); 
-				self.navSummary("Character - Create");
+				self.goToCharacterCreateChangeView();
 			}
 			if(event.state.location == "login"){
-				self.chosenView("emptyView"); 
-				self.chosenView("loginPage"); 
-				self.navSummary("Login");
+				self.goToLoginChangeView();
 			}
 		}
 	});

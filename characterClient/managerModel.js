@@ -415,10 +415,6 @@ function CharacterManagerViewModel() {
 	};
 
 	window.addEventListener('popstate', function(event) {
-		// every time a goTo method is called, a new state should be added to the history
-		// either when the user clicks something to go to a new page, or they click back
-		// to go back to a previous page. a new state should always be pushed, and the length
-		// of history should always increase. That is not currently the case.
 		if(history.state && event.state){
 			if(event.state.location == "characterList"){
 				self.goToCharacterListChangeView();

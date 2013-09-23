@@ -376,17 +376,18 @@ function CharacterManagerViewModel() {
 		self.chosenView(folder.type()); 
 		self.navSummary("Character List - " + folder.name());
 		// pushState does not work on the file:// url scheme. So I can't test it right now
+		console.log("\n" + history.length);
 		history.pushState({location: "view"}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
-		console.log(history.length);
+		console.log(history.length + "\n");
 	};
 
 	self.goToLogin = function(){
 		self.chosenView("emptyView"); 
 		self.chosenView("loginPage"); 
 		self.navSummary("Login");
+		console.log("\n" + history.length);
 		history.pushState({location: "login"}, 'login', 'login');
-		history.pushState({location: "login"}, 'login', 'login');
-		console.log(history.length);
+		console.log(history.length + "\n");
 	}
 
 	/*
@@ -397,8 +398,9 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.characterList());
 		self.chosenView("characterList"); 
 		self.navSummary("Character List");
+		console.log("\n" + history.length);
 		history.pushState({location: "characterList"}, 'characterList', 'characterList');
-		console.log(history.length);
+		console.log(history.length + "\n");
 	};
 
 	/*
@@ -409,8 +411,9 @@ function CharacterManagerViewModel() {
 		self.chosenViewData(self.createOptions());
 		self.chosenView("characterCreate"); 
 		self.navSummary("Character - Create");
+		console.log("\n" + history.length);
 		history.pushState({location: "create"}, 'create', 'create');
-		console.log(history.length);
+		console.log(history.length + "\n");
 	};
 
 	window.addEventListener('popstate', function(event) {
@@ -420,16 +423,27 @@ function CharacterManagerViewModel() {
 		// of history should always increase. That is not currently the case.
 		if(history.state && event.state){
 			if(event.state.location == "characterList"){
-				self.goToCharacterList();
+				self.chosenView("emptyView"); 
+				self.chosenViewData(self.characterList());
+				self.chosenView("characterList"); 
+				self.navSummary("Character List");
 			}
 			if(event.state.location == "view"){
-				self.goToView();
+				self.chosenView("emptyView"); 
+				self.chosenViewData(folder);
+				self.chosenView(folder.type()); 
+				self.navSummary("Character List - " + folder.name());
 			}
 			if(event.state.location == "create"){
-				self.goToCharacterCreate();
+				self.chosenView("emptyView"); 
+				self.chosenViewData(self.createOptions());
+				self.chosenView("characterCreate"); 
+				self.navSummary("Character - Create");
 			}
 			if(event.state.location == "login"){
-				self.goToLogin();
+				self.chosenView("emptyView"); 
+				self.chosenView("loginPage"); 
+				self.navSummary("Login");
 			}
 		}
 	});

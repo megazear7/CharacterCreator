@@ -367,6 +367,7 @@ function CharacterManagerViewModel() {
 	 * data in folder to be correctly viewed.
 	 */
 	self.goToView = function(folder) { 
+		console.log(folder);
 		self.goToViewChangeView(folder);
 		history.pushState({location: "view"}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
 	};
@@ -420,6 +421,8 @@ function CharacterManagerViewModel() {
 				self.goToCharacterListChangeView();
 			}
 			if(event.state.location == "view"){
+				console.log(event);
+				// I need to find a way to pass data into goToViewChange. These views cannot be back button'd to or forward button'd to
 				self.goToViewChangeView();
 			}
 			if(event.state.location == "create"){

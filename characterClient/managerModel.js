@@ -203,6 +203,24 @@ function Character(name, race, characterClass){
 		return Math.floor(((self.honor() % 1).toFixed(2))*100);
 	});
 
+	/*
+	* Weapon stuff
+	*/
+	this.weaponList = ko.observableArray();
+
+	this.addWeapon = function(weapon){
+		self.weaponList.push(new Weapon(weapon));
+	}
+
+	/*
+	* Spell stuff
+	*/
+	this.spellList = ko.observableArray();
+
+	this.addSpell = function(spell){
+		self.spellList.push(new Spell(spell));
+	}
+
 	// put functionality that is based on the character in here, then call it wherever it is needed
 	this.rename = function(element){
 		this.name("Bob");
@@ -226,10 +244,25 @@ function combatProfile(character, weapon, armor, offHand, otherStatBonuses){
 
 // This is a spell object. It hold weapon data, this could return different template names for if you want to view 
 // a entire page of this spell or just a dialogWindow representation of this object or something else
-function Spell(name, spellpoints, description){
+function Spell(name){
 	this.name = ko.observable(name);
-	this.spellpoints = ko.observable(spellpoints);
-	this.description = ko.observable(description);
+	this.spellpoints = ko.observable();
+	this.description = ko.observable();
+
+	this.info = [
+		{name : "fireball", spellpoints : "100", description : "firey ball" },
+		{name : "magicmissle", spellpoints : "100", description : "firey ball" },
+		{name : "lightning", spellpoints : "100", description : "firey ball" },
+		{name : "blast", spellpoints : "100", description : "firey ball" },
+	]
+
+	for(var i = 0; i < this.info.length; i++){
+		if(this.info[i].name == name){
+			this.name(this.info[i].name);
+			this.spellpoints(this.info[i].spellpoints);
+			this.description(this.info[i].description);
+		}
+	}
 
 	this.someFunction = function(element){
 		this.spellpoints("100");
@@ -242,13 +275,29 @@ function Spell(name, spellpoints, description){
 
 // This is a weapon object. It hold weapon data, this could return different template names for if you want to view 
 // a entire page of this weapon or just a dialogWindow representation of this object or something else
-function Weapon(name, damage, speed){
-	this.name = ko.observable(name);
-	this.damage = ko.observable(damage);
-	this.speed = ko.observable(speed);
+function Weapon(name){
+
+	this.name = ko.observable();
+	this.damage = ko.observable();
+	this.speed = ko.observable();
+	this.reach = ko.observable();
+
+	this.info = [
+		{name : "longsword", damage : "2d8", speed : "12", reach : "3" },
+		{name : "shortsword", damage : "2d6", speed : "11", reach : "2" },
+		{name : "dagger", damage : "2d4", speed : "8", reach : "1" }
+	]
+
+	for(var i = 0; i < this.info.length; i++){
+		if(this.info[i].name == name){
+			this.name(this.info[i].name);
+			this.damage(this.info[i].damage);
+			this.speed(this.info[i].speed);
+			this.reach(this.info[i].reach);
+		}
+	}
 
 	this.someFunction = function(element){
-		this.damage("2d6");
 	}
 
 	this.dialogWindowTemplateType = function(){
@@ -367,7 +416,6 @@ function CharacterManagerViewModel() {
 	 * data in folder to be correctly viewed.
 	 */
 	self.goToView = function(folder) { 
-		console.log(folder);
 		self.goToViewChangeView(folder);
 		history.pushState({location: "view"}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
 	};
@@ -421,7 +469,6 @@ function CharacterManagerViewModel() {
 				self.goToCharacterListChangeView();
 			}
 			if(event.state.location == "view"){
-				console.log(event);
 				// I need to find a way to pass data into goToViewChange. These views cannot be back button'd to or forward button'd to
 				self.goToViewChangeView();
 			}

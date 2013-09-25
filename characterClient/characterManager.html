@@ -70,8 +70,8 @@
 		<br/>
 		<h1 data-bind = 'text: name'></h2>
 		<div class="characterSubInfo">
-			<span data-bind = 'text: race'></span>
-			<span data-bind = 'text: characterClass'></span>
+			<span class="characterNameTitle" data-bind = 'text: race'></span>
+			<span class="characterClassTitle" data-bind = 'text: characterClass'></span>
 		</div>
 		<div class = "statSheet">
 			<table text-align="left">
@@ -133,7 +133,48 @@
 		<div class="combatProfilesList">
 		
 		</div>
-		<div class="weaponsMarketList" data-bind="template: {name:'plainWeapon', foreach: $root.weaponList}"></div>
+		<div class="itemListContainer">
+			<div class="weaponMarketList">
+				<h3>Market:</h3>
+				<div class="weaponMarketListInner" data-bind="template: {name:'plainWeaponListItemMarket', foreach: $root.weaponList}"></div>
+			</div>
+			<div class="weaponInventory">
+				<h3>Weapons in Inventory:</h3>
+				<div class="weaponInventoryInner" data-bind="template: {name:'plainWeaponListItem', foreach: weaponList}"></div>
+			</div>
+			<div class="spellList">
+				<h3>Spell List:</h3>
+				<div class="spellListInner" data-bind="template: {name:'plainSpellListItem', foreach: spellList}"></div>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script id="plainWeaponListItem" type="text/html">
+	<div class="weaponlistitemcontainer">
+		<span data-bind="text: name"></span>
+		<span data-bind="text: damage"></span>
+		<span data-bind="text: speed"></span>
+		<span data-bind="text: reach"></span>
+	</div>
+</script>
+
+<script id="plainWeaponListItemMarket" type="text/html">
+	<div class="weaponlistitemcontainer">
+		<span data-bind="text: name"></span>
+		<span data-bind="text: damage"></span>
+		<span data-bind="text: speed"></span>
+		<span data-bind="text: reach"></span>
+		<span data-bind="" class="marketBuyButton marketButton">Buy</span>
+		<span data-bind="" class="marketTakeButton marketButton">Take For Free</span>
+	</div>
+</script>
+
+<script id="plainSpellListItem" type="text/html">
+	<div class="spellListItemContainer">
+		<span data-bind="text: name"></span>
+		<span data-bind="text: spellpoints"></span>
+		<span data-bind="text: description"></span>
 	</div>
 </script>
 

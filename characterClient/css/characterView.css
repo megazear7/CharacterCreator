@@ -4,77 +4,117 @@ padding: 10px;
 border-style:ridge;
 border-width:0px;
 border-color:rgb(36,103,126);
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(115,115,115)), to(rgb(200,200,200)));
 border-radius:10px;
 overflow: hidden;
 }
 
 .statSheet table{
-border-collapse:collapse;
 }
 
 .statSheet th {
-border-style:ridge;
-border-width:0px;
-border-color:rgb(36,103,126);
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(170,170,170)), to(rgb(200,200,200)));
+}
+
+.statSheet td:hover{
+background: rgb(200,200,200);
 }
 
 .statSheet td {
-border-style:ridge;
-border-width:1px;
-border-color:rgb(36,103,126);
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(170,170,170)), to(rgb(200,200,200)));
+padding: 5px;
+background: rgb(225,225,225);
 }
 
 .statSheet .hitpoints {
+padding: 3px;
 width: 130px;
 position: absolute;
 left: 40%;
 top: 55%;
-border-style:ridge;
-border-width:1px;
-border-color:rgb(36,103,126);
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(200,200,200)));
+background: rgb(200,200,200);
 } 
 
 .statSheet .threshhold {
-width: 130px;
+padding: 3px;
+width: 140px;
 position: absolute;
 left: 70%;
 top: 55%;
-border-style:ridge;
-border-width:1px;
-border-color:rgb(36,103,126);
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(200,200,200)));
+background: rgb(200,200,200);
 }
 
 .statSheet .threshholdCheck{
-width: 130px;
+padding: 3px;
+width: 140px;
 position: absolute;
 left: 70%;
 top: 75%;
-border-style:ridge;
-border-width:1px;
-border-color:rgb(36,103,126);
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(200,200,200)));
+background: rgb(200,200,200);
 }
 
 .statSheet .buildingPoints {
+padding: 3px;
 width: 130px;
 position: absolute;
 left: 40%;
 top: 75%;
-border-style:ridge;
-border-width:1px;
-border-color:rgb(36,103,126);
-background: -webkit-gradient(linear, 0% 0%, 100% 100%, from(rgb(150,150,150)), to(rgb(200,200,200)));
+background: rgb(200,200,200);
 }
 
-.weaponsMarketList {
+.itemListContainer {
 position:absolute;
 width: 50%;
 height: 50%;
-bottom:0px;
 left: 50%;
+}
+
+.weaponListItemContainer:hover {
+background: rgb(200,200,200);
+}
+
+.weaponListItemContainer {
+margin: 2px;
+padding: 8px;
+background: rgb(225,225,225);
+border-radius:3px;
+}
+
+.spellListItemContainer:hover {
+background: rgb(200,200,200);
+}
+
+.spellListItemContainer {
+margin: 2px;
+padding: 8px;
+background: rgb(225,225,225);
+border-radius:3px;
+}
+
+.marketTakeButton {
+right: 0px;
+}
+
+.marketBuyButton {
+right: 125px;
+}
+
+.marketButton:hover {
+background: rgb(255,255,255);
+}
+
+.marketButton {
+position: absolute;
+padding: 3px;
+padding-left: 10px;
+padding-right: 10px;
+margin-left: 10px;
+margin-right: 10px;
+background: rgb(195,195,195);
+border-radius:3px;
+}
+
+.characterNameTitle {
+
+}
+
+.characterClassTitle {
+
 }

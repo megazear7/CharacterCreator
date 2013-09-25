@@ -86,6 +86,7 @@ border-radius:3px;
 
 .marketTakeButton {
 right: 0px;
+vertical-align:top;
 }
 
 .marketBuyButton {
@@ -104,7 +105,7 @@ padding-right: 10px;
 margin-left: 10px;
 margin-right: 10px;
 background: rgb(195,195,195);
-border-radius:3px;
+border-radius:6px;
 }
 
 .characterNameTitle {

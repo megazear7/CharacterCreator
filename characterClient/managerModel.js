@@ -463,6 +463,10 @@ function CharacterManagerViewModel() {
 		self.navSummary("Character - Create");
 	};
 
+	self.buyWeapon = function() {
+		alert("hello");
+	}
+
 	window.addEventListener('popstate', function(event) {
 		if(history.state && event.state){
 			if(event.state.location == "characterList"){

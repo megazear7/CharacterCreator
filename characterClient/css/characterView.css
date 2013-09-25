@@ -1,5 +1,7 @@
 .statSheet{
+left:0%;
 position: absolute;
+width:45%;
 padding: 10px;
 border-style:ridge;
 border-width:0px;
@@ -23,47 +25,41 @@ padding: 5px;
 background: rgb(225,225,225);
 }
 
-.statSheet .hitpoints {
+.subStatBox {
 padding: 3px;
-width: 130px;
-position: absolute;
-left: 40%;
-top: 55%;
 background: rgb(225,225,225);
+position: absolute;
+}
+
+.statSheet .hitpoints {
+width: 130px;
+left: 40%;
+top: 65%;
 } 
 
 .statSheet .threshhold {
-padding: 3px;
 width: 140px;
-position: absolute;
 left: 70%;
-top: 55%;
-background: rgb(225,225,225);
+top: 65%;
 }
 
-.statSheet .threshholdCheck{
-padding: 3px;
+.statSheet .threshholdCheck {
 width: 140px;
-position: absolute;
 left: 70%;
-top: 75%;
-background: rgb(225,225,225);
+top: 85%;
 }
 
 .statSheet .buildingPoints {
-padding: 3px;
 width: 130px;
-position: absolute;
 left: 40%;
-top: 75%;
-background: rgb(225,225,225);
+top: 85%;
 }
 
 .itemListContainer {
 position:absolute;
-width: 50%;
+width: 45%;
 height: 50%;
-left: 50%;
+right: 0%;
 }
 
 .weaponListItemContainer:hover {
@@ -118,3 +114,8 @@ border-radius:3px;
 .characterClassTitle {
 
 }
+
+.subStatBox:hover {
+background: rgb(200,200,200);
+}
+

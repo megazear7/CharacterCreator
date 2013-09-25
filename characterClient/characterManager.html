@@ -76,8 +76,9 @@
 		<div class = "statSheet">
 			<table text-align="left">
 				<tr>
-					<td text-align="left">Strength: </td>
-					<td><span data-bind = 'text: strInt'></span> / <span data-bind="text: strDec"></span>%</td>
+					<td>Strength: </td>
+					<td data-bind = 'text: strInt'></td>
+					<td><span data-bind="text: strDec"></span>%</td>
 					<td>Dmg: +<span data-bind="text: strDmgMod"></span></td>
 					<td>Feat Of Strength: +<span data-bind="text: strInt"></span></td>
 					<td>Lift (lbs): <span data-bind="text: strInt"></span></td>
@@ -125,10 +126,10 @@
 					<td><span data-bind="text: honorDec"></span>%</td>
 				</tr>
 			</table>
-			<div class = "hitpoints hoverDrop">Hit Points: <span data-bind="text: maxHealth, click: $root.listWeapons"><span></div>
-			<div class = "threshhold hoverDrop">Threshold of Pain: <span data-bind="text: maxHealth"><span></div>
-			<div class = "threshholdCheck hoverDrop">Threshold Check: <span data-bind="text: maxHealth"><span></div>
-			<div class = "buildingPoints hoverDrop">Building Points: <span data-bind="text: maxHealth"><span></div>
+			<div class = "hitpoints subStatBox">Hit Points: <span data-bind="text: maxHealth, click: $root.listWeapons"><span></div>
+			<div class = "threshhold subStatBox">Threshold of Pain: <span data-bind="text: maxHealth"><span></div>
+			<div class = "threshholdCheck subStatBox">Threshold Check: <span data-bind="text: maxHealth"><span></div>
+			<div class = "buildingPoints subStatBox">Building Points: <span data-bind="text: maxHealth"><span></div>
 		</div>
 		<div class="combatProfilesList">
 		

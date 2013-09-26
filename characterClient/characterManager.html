@@ -66,9 +66,7 @@
 
 <script id="characterPage" type="text/html">
 	<div data-bind = "with: chosenViewData">
-		<br/>
-		<br/>
-		<h1 data-bind = 'text: name'></h2>
+		<h1 class="characterNameTop" data-bind = 'text: name'></h2>
 		<div class="characterSubInfo">
 			<span class="characterNameTitle" data-bind = 'text: race'></span>
 			<span class="characterClassTitle" data-bind = 'text: characterClass'></span>
@@ -287,6 +285,7 @@
 			<br/>
 			<br/>
 			<span data-bind = 'text: message'></span>
+			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>

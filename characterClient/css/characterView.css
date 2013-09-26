@@ -1,4 +1,5 @@
 .statSheet{
+margin: 10px;
 left:0%;
 position: absolute;
 width:45%;
@@ -67,10 +68,12 @@ background: rgb(200,200,200);
 }
 
 .weaponListItemContainer {
-margin: 2px;
+margin-top: 2px;
+margin-bottom: 2px;
 padding: 8px;
 background: rgb(225,225,225);
-border-radius:3px;
+border-top-left-radius: 3px;
+border-bottom-left-radius: 3px;
 }
 
 .spellListItemContainer:hover {
@@ -102,6 +105,7 @@ position: absolute;
 padding: 3px;
 padding-left: 10px;
 padding-right: 10px;
+margin-top: -4px;
 margin-left: 10px;
 margin-right: 10px;
 background: rgb(195,195,195);
@@ -120,3 +124,12 @@ border-radius:6px;
 background: rgb(200,200,200);
 }
 
+.characterNameTop {
+text-align:center;
+margin-bottom: 0px;
+}
+
+.characterSubInfo {
+text-align:center;
+margin-bottom:20px;
+}

@@ -307,10 +307,11 @@ function Weapon(name){
 
 // This is a object that is a character creator step. For customized steps the templates need changed, and then create a 
 // new instance of this object with a stepName coorosponding to the template
-function characterCreationStep(name, description, stepName){
+function characterCreationStep(step, name, description, stepName){
 	var self = this;
 	this.name = ko.observable(name);
 	this.stepName = ko.observable(stepName);
+	this.step = ko.observable(step);
 	this.description = ko.observable(description);
 	this.message = ko.observable();
 	
@@ -369,20 +370,24 @@ function CharacterManagerViewModel() {
 	]);
 
 	self.createOptions = ko.observableArray([
-		new characterCreationStep("Step 1", "Recieve Building Points", "step1"),
-		new characterCreationStep("Step 2", "Roll Ability Scores", "step2"),
-		new characterCreationStep("Step 3", "Arange Ability Scores", "step3"),
-		new characterCreationStep("Step 4", "Chose a Race", "step4"),
-		new characterCreationStep("Step 5", "Finalize Ability Scores and Other Adjustments", "step5"),
-		new characterCreationStep("Step 6", "Choose a Class and Alignment", "step6"),
-		new characterCreationStep("Step 7", "Determine Priors and Particulers", "step7"),
-		new characterCreationStep("Step 8", "Determine Quirks and Flaws", "step8"),
-		new characterCreationStep("Step 9", "Calculate Starting Honor", "step9"),
-		new characterCreationStep("Step 10", "Purchase Skills Talents and Proficiencies", "step10"),
-		new characterCreationStep("Step 11", "Roll Hit Points", "step11"),
-		new characterCreationStep("Step 12", "Recueve Starting Money and Equip Character", "step12"),
-		new characterCreationStep("Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
+		new characterCreationStep(1, "Step 1", "Recieve Building Points", "step1"),
+		new characterCreationStep(2, "Step 2", "Roll Ability Scores", "step2"),
+		new characterCreationStep(3, "Step 3", "Arange Ability Scores", "step3"),
+		new characterCreationStep(4, "Step 4", "Chose a Race", "step4"),
+		new characterCreationStep(5, "Step 5", "Finalize Ability Scores and Other Adjustments", "step5"),
+		new characterCreationStep(6, "Step 6", "Choose a Class and Alignment", "step6"),
+		new characterCreationStep(7, "Step 7", "Determine Priors and Particulers", "step7"),
+		new characterCreationStep(8, "Step 8", "Determine Quirks and Flaws", "step8"),
+		new characterCreationStep(9, "Step 9", "Calculate Starting Honor", "step9"),
+		new characterCreationStep(10, "Step 10", "Purchase Skills Talents and Proficiencies", "step10"),
+		new characterCreationStep(11, "Step 11", "Roll Hit Points", "step11"),
+		new characterCreationStep(12, "Step 12", "Recueve Starting Money and Equip Character", "step12"),
+		new characterCreationStep(13, "Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
 	]);
+
+	self.nextStep = function(){
+		self.goToView(self.createOptions()[self.chosenViewData().step()]);
+	}
 
 	self.loadInitData = function(){
 		// in here load all the data you can before the user even logs in. This could be 

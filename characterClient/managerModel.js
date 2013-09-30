@@ -386,7 +386,7 @@ function CharacterManagerViewModel() {
 	]);
 
 	self.nextStep = function(){
-		self.goToView(self.createOptions()[self.chosenViewData().step()]);
+		self.goToStep(self.createOptions()[self.chosenViewData().step()]);
 	}
 
 	self.loadInitData = function(){
@@ -422,13 +422,30 @@ function CharacterManagerViewModel() {
 	 */
 	self.goToView = function(folder) { 
 		self.goToViewChangeView(folder);
-		history.pushState({location: "view"}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
+		history.pushState({location: "view", type: folder.type(), name: folder.name()}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
 	};
 	self.goToViewChangeView = function(folder) { 
 		self.chosenView("emptyView"); 
 		self.chosenViewData(folder);
 		self.chosenView(folder.type()); 
 		self.navSummary("Character List - " + folder.name());
+	};
+
+	self.goToStep = function(step) { 
+		self.goToStepChangeView(step.stepName());
+		history.pushState({location: "step", stepName: step.stepName()}, 'step/' + step.name(), 'step/' + step.name());
+	};
+	self.goToStepChangeView = function(stepName) { 
+		var step;
+		for (var i = 0; i < self.createOptions().length; i++) {
+			if (self.createOptions()[i].stepName() == stepName){
+				step = self.createOptions()[i];
+			}
+		}
+		self.chosenView("emptyView"); 
+		self.chosenViewData(step);
+		self.chosenView(step.stepName()); 
+		self.navSummary("Character List - " + step.name());
 	};
 
 	self.goToLogin = function(){
@@ -478,8 +495,10 @@ function CharacterManagerViewModel() {
 				self.goToCharacterListChangeView();
 			}
 			if(event.state.location == "view"){
-				// I need to find a way to pass data into goToViewChange. These views cannot be back button'd to or forward button'd to
-				self.goToViewChangeView();
+				self.goToViewChangeView(history.state.type);
+			}
+			if(event.state.location == "step"){
+				self.goToStepChangeView(history.state.stepName);
 			}
 			if(event.state.location == "create"){
 				self.goToCharacterCreateChangeView();

@@ -417,20 +417,29 @@ function CharacterManagerViewModel() {
 	 */
 
 	/*
-	 * Standard go to view. This is the standard go to view, whatever is given as folder will need to return its type, which is the template name required for the
-	 * data in folder to be correctly viewed.
-	 */
-	self.goToView = function(folder) { 
-		self.goToViewChangeView(folder);
-		history.pushState({location: "view", type: folder.type(), name: folder.name()}, folder.type() + '/' + folder.name(), folder.type() + '/' + folder.name());
+	* To go to a character pass in a character object into this function
+	*/
+	self.goToCharacter = function(character) { 
+		self.goToCharacterChangeView(character.name());
+		history.pushState({location: "character", name: character.name()}, character.type() + '/' + character.name(), character.type() + '/' + character.name());
 	};
-	self.goToViewChangeView = function(folder) { 
+	self.goToCharacterChangeView = function(characterName) { 
+		var character;
+		/* HACK ALERT: i am only going to characterList length -1 because the last item is the charactercreate button */
+		for (var i = 0; i < self.characterList().length-1; i++) {
+			if (self.characterList()[i].name() == characterName){
+				character = self.characterList()[i];
+			}
+		}
 		self.chosenView("emptyView"); 
-		self.chosenViewData(folder);
-		self.chosenView(folder.type()); 
-		self.navSummary("Character List - " + folder.name());
+		self.chosenViewData(character);
+		self.chosenView(character.type()); 
+		self.navSummary("Character List - " + character.name());
 	};
 
+	/*
+	* To go to a specific step pass in a step object into this function
+	*/
 	self.goToStep = function(step) { 
 		self.goToStepChangeView(step.stepName());
 		history.pushState({location: "step", stepName: step.stepName()}, 'step/' + step.name(), 'step/' + step.name());
@@ -494,8 +503,8 @@ function CharacterManagerViewModel() {
 			if(event.state.location == "characterList"){
 				self.goToCharacterListChangeView();
 			}
-			if(event.state.location == "view"){
-				self.goToViewChangeView(history.state.type);
+			if(event.state.location == "character"){
+				self.goToCharacterChangeView(history.state.name);
 			}
 			if(event.state.location == "step"){
 				self.goToStepChangeView(history.state.stepName);

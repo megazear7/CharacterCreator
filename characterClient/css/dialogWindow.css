@@ -228,3 +228,16 @@ position:absolute;
 top:17%;
 left:2%;
 }
+
+.listCharacter:hover {
+background: rgb(200,200,200);
+}
+
+.listCharacter {
+margin: 25px;
+padding: 25px;
+background: rgb(225,225,225);
+border-top-left-radius: 5px;
+border-bottom-left-radius: 3px;
+width:40%;
+}

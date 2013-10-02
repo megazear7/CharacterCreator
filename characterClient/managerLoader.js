@@ -82,5 +82,4 @@ function loadMemberCharacterData(viewModel){
 	temp.addSpell("fireball");
 	temp.addSpell("fireball");
 	temp.addSpell("fireball");
-	viewModel.characterList.push(new newCharacter());
 }

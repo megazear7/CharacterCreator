@@ -425,8 +425,7 @@ function CharacterManagerViewModel() {
 	};
 	self.goToCharacterChangeView = function(characterName) { 
 		var character;
-		/* HACK ALERT: i am only going to characterList length -1 because the last item is the charactercreate button */
-		for (var i = 0; i < self.characterList().length-1; i++) {
+		for (var i = 0; i < self.characterList().length; i++) {
 			if (self.characterList()[i].name() == characterName){
 				character = self.characterList()[i];
 			}

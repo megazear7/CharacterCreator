@@ -24,11 +24,6 @@
 </div>
 
 <!-- templates  -->
-<script id="characterListOld" type="text/html">
-		<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
-		<div data-bind="GridSelect: columns"></div>
-</script>
-
 <script id="characterList" type="text/html">
 		<div data-bind="template: { name: 'plainCharacterNew', foreach: chosenViewData}"></div>
 		<div data-bind="template: { name: 'createNewChar'}"></div>
@@ -201,18 +196,6 @@
         <h1 data-bind = 'text: name'></h2>
 		<div data-bind = 'text: race'></div>
 		<div data-bind = 'text: characterClass'></div>
-   	 </div>
-</script>
-
-<script id="plainCharacter" type="text/html">
-	<!-- this is the character dialog button -->
-  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacter">
-        <h1 data-bind = 'text: name'></h2>
-        <p>
-			<div data-bind = 'text: race'></div>
-			<div data-bind = 'text: characterClass'></div>
-		</p>
-		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: rename, clickBubble: false"></div> 
    	 </div>
 </script>
 

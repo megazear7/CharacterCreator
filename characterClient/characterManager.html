@@ -24,18 +24,18 @@
 </div>
 
 <!-- templates  -->
-<script id="characterListNew" type="text/html">
+<script id="characterListOld" type="text/html">
 		<div data-bind="template: { name: $root.dialogWindowTemplateType, foreach: chosenViewData}" class="bodyContainer"></div>
 		<div data-bind="GridSelect: columns"></div>
 </script>
 
 <script id="characterList" type="text/html">
-		<div data-bind="template: { name: 'plainCharacterNew', foreach: chosenViewData}" class="bodyContainer"></div>
+		<div data-bind="template: { name: 'plainCharacterNew', foreach: chosenViewData}"></div>
 		<div data-bind="template: { name: 'createNewChar'}"></div>
 </script>
 
 <script id="createNewChar" type="text/html">
-	<div class="newChar">
+	<div class="newChar listCharacter" data-bind="click: $root.goToCharacterCreate">
 		<p>Create New Character</p>
 	</div>
 </script>

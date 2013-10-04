@@ -476,28 +476,14 @@ function CharacterManagerViewModel() {
 	};
 
 	/*
-	 * This is the go to character create. This will put you at the character create screen.
+	 * This is the go to character create. This will put you at the character create screen step 1.
 	 */
 	self.goToCharacterCreate = function() {
 		self.goToCharacterCreateChangeView();
-		history.pushState({location: "create"}, 'create', 'create');
-	};
-	self.goToCharacterCreateChangeView = function() {
-		self.chosenView("emptyView"); 
-		self.chosenViewData(self.createOptions());
-		self.chosenView("characterCreate"); 
-		self.navSummary("Character - Create");
-	};
-
-	/*
-	 * This is the go to character create. This will put you at the character create screen.
-	 */
-	self.goToCharacterCreateNew = function() {
-		self.goToCharacterCreateNewChangeView();
 		history.pushState({location: "create"}, 'create/step1', 'create/step1');
 		self.currentStep = 1;
 	};
-	self.goToCharacterCreateNewChangeView = function() {
+	self.goToCharacterCreateChangeView = function() {
 		self.chosenView("emptyView"); 
 		self.chosenViewData(new Character());
 		self.chosenView("step1"); 

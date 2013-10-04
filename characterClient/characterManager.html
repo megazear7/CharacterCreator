@@ -30,7 +30,7 @@
 </script>
 
 <script id="createNewChar" type="text/html">
-	<div class="newChar listCharacter" data-bind="click: $root.goToCharacterCreateNew">
+	<div class="newChar listCharacter" data-bind="click: $root.goToCharacterCreate">
 		<p>Create New Character</p>
 	</div>
 </script>
@@ -257,27 +257,6 @@
    	 </div>
 </script>
 
-<script id="characterCreationStepDialog" type="text/html">
-	<!-- this is the dialog button for the character creation step -->
-  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToStep">
-        <h1 data-bind = 'text: name'></h2>
-        <p>
-			Description: <span data-bind = 'text: description'></span>
-			<br/>
-			<br/>
-			<span data-bind = 'text: message'></span>
-		</p>
-		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
-   	 </div>
-</script>
-
-<script id="newCharacter" type="text/html">
-	<!-- this is the create new character dialog button -->
-  	<div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
-	<h1>Create New Character</h1>
-   	</div>
-</script>
-
 <!-- Character creation step templates, each step neads a template because each step is different  -->
 <script id="step1" type="text/html">
 	<div data-bind="with: chosenViewData">
@@ -321,6 +300,18 @@
 		<h1 data-bind = 'text: name'></h2>
 		<p>
 			Description: <span>Chose a Race</span>
+			<select>
+				<option>Human</option>
+				<option>Dwarf</option>
+				<option>Elf</option>
+				<option>Half Elf</option>
+				<option>Halfling</option>
+				<option>Gnome</option>
+				<option>Gnome Titan</option>
+				<option>Half Orc</option>
+				<option>Half Hobgoblin</option>
+				<option>Grel</option>
+			</select>
 			<br/>
 			<br/>
 			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>

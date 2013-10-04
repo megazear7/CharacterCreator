@@ -1,4 +1,6 @@
 
+var database = "hackmaster"
+
 var userModel = {
     emailname : ko.observable("jrogers@gmail.com"),  
     password  : ko.observable("password"),
@@ -12,14 +14,14 @@ var AppViewModel = {
 };
 
 function update(){
-    jQuery.getJSON("/cgi-bin/response.cgi?request=userUpdate&emailname="
+    jQuery.getJSON("/cgi-bin/response.cgi?request=userUpdate&database="+ database +"&emailname="
     	+ userModel.emailname +"&password=" + userModel.password,
         function(jsonData) {
     })
 }
 
 function login(){
-    jQuery.getJSON("/cgi-bin/response.cgi?request=login&emailname="
+    jQuery.getJSON("/cgi-bin/response.cgi?request=login&database="+ database +"&emailname="
     	+ userModel.emailname() +"&password=" + userModel.password(),
         function(jsonData) {
 
@@ -48,20 +50,20 @@ function logout(){
 }
 
 function register(){
-    jQuery.getJSON("/cgi-bin/response.cgi?request=register&emailname="
+    jQuery.getJSON("/cgi-bin/response.cgi?request=register&database="+ database +"&emailname="
     	+ userModel.emailname() +"&password=" + userModel.password(),
         function(jsonData) {
     })
 }
 
 function forgot(){
-    jQuery.getJSON("/cgi-bin/response.cgi?request=forgotLogin&emailname="+ userModel.emailname(),
+    jQuery.getJSON("/cgi-bin/response.cgi?request=forgotLogin&database="+ database +"&emailname="+ userModel.emailname(),
         function(jsonData) {
     })
 }
 
 function loadDoc(){
-    jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&docid=85a8384e94594",
+    jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database +"&docid=85a8384e94594",
         function(jsonData) {
  
         AppViewModel.firstName(jsonData.firstName);
@@ -75,7 +77,7 @@ function loadDoc(){
 
 function saveDoc(){
     var jsonData = ko.toJSON(AppViewModel);
-    jQuery.post("/cgi-bin/response.cgi?request=saveDoc&docid=85a8384e94594",
+    jQuery.post("/cgi-bin/response.cgi?request=saveDoc&database="+ database +"&docid=85a8384e94594",
     jsonData, function(returnedData) {
         // This callback is executed if the post was successful    
     })

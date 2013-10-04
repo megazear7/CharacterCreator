@@ -355,6 +355,8 @@ function CharacterManagerViewModel() {
 		return lanes;
 	});
 
+	self.currentStep = 0;
+
 	self.loggedInMember = ko.observable(new Member());
 
 	self.characterList = ko.observableArray([
@@ -381,13 +383,9 @@ function CharacterManagerViewModel() {
 		new characterCreationStep(9, "Step 9", "Calculate Starting Honor", "step9"),
 		new characterCreationStep(10, "Step 10", "Purchase Skills Talents and Proficiencies", "step10"),
 		new characterCreationStep(11, "Step 11", "Roll Hit Points", "step11"),
-		new characterCreationStep(12, "Step 12", "Recueve Starting Money and Equip Character", "step12"),
+		new characterCreationStep(12, "Step 12", "Recieve Starting Money and Equip Character", "step12"),
 		new characterCreationStep(13, "Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
 	]);
-
-	self.nextStep = function(){
-		self.goToStep(self.createOptions()[self.chosenViewData().step()]);
-	}
 
 	self.loadInitData = function(){
 		// in here load all the data you can before the user even logs in. This could be 
@@ -439,21 +437,18 @@ function CharacterManagerViewModel() {
 	/*
 	* To go to a specific step pass in a step object into this function
 	*/
-	self.goToStep = function(step) { 
-		self.goToStepChangeView(step.stepName());
-		history.pushState({location: "step", stepName: step.stepName()}, 'step/' + step.name(), 'step/' + step.name());
+	self.goToStep = function() { 
+		self.currentStep += 1;
+		var stepName = "step" + self.currentStep;
+		self.goToStepChangeView(stepName);
+		history.pushState({location: "step", stepName: stepName}, stepName, stepName);
 	};
 	self.goToStepChangeView = function(stepName) { 
-		var step;
-		for (var i = 0; i < self.createOptions().length; i++) {
-			if (self.createOptions()[i].stepName() == stepName){
-				step = self.createOptions()[i];
-			}
-		}
-		self.chosenView("emptyView"); 
-		self.chosenViewData(step);
-		self.chosenView(step.stepName()); 
-		self.navSummary("Character List - " + step.name());
+		//self.chosenView("emptyView"); 
+		// the data here needs to be a new character. We could assume that it is just correct and that there not getting here by some odd means... TODO
+		//self.chosenViewData(step);
+		self.chosenView(stepName); 
+		self.navSummary("Character List - " + stepName);
 	};
 
 	self.goToLogin = function(){
@@ -479,6 +474,7 @@ function CharacterManagerViewModel() {
 		self.chosenView("characterList"); 
 		self.navSummary("Character List");
 	};
+
 	/*
 	 * This is the go to character create. This will put you at the character create screen.
 	 */
@@ -490,6 +486,21 @@ function CharacterManagerViewModel() {
 		self.chosenView("emptyView"); 
 		self.chosenViewData(self.createOptions());
 		self.chosenView("characterCreate"); 
+		self.navSummary("Character - Create");
+	};
+
+	/*
+	 * This is the go to character create. This will put you at the character create screen.
+	 */
+	self.goToCharacterCreateNew = function() {
+		self.goToCharacterCreateNewChangeView();
+		history.pushState({location: "create"}, 'create/step1', 'create/step1');
+		self.currentStep = 1;
+	};
+	self.goToCharacterCreateNewChangeView = function() {
+		self.chosenView("emptyView"); 
+		self.chosenViewData(new Character());
+		self.chosenView("step1"); 
 		self.navSummary("Character - Create");
 	};
 
@@ -509,7 +520,7 @@ function CharacterManagerViewModel() {
 				self.goToStepChangeView(history.state.stepName);
 			}
 			if(event.state.location == "create"){
-				self.goToCharacterCreateChangeView();
+				self.goToCharacterCreateNewChangeView();
 			}
 			if(event.state.location == "login"){
 				self.goToLoginChangeView();

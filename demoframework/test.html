@@ -33,8 +33,6 @@
           </tr>
         </td>
        </table> 
-
-        <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
       </div>
     
       <div id="logout"  style="display:none;">
@@ -66,7 +64,6 @@
       <p/>
       <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
     </div>
-
 
     <script>
       ko.applyBindings(userModel, document.getElementById("loginGroup") );

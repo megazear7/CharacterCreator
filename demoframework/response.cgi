@@ -12,12 +12,6 @@ use MongoDB::Collection;
 # use strict;   #this should really be turned on
 use warnings;
 
-# open a connection to the mongodb 
-my $conn = new MongoDB::Connection;
-my $HackMasterDB   = $conn->get_database( 'hackmaster' ) ;
-my $UserCollection = $HackMasterDB->get_collection( 'user' );
-my $DocsCollection = $HackMasterDB->get_collection( 'docs' );
-
 # read the CGI params
 $cgi 	= new CGI ;
 @names 	= $cgi->param ;
@@ -36,6 +30,13 @@ foreach (@p) {
 #foreach (keys(%h)) { print $_ . " : " . $h{$_} . "\n"; }
 
 # grab the cookie from the request and get hash for user document
+
+
+# open a connection to the mongodb 
+my $conn = new MongoDB::Connection;
+my $HackMasterDB   = $conn->get_database( $h{"database"} ) ;
+my $UserCollection = $HackMasterDB->get_collection( 'user' );
+my $DocsCollection = $HackMasterDB->get_collection( 'docs' );
 
 
 # setup for output

@@ -257,37 +257,16 @@
    	 </div>
 </script>
 
-<script id="characterCreationStepDialog" type="text/html">
-	<!-- this is the dialog button for the character creation step -->
-  	  <div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToStep">
-        <h1 data-bind = 'text: name'></h2>
-        <p>
-			Description: <span data-bind = 'text: description'></span>
-			<br/>
-			<br/>
-			<span data-bind = 'text: message'></span>
-		</p>
-		<div class = "characterEditButton smallButton smallDialogWindowButton" data-bind="click: someFunction"></div> 
-   	 </div>
-</script>
-
-<script id="newCharacter" type="text/html">
-	<!-- this is the create new character dialog button -->
-  	<div class="internalCharacter internalWindow dialogWindow" data-bind = "DialogWindow: true, click: $root.goToCharacterCreate">
-	<h1>Create New Character</h1>
-   	</div>
-</script>
-
 <!-- Character creation step templates, each step neads a template because each step is different  -->
 <script id="step1" type="text/html">
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Recieve Building Points</span>
+
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -296,11 +275,10 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Roll Ability Scores</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -309,11 +287,10 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Arange Ability Scores</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -322,11 +299,22 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Chose a Race</span>
+			<select>
+				<option>Human</option>
+				<option>Dwarf</option>
+				<option>Elf</option>
+				<option>Half Elf</option>
+				<option>Halfling</option>
+				<option>Gnome</option>
+				<option>Gnome Titan</option>
+				<option>Half Orc</option>
+				<option>Half Hobgoblin</option>
+				<option>Grel</option>
+			</select>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -335,11 +323,10 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Finalize Ability Scores and Other Adjustments</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -348,11 +335,10 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Choose a Class and Alignment</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -361,11 +347,10 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Determine Priors and Particulers</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -374,11 +359,10 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Determine Quirks and Flaws</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -387,11 +371,10 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Calculate Starting Honor</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -400,11 +383,10 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Purchase Skills Talents and Proficiencies</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -413,11 +395,10 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Roll Hit Points</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
-			<a href="#" data-bind='click: $root.nextStep'><span>Next</span></a>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -426,10 +407,9 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span data-bind = 'text: description'></span>
+			Description: <span>Recieve Starting Money and Equip Character</span>
 			<br/>
 			<br/>
-			<span data-bind = 'text: message'></span>
 			<a href="#" data-bind=''><span>Finish</span></a>
 		</p>
 	</div>

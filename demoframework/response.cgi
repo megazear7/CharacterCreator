@@ -2,12 +2,14 @@
 use Cwd; $dir=cwd();
 
 use CGI;
+use CGI::Cookie;
 use HTTP::Request::Common qw(POST);
 use LWP::UserAgent;
 use Time::localtime;
 use JSON ();
 use MongoDB;
 use MongoDB::Collection;
+use Digest::SHA3 qw(sha3_224 sha3_224_base64);
 
 # use strict;   #this should really be turned on
 use warnings;
@@ -31,6 +33,13 @@ foreach (@p) {
 
 # grab the cookie from the request and get hash for user document
 
+my $Cookie = $cgi->cookie('SessionId');
+my $digest = sha3_224_base64( $h{"docid"} . $ENV{"REMOTE_ADDR"} );
+#my $digest = $h{"docid"};
+#my $digest = "bob";
+
+my $validCookie = 0; 
+if ($Cookie eq $digest) {$validCookie = 1;};
 
 # open a connection to the mongodb 
 my $conn = new MongoDB::Connection;
@@ -53,7 +62,7 @@ if ($REQUEST_METHOD eq 'POST') {
 
 	my $docid = $h{"docid"};
 	
-        $json = qq{{"status" : "success", "msg" : "handled saveDoc request"}};
+        $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "validCookie" : "$validCookie", "Cookie" : "$Cookie", "Digest" : "$digest"}};
     }
 
 } elsif ($REQUEST_METHOD eq 'GET'){
@@ -78,9 +87,12 @@ if ($REQUEST_METHOD eq 'POST') {
 
         	# create a cookie that holds the 
         	# document id of the user record
+        	$value = sha3_224_base64( $dts->{_id} . $ENV{"REMOTE_ADDR"} );
+	       	#$value = $dts->{_id};
+	       	#$value = "bob";
         	$sc  = $cgi->cookie(
                    -name=>'SessionId', 
-                   -value=>$dts->{_id},
+                   -value=>$value,
 	           -expires=>'+1d',
                    #-path=>'/cgi-bin/database',
                    #-domain=>'localhost',
@@ -88,10 +100,8 @@ if ($REQUEST_METHOD eq 'POST') {
                    );
 
 	        # create a JSON string according to the database result
-        	$json = qq{{"status" : "success", "msg" : "login", "userid" : "$userID", "emailname": "$emailname", "password": "$password", "result": $json }};
-	} else
-
-       { 
+        	$json = qq{{"status" : "success", "msg" : "login", "userid" : "$userID", "validCookie" : "$validCookie", "Cookie" : "$Cookie", "value" : "$value", "RemoteAddress" : "$ENV{"REMOTE_ADDR"}", "result": $json }};
+	} else { 
         	$json = qq{{"status" : "failure", "msg" : "login username or password is wrong", "userid" : "$userID", "emailname": "$emailname", "password": "$password", "result": $json }};
 	}
 
@@ -114,16 +124,18 @@ if ($REQUEST_METHOD eq 'POST') {
         $json = $jsonEncoder->encode($dts) ;
         
         
-        if ($dts->{password} eq $password) 
+        if ($dts->{emailname} eq $emailname) 
         {
-        	$json = qq{{"status" : "failure", "msg" : "register", "userid" : $userID, "emailname": $emailname , "password": $password, "result": $json }};
+        	# if this user exists, then you cant register with the same email address
+        	# Issue: this will possibly leak who has an account on the site.
+        	$json = qq{{"status" : "failure", "msg" : "register", "userid" : $userID, "emailname": $emailname , "result": $json }};
         } else {
         
                 # create a cookie that holds the 
         	# document id of the user record
         	$sc  = $cgi->cookie(
                    -name=>'SessionId', 
-                   -value=>$dts->{_id},
+                   -value=>sha3_224( $dts->{_id} + $ENV{"REMOTE_ADDR"} ),
 	           -expires=>'+1d',
                    #-path=>'/cgi-bin/database',
                    #-domain=>'localhost',

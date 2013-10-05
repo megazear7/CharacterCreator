@@ -10,6 +10,7 @@
 <script type="text/javascript" src="knockout-2.3.0.js"></script>
 <script src="managerModel.js"></script>
 <script src="managerLoader.js"></script>
+<script src="creation.js"></script>
 
 <!-- Body Skeleton -->
 <div class="bodywrapper">
@@ -30,7 +31,7 @@
 </script>
 
 <script id="createNewChar" type="text/html">
-	<div class="newChar listCharacter" data-bind="click: $root.goToCharacterCreate">
+	<div class="newChar listCharacter" data-bind="click: $root.goToStep">
 		<p>Create New Character</p>
 	</div>
 </script>
@@ -299,19 +300,18 @@
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
 		<p>
-			Description: <span>Chose a Race</span>
-			<select>
-				<option>Human</option>
-				<option>Dwarf</option>
-				<option>Elf</option>
-				<option>Half Elf</option>
-				<option>Halfling</option>
-				<option>Gnome</option>
-				<option>Gnome Titan</option>
-				<option>Half Orc</option>
-				<option>Half Hobgoblin</option>
-				<option>Grel</option>
-			</select>
+			Description: <span>Choose a Race</span>
+			<br/>
+			<span class="race_choice">Human</span>
+			<span class="race_choice">Dwarf</span>
+			<span class="race_choice">Elf</span>
+			<span class="race_choice">Half Elf</span>
+			<span class="race_choice">Halfling</span>
+			<span class="race_choice">Gnome</span>
+			<span class="race_choice">Gnome Titan</span>
+			<span class="race_choice">Half Orc</span>
+			<span class="race_choice">Half Hobgoblin</span>
+			<span class="race_choice">Grel</span>
 			<br/>
 			<br/>
 			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
@@ -338,6 +338,26 @@
 			Description: <span>Choose a Class and Alignment</span>
 			<br/>
 			<br/>
+
+			Description: <span>Choose a Race</span>
+			<br/>
+			<span class="class_choice">Figher</span>
+			<span class="class_choice">Knight</span>
+			<span class="class_choice">Paladin</span>
+			<span class="class_choice">Ranger</span>
+			<span class="class_choice">Barbarian</span>
+			<span class="class_choice">Thief</span>
+			<span class="class_choice">Rogue</span>
+			<span class="class_choice">Assassin</span>
+			<span class="class_choice">Mage</span>
+			<span class="class_choice">Fighter Mage</span>
+			<span class="class_choice">Fighter Thief</span>
+			<span class="class_choice">Mage Thief</span>
+			<span class="class_choice">Cleric</span>
+			<br/>
+			<br/>
+			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
+
 			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>

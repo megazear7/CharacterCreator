@@ -13,39 +13,102 @@
     <div id="loginGroup" style="float: right">
       <div id="login">
         <table>
-         <td>
-          <tr>
-	    <input data-bind="value: emailname" />
-          </tr>
-          <tr>
-            <input data-bind="value: password" />
-          </tr>
-          <tr>
+         <tr>
+          <td>
+	    <input data-bind="value: emailname" placeholder="eMail Address" title="eMail Address"></input>
+          </td>
+          <td>
+            <input data-bind="value: password" type="password" placeholder="Password" title="Password"></input>
+          </td>
+          <td>
             <button type="Button" id="loginBtn" onclick="login()">Login</button>
-          </tr>
-          <tr>
-            <button type="Button" id="regBtn" onclick="register()">Register</button>
-          </tr>
-          <tr>
+          </td>
+          <td>
+            <button type="Button" id="openRegBtn" onclick="openReg()">Register</button>
+          </td>
+          <td>
             <button type="Button" id="forgotBtn" onclick="forgot()">Forgot</button>
-          </tr>
-          <tr>
-            <button type="Button" id="updateBtn" onclick="update()">Update</button>
-          </tr>
-        </td>
+          </td>
+        </tr>
+        <tr>
+         <td span='4'>
+          <strong data-bind="text: lastStatus"></strong>
+         </td>
+        </tr>
        </table> 
+      </div>
+      
+      <div id="register" style="display:none;">
+        <table>
+         <tr>
+          <td>
+	    <input data-bind="value: emailname" placeholder="eMail Address" title="eMail Address"></input>
+          </td>
+          <td>
+            <input data-bind="value: password" type="password" placeholder="Password" title="Password"></input>
+          </td>
+          <td>
+            <input data-bind="value: screenName" placeholder="Screen Name" title="Screen Name"></input>
+          </td>
+          <td>
+            <button type="Button" id="regBtn" onclick="register()">Register</button>
+          </td>
+          <td>
+            <button type="Button" id="cancelRegBtn" onclick="cancelReg()">Cancel</button>
+          </td>
+        </tr>
+        <tr>
+          <td span='5'>
+            <strong data-bind="text: lastStatus"></strong>
+          </td>
+        </tr>
+       </table> 
+      </div>
+      
+      <div id="update" style="display:none;">
+        <table>
+         <tr>
+          <td>
+            <input data-bind="value: password" type="password" placeholder="Password" title="Password"></input>
+          </td>
+          <td>
+            <input data-bind="value: screenName" placeholder="Screen Name" title="Screen Name"></input>
+          </td>
+          <td>
+            <button type="Button" id="updateBtn" onclick="update()">Update</button>
+          </td>
+          <td>
+            <button type="Button" id="cancelUpdateBtn" onclick="cancelUpdate()">Cancel</button>
+          </td>
+        </tr>
+        <tr>
+          <td span='4'>
+            <br /><strong data-bind="text: lastStatus"></strong>
+          </td>
+        </tr>
+       </table> 
+       <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+
       </div>
     
       <div id="logout"  style="display:none;">
         <table>
-         <td>
-          <tr>
-	    Welcome, <strong data-bind="text: emailname"></strong>
-          </tr>
-          <tr>
+         <tr>
+          <td>
+	    Welcome, <strong data-bind="text: screenName"></strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </td>
+          <td>
             <button type="Button" id="logoutBtn" onclick="logout()">Logout</button>
-          </tr>
-        </td>
+          </td>
+          <td>
+            <button type="Button" id="openupdateBtn" onclick="openUpdate()">Update</button>
+          </td>
+        </tr>
+        <tr>
+          <td span='4'>
+            <strong data-bind="text: lastStatus"></strong>
+          </td>
+        </tr>
        </table> 
       </div>
     </div>

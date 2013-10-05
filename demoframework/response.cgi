@@ -9,10 +9,16 @@ use Time::localtime;
 use JSON ();
 use MongoDB;
 use MongoDB::Collection;
+use MongoDB::OID;
 use Digest::SHA3 qw(sha3_224 sha3_224_base64);
 
 # use strict;   #this should really be turned on
 use warnings;
+
+# this is used to make the crypto hashes more secure
+# a unique salt like this can be updated on a regular
+# basis to doubly protect the user credentials.
+my $salt = "1c59f690-2cbf-11e3-9529-b3c242e7178e";
 
 # read the CGI params
 $cgi 	= new CGI ;
@@ -31,13 +37,9 @@ foreach (@p) {
 }
 #foreach (keys(%h)) { print $_ . " : " . $h{$_} . "\n"; }
 
-# grab the cookie from the request and get hash for user document
-
+# grab the cookie from the request compare to userid and document hash
 my $Cookie = $cgi->cookie('SessionId');
-my $digest = sha3_224_base64( $h{"docid"} . $ENV{"REMOTE_ADDR"} );
-#my $digest = $h{"docid"};
-#my $digest = "bob";
-
+my $digest = sha3_224_base64( $h{"userid"} . $ENV{"REMOTE_ADDR"} . $salt );
 my $validCookie = 0; 
 if ($Cookie eq $digest) {$validCookie = 1;};
 
@@ -60,7 +62,7 @@ if ($REQUEST_METHOD eq 'POST') {
 
     if ($h{"request"} eq "saveDoc") {
 
-	my $docid = $h{"docid"};
+	my $userid = $h{"userid"};
 	
         $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "validCookie" : "$validCookie", "Cookie" : "$Cookie", "Digest" : "$digest"}};
     }
@@ -72,7 +74,7 @@ if ($REQUEST_METHOD eq 'POST') {
 
 	my $emailname = $h{"emailname"};
 	my $password  = $h{"password"};
-	my ($userID);
+	my ($userid);
 
 	# lookup document by username and password
 	my $all = $UserCollection->find( { "emailname"=> $emailname } );
@@ -87,7 +89,7 @@ if ($REQUEST_METHOD eq 'POST') {
 
         	# create a cookie that holds the 
         	# document id of the user record
-        	$value = sha3_224_base64( $dts->{_id} . $ENV{"REMOTE_ADDR"} );
+        	$value = sha3_224_base64( $dts->{_id} . $ENV{"REMOTE_ADDR"} . $salt );
 	       	#$value = $dts->{_id};
 	       	#$value = "bob";
         	$sc  = $cgi->cookie(
@@ -100,9 +102,9 @@ if ($REQUEST_METHOD eq 'POST') {
                    );
 
 	        # create a JSON string according to the database result
-        	$json = qq{{"status" : "success", "msg" : "login", "userid" : "$userID", "validCookie" : "$validCookie", "Cookie" : "$Cookie", "value" : "$value", "RemoteAddress" : "$ENV{"REMOTE_ADDR"}", "result": $json }};
+        	$json = qq{{"status" : "success", "msg" : "Login was successful.", "result": $json }};
 	} else { 
-        	$json = qq{{"status" : "failure", "msg" : "login username or password is wrong", "userid" : "$userID", "emailname": "$emailname", "password": "$password", "result": $json }};
+        	$json = qq{{"status" : "failure", "msg" : "Login username or password is wrong", "result": $json }};
 	}
 
 
@@ -114,6 +116,7 @@ if ($REQUEST_METHOD eq 'POST') {
 
 	my $emailname = $h{"emailname"};
 	my $password  = $h{"password"};
+	my $screenName  = $h{"screenName"};
 	
 	# Check to see if a document exists with this user name an login
 	my $all = $UserCollection->find( { "emailname"=> $emailname } );
@@ -128,31 +131,46 @@ if ($REQUEST_METHOD eq 'POST') {
         {
         	# if this user exists, then you cant register with the same email address
         	# Issue: this will possibly leak who has an account on the site.
-        	$json = qq{{"status" : "failure", "msg" : "register", "userid" : $userID, "emailname": $emailname , "result": $json }};
+        	$json = qq{{"status" : "failure", "msg" : "Registration failed, duplicate email address."}};
         } else {
-        
-                # create a cookie that holds the 
-        	# document id of the user record
-        	$sc  = $cgi->cookie(
-                   -name=>'SessionId', 
-                   -value=>sha3_224( $dts->{_id} + $ENV{"REMOTE_ADDR"} ),
-	           -expires=>'+1d',
-                   #-path=>'/cgi-bin/database',
-                   #-domain=>'localhost',
-                   #-secure=>1
-                   );
 
-        	$UserCollection->insert({"emailname"=> $emailname, "password" => $password, "documents" => "" });
-        	$json = qq{{"status" : "success", "msg" : "register", "userid" : "$userID", "emailname": "$emailname" , "password": "$password" , "p2": $dts->{password}, "result": $json }};
+		# do we need to check the error return for a valid response?
+        	$UserCollection->insert({"emailname"=> $emailname, "password" => $password, 
+        		"screenName" => $screenName, "documents" => "" });
+        	$json = qq{{"status" : "success", "msg" : "Registered new user.", "result": $json }};
         }
 
 
     } elsif ($h{"request"} eq "userUpdate") {
 	# handle request to update user values
-	my $emailname = $h{"emailname"};
-	my $password  = $h{"password"};
+	my $emailname  = $h{"emailname"};
+	my $password   = $h{"password"}; 
+	my $screenName = $h{"screenName"};
+	my $userid     = $h{"userid"};
 
-        $json = qq{{"status" : "success", "msg" : "handled userUpdate request"}};
+	if ($validCookie == 1)
+	{
+		#my $all = $UserCollection->update( { "emailname"=> $emailname } );
+		#$UserCollection->update( { emailname => $emailname }, 
+		#	{ '$set' => { screenName => $screenName } } );
+		
+		# find({ _id => MongoDB::OID->new(value => "4d2a0fae9e0a3b4b32f70000")})
+		$UserCollection->update( 
+			{ _id => MongoDB::OID->new(value => $userid)}, 
+			{ '$set' => { screenName => $screenName,
+				password => $password } } );
+		
+
+		$json = qq{{"status" : "success", "msg" : "handled userUpdate request"}};
+		# "cookie" : $Cookie, "digest" : $digest, "userid" : $h{"userid"}, "found" : $found,
+		 
+	} else {
+		$json = qq{{"status" : "failure", 
+		"cookie" : $Cookie, "digest" : $digest, "userid" : $h{"userid"}, "found" : $found,
+		"msg" : "Invalid credentials."}};
+
+	}
+
     } elsif ($h{"request"} eq "forgotLogin") {
 	# if a given user exists, send and email
 	my $emailname = $h{"emailname"};
@@ -166,6 +184,7 @@ if ($REQUEST_METHOD eq 'POST') {
 	# handle load document request
         # my $inData = { "Quark" => "Spin", "firstName" => "James", "lastName" => "Rogers", "type" => "Emperor", "pets" => [ "Floppyhat", "Balloon", "Apple"]};
 #my $inData = { "success" => 1};
+	my $userid = $h{"userid"};
 	my $docid = $h{"docid"};
 
         $jsonEncoder     = JSON->new->utf8->allow_nonref;

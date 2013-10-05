@@ -10,7 +10,7 @@
 <script type="text/javascript" src="knockout-2.3.0.js"></script>
 <script src="managerModel.js"></script>
 <script src="managerLoader.js"></script>
-<script src="creation.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha3.js"></script>
 
 <!-- Body Skeleton -->
 <div class="bodywrapper">
@@ -58,7 +58,7 @@
             <button type="Button" id="loginBtn" data-bind="click: $root.login">Login</button>
           </tr>
           <tr>
-            <button type="Button" id="regBtn" onclick="register()">Register</button>
+            <button type="Button" id="regBtn" data-bind="click: $root.register">Register</button>
           </tr>
           <tr>
             <button type="Button" id="forgotBtn" onclick="forgot()">Forgot</button>

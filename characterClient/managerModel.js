@@ -101,6 +101,7 @@ function Member(){
 	var self = this;
 	this.username = ko.observable("");
 	this.isLoggedIn = ko.observable("notLoggedIn");
+	this.userid	= ko.observable("");
 
 	this.constructor = function(username){
 		this.username(username);
@@ -372,9 +373,24 @@ function CharacterManagerViewModel() {
 
 	self.login = function(){
 		// right here you need to populate the view model with everything that is related to the member that just logged in
+		console.log("blah");
 		loadMemberData(self);
 		loadMemberCharacterData(self);
 		self.goToCharacterList();
+	}
+
+	self.register = function() {
+
+		// JIM123 HERE when they click register, get the info they entered and send it accross so the server will create a member doc for them
+		console.log("hello");
+		jQuery.getJSON("/cgi-bin/response.cgi?request=register&database="+ "hackmaster" 
+				+"&emailname=" + $('.loginEmailname').val() 
+				+"&password=" + CryptoJS.SHA3($('.loginPassword').val(), { outputLength: 256 })
+				+"&screenName=" + "default",
+				function(jsonData) {
+				console.log(jsonData);
+    	})
+ 
 	}
 
 	self.dialogWindowTemplateType = function(item){

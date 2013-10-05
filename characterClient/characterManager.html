@@ -130,6 +130,7 @@
 					<td data-bind = 'text: honorInt'></td>
 					<td><span data-bind="text: honorDec"></span>%</td>
 				</tr>
+			<p data-bind="text: bp"></p>
 			</table>
 			<div class = "hitpoints subStatBox">Hit Points: <span data-bind="text: maxHealth, click: $root.listWeapons"><span></div>
 			<div class = "threshhold subStatBox">Threshold of Pain: <span data-bind="text: maxHealth"><span></div>
@@ -264,7 +265,8 @@
 		<h1 data-bind = 'text: name'></h2>
 		<p>
 			Description: <span>Recieve Building Points</span>
-
+			
+			<button type="button" class="starting_bp">Take 50 Building Points</button>
 			<br/>
 			<br/>
 			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
@@ -275,12 +277,20 @@
 <script id="step2" type="text/html">
 	<div data-bind="with: chosenViewData">
 		<h1 data-bind = 'text: name'></h2>
-		<p>
-			Description: <span>Roll Ability Scores</span>
-			<br/>
-			<br/>
-			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
-		</p>
+		Description: <span>Roll Ability Scores</span><br/>
+		<div class="roll_stats">
+			<span>Strength</span><input class="str_roll" type="text"></input><br/>
+			<span>Intellegence</span><input class="int_roll" type="text"></input><br/>
+			<span>Wisdom</span><input class="wis_roll" type="text"></input><br/>
+			<span>Dexterity</span><input class="dex_roll" type="text"></input><br/>
+			<span>Constitution</span><input class="con_roll" type="text"></input><br/>
+			<span>Looks</span><input class="lks_roll" type="text"></input><br/>
+			<span>Charisma</span><input class="cha_roll" type="text"></input><br/>
+		</div>
+		<br/>
+		<br/>
+		<button class="save_stats">Save Stats</button>
+		<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 	</div>
 </script>
 
@@ -357,8 +367,6 @@
 			<br/>
 			<br/>
 			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
-
-			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
 		</p>
 	</div>
 </script>
@@ -368,6 +376,8 @@
 		<h1 data-bind = 'text: name'></h2>
 		<p>
 			Description: <span>Determine Priors and Particulers</span>
+			<span>Name</span><input class="name_chosen" type="text"></input><br/>
+			<button class="choose_name">Choose Name</button>
 			<br/>
 			<br/>
 			<a href="#" data-bind='click: $root.goToStep'><span>Next</span></a>
@@ -430,7 +440,7 @@
 			Description: <span>Recieve Starting Money and Equip Character</span>
 			<br/>
 			<br/>
-			<a href="#" data-bind=''><span>Finish</span></a>
+			<a href="#" data-bind='click: $root.goToCharacterList'><span>Finish</span></a>
 		</p>
 	</div>
 </script>

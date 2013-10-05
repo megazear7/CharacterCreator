@@ -117,6 +117,7 @@ function Member(){
 // a entire page of this character or just a dialogWindow representation of this object or something else
 function Character(name, race, characterClass){
 	var self = this;
+	this.bp = ko.observable(0);
 	this.strength = ko.observable(0);
 	this.name = ko.observable("");
 	this.race = ko.observable("");
@@ -229,12 +230,25 @@ function Character(name, race, characterClass){
 
 	this.applyCreationBindings = function(){
 		$('.race_choice').click(function(){
-			console.log($(this).text());
-			self.race = $(this).text();
+			self.race($(this).text());
 		});
 		$('.class_choice').click(function(){
-			console.log($(this).text());
-			self.race = $(this).text();
+			self.characterClass($(this).text());
+		});
+		$('.starting_bp').click(function(){
+			self.bp(50);
+		});
+		$('.save_stats').click(function(){
+			self.strength(parseInt($('.str_roll').val()));
+			self.dextarity(parseInt($('.dex_roll').val()));
+			self.intelegence(parseInt($('.int_roll').val()));
+			self.wisdom(parseInt($('.wis_roll').val()));
+			self.constitution(parseInt($('.con_roll').val()));
+			self.looks(parseInt($('.lks_roll').val()));
+			self.charisma(parseInt($('.cha_roll').val()));
+		});
+		$('.choose_name').click(function(){
+			self.name($('.name_chosen').val());
 		});
 	}
 

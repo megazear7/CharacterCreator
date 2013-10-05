@@ -222,8 +222,20 @@ function Character(name, race, characterClass){
 	}
 
 	// put functionality that is based on the character in here, then call it wherever it is needed
-	this.rename = function(element){
-		this.name("Bob");
+	
+	/*
+	* Character Creation Stuff
+	*/
+
+	this.applyCreationBindings = function(){
+		$('.race_choice').click(function(){
+			console.log($(this).text());
+			self.race = $(this).text();
+		});
+		$('.class_choice').click(function(){
+			console.log($(this).text());
+			self.race = $(this).text();
+		});
 	}
 
 	// this function could be smart and determine the returned template type in some non static way
@@ -305,40 +317,6 @@ function Weapon(name){
 	}
 }
 
-// This is a object that is a character creator step. For customized steps the templates need changed, and then create a 
-// new instance of this object with a stepName coorosponding to the template
-function characterCreationStep(step, name, description, stepName){
-	var self = this;
-	this.name = ko.observable(name);
-	this.stepName = ko.observable(stepName);
-	this.step = ko.observable(step);
-	this.description = ko.observable(description);
-	this.message = ko.observable();
-	
-	this.type = function(){
-		return self.stepName();	
-	}	
-
-	this.dialogWindowTemplateType = function(){
-		return "characterCreationStepDialog";
-	}
-
-	this.someFunction = function(e){
-		this.message("You marked this as complete");
-	}
-}
-
-// This is the new character button
-function newCharacter(){
-
-	this.someFunction = function(element){
-	}
-
-	this.dialogWindowTemplateType = function(){
-		return "newCharacter";
-	}
-}
-
 // This is the view model, from here all the functionality and data lies somewhere down stream
 function CharacterManagerViewModel() {
 	var self = this;
@@ -369,22 +347,6 @@ function CharacterManagerViewModel() {
 	]);
 
 	self.monsterList = ko.observableArray([
-	]);
-
-	self.createOptions = ko.observableArray([
-		new characterCreationStep(1, "Step 1", "Recieve Building Points", "step1"),
-		new characterCreationStep(2, "Step 2", "Roll Ability Scores", "step2"),
-		new characterCreationStep(3, "Step 3", "Arange Ability Scores", "step3"),
-		new characterCreationStep(4, "Step 4", "Chose a Race", "step4"),
-		new characterCreationStep(5, "Step 5", "Finalize Ability Scores and Other Adjustments", "step5"),
-		new characterCreationStep(6, "Step 6", "Choose a Class and Alignment", "step6"),
-		new characterCreationStep(7, "Step 7", "Determine Priors and Particulers", "step7"),
-		new characterCreationStep(8, "Step 8", "Determine Quirks and Flaws", "step8"),
-		new characterCreationStep(9, "Step 9", "Calculate Starting Honor", "step9"),
-		new characterCreationStep(10, "Step 10", "Purchase Skills Talents and Proficiencies", "step10"),
-		new characterCreationStep(11, "Step 11", "Roll Hit Points", "step11"),
-		new characterCreationStep(12, "Step 12", "Recieve Starting Money and Equip Character", "step12"),
-		new characterCreationStep(13, "Finish Character Creation", "this needs to be a actual finish button that finishes creating the character and takes you back to the character select page with the newly created character added on", "stepFinish")
 	]);
 
 	self.loadInitData = function(){
@@ -437,18 +399,47 @@ function CharacterManagerViewModel() {
 	/*
 	* To go to a specific step pass in a step object into this function
 	*/
-	self.goToStep = function() { 
+	self.goToStep = function(character) { 
 		self.currentStep += 1;
 		var stepName = "step" + self.currentStep;
-		self.goToStepChangeView(stepName);
-		history.pushState({location: "step", stepName: stepName}, stepName, stepName);
+		var useCharacter; 
+		if (self.currentStep == 1) { 
+			useCharacter = self.goToStepChangeView(character, stepName);
+		} else {
+			useCharacter = self.goToStepChangeView(character.name(), stepName);
+		}
+		history.pushState({location: "step", charName: useCharacter.name(), stepName: stepName}, stepName, stepName);
 	};
-	self.goToStepChangeView = function(stepName) { 
-		//self.chosenView("emptyView"); 
-		// the data here needs to be a new character. We could assume that it is just correct and that there not getting here by some odd means... TODO
-		//self.chosenViewData(step);
-		self.chosenView(stepName); 
+	self.goToStepChangeView = function(characterName, stepName) { 
+
+		self.chosenView("emptyView"); 
+
+		var retChar;
+		if (self.currentStep == 1) { 
+			var newChar = new Character();
+			self.chosenViewData(newChar);
+			self.chosenView(stepName); 
+			newChar.applyCreationBindings();
+			newChar.name("newChar");
+			self.characterList.push(newChar);
+			retChar = newChar;
+		} else {
+			var character;
+			for (var i = 0; i < self.characterList().length; i++) {
+				if (self.characterList()[i].name() == characterName){
+					character = self.characterList()[i];
+				}
+			}
+			self.chosenViewData(character);
+			self.chosenView(stepName); 
+
+			character.applyCreationBindings();
+			retChar = character;
+		}
+
 		self.navSummary("Character List - " + stepName);
+
+		return retChar;
 	};
 
 	self.goToLogin = function(){
@@ -503,7 +494,7 @@ function CharacterManagerViewModel() {
 				self.goToCharacterChangeView(history.state.name);
 			}
 			if(event.state.location == "step"){
-				self.goToStepChangeView(history.state.stepName);
+				self.goToStepChangeView(history.state.charName, history.state.stepName);
 			}
 			if(event.state.location == "create"){
 				self.goToCharacterCreateNewChangeView();

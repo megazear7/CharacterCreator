@@ -253,6 +253,7 @@ function Character(name, race, characterClass){
 		});
 	}
 
+
 	// this function could be smart and determine the returned template type in some non static way
 	// or new objects could be created (weapon, spell, ect.. ) and they could return different template type
 	// there template could utalize different variables instead of name race and characterClass
@@ -333,7 +334,7 @@ function Weapon(name){
 }
 
 // This is the view model, from here all the functionality and data lies somewhere down stream
-function CharacterManagerViewModel() {
+CharacterManagerViewModel = function(){
 	var self = this;
 	self.columns = ko.observable(5);
 	self.numberOfOptions = ko.observable(10);
@@ -391,6 +392,17 @@ function CharacterManagerViewModel() {
 				console.log(jsonData);
     	})
  
+	}
+
+	this.saveCharacter = function(char){
+		var jsonData = ko.toJSON(char);
+		// JIM123 here is what I will send for a save document
+		jQuery.post("/cgi-bin/response.cgi?request=saveDoc&database="+ "hackmaster"
+			+"&userid=" + self.loggedInMember().userid(),
+			jsonData, function(returnedData) {
+			// This callback is executed if the post was successful    
+			console.log(returnedData);
+		})
 	}
 
 	self.dialogWindowTemplateType = function(item){

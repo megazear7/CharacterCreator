@@ -374,7 +374,6 @@ CharacterManagerViewModel = function(){
 
 	self.login = function(){
 		// right here you need to populate the view model with everything that is related to the member that just logged in
-		console.log("blah");
 		loadMemberData(self);
 		loadMemberCharacterData(self);
 		self.goToCharacterList();
@@ -383,13 +382,11 @@ CharacterManagerViewModel = function(){
 	self.register = function() {
 
 		// JIM123 HERE when they click register, get the info they entered and send it accross so the server will create a member doc for them
-		console.log("hello");
 		jQuery.getJSON("/cgi-bin/response.cgi?request=register&database="+ "hackmaster" 
 				+"&emailname=" + $('.loginEmailname').val() 
 				+"&password=" + CryptoJS.SHA3($('.loginPassword').val(), { outputLength: 256 })
 				+"&screenName=" + "default",
 				function(jsonData) {
-				console.log(jsonData);
     	})
  
 	}
@@ -401,7 +398,6 @@ CharacterManagerViewModel = function(){
 			+"&userid=" + self.loggedInMember().userid(),
 			jsonData, function(returnedData) {
 			// This callback is executed if the post was successful    
-			console.log(returnedData);
 		})
 	}
 

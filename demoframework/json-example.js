@@ -21,11 +21,16 @@ var AppViewModel = {
 function login(){
     jQuery.getJSON("/cgi-bin/response.cgi?request=login&database="+ database 
     	+"&emailname=" + userModel.emailname() 
-    	+"&password=" + CryptoJS.SHA3(userModel.password(), { outputLength: 256 }),
+    	+"&password=" + CryptoJS.SHA3(userModel.password(), { outputLength: 256 })
+    	,
         function(jsonData) {
 
+	// Need to check the return status in the json 
+	// Report errors
+	
 	userModel.userid(jsonData.result._id.$oid);
 	userModel.screenName(jsonData.result.screenName);
+	
 	// on success, switch around the logged in and logged out views
 	var div = document.getElementById("login");
 	div.style.display="none";
@@ -38,7 +43,8 @@ function login(){
 function forgot(){
 
     jQuery.getJSON("/cgi-bin/response.cgi?request=forgotLogin&database="+ database 
-    	+"&emailname="+ userModel.emailname(),
+    	+"&emailname="+ userModel.emailname()
+    	,
         function(jsonData) {
     })
 
@@ -54,6 +60,8 @@ function logout(){
 	div.style.display="inline";
 }
 
+// Update User functions
+
 function openUpdate(){
 
 	var div = document.getElementById("logout");
@@ -63,9 +71,9 @@ function openUpdate(){
 }
 
 function update(){
-    jQuery.getJSON("/cgi-bin/response.cgi?request=userUpdate&database="+ "hackmaster" 
+    jQuery.getJSON("/cgi-bin/response.cgi?request=userUpdate&database="+ database 
     	+"&userid=" + userModel.userid()
-    	+"&emailname="+ userModel.emailname ()
+    	+"&emailname="+ userModel.emailname()
     	+"&password=" + CryptoJS.SHA3(userModel.password(), { outputLength: 256 })
     	+"&screenName=" + userModel.screenName()
     	,
@@ -75,7 +83,6 @@ function update(){
     cancelUpdate();
 }
 
-
 function cancelUpdate(){
 
 	var div = document.getElementById("update");
@@ -84,7 +91,7 @@ function cancelUpdate(){
 	div.style.display="inline";
 }
 
-// Registration Functions
+// Register User Functions
 
 function openReg(){
 
@@ -99,12 +106,16 @@ function register(){
     jQuery.getJSON("/cgi-bin/response.cgi?request=register&database="+ database 
     	+"&emailname=" + userModel.emailname() 
     	+"&password=" + CryptoJS.SHA3(userModel.password(), { outputLength: 256 })
-    	+"&screenName=" + userModel.screenName(),
+    	+"&screenName=" + userModel.screenName()
+    	,
         function(jsonData) {
+        
+        // Need to check the return status in the json 
+	// Report errors	
+
     })
     
     cancelReg();
-    login();
 }
 
 function cancelReg(){
@@ -115,14 +126,17 @@ function cancelReg(){
 	div.style.display="inline";
 }
 
-
-
 // Application functions below
 
 function loadDoc(){
+
     jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database 
-    	+"&userid=" + userModel.userid(),
+    	+"&userid=" + userModel.userid()
+    	,
         function(jsonData) {
+
+        // Need to check the return status in the json 
+	// Report errors
  
         AppViewModel.firstName(jsonData.firstName);
         AppViewModel.lastName(jsonData.lastName);
@@ -134,11 +148,18 @@ function loadDoc(){
 }
 
 function saveDoc(){
+
     var jsonData = ko.toJSON(AppViewModel);
+
     jQuery.post("/cgi-bin/response.cgi?request=saveDoc&database="+ database 
-    	+"&userid=" + userModel.userid(),
+    	+"&userid=" + userModel.userid()
+    	,
         jsonData, function(returnedData) {
         // This callback is executed if the post was successful    
+        
+        // Need to check the return status in the json 
+	// Report errors
+
     })
 }
 

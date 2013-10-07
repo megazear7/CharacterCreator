@@ -14,10 +14,10 @@ my $connection = MongoDB::Connection->new ();
 #$connection->authenticate ('database_name', 'user', 'password');
  
 # Database
-my $db = $connection->get_database( 'test' );
+my $db = $connection->get_database( 'hackmaster' );
  
 # Collection
-my $collection = $db->get_collection ('test');
+my $collection = $db->get_collection ('user');
  
 # find one entry
 my $entry = $collection->findOne();

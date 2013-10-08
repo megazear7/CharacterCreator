@@ -1,13 +1,17 @@
 
-var database = "hackmaster"
+var database = "hackmaster";
 
 var userModel = {
     emailname  : ko.observable("a@gmail.com"),  
     password   : ko.observable("password"),
     screenName : ko.observable("Bob"),
     userid     : ko.observable(""),
-    lastStatus : ko.observable("Select an Option."),
-}
+    lastStatus : ko.observable("Enter an email address and password to login."),
+};
+
+var docModel = {
+	doclist : ko.observableArray([]),
+};
 
 var AppViewModel = {
     firstName : ko.observable("Bert"),
@@ -25,8 +29,14 @@ function login(){
     	,
         function(jsonData) {
 
+	// Report status
+	userModel.lastStatus(jsonData.msg);
+
 	// Need to check the return status in the json 
-	// Report errors
+	if (jsonData.status == "failure"){
+		//abort on failure
+		return;
+	}
 	
 	userModel.userid(jsonData.result._id.$oid);
 	userModel.screenName(jsonData.result.screenName);
@@ -51,13 +61,62 @@ function forgot(){
 }
 
 function logout(){
-    // forget username, passwork, cookie
 
     // switch around the logged in and logged out views 
 	var div = document.getElementById("logout");
 	div.style.display="none";
 	div = document.getElementById("login");
 	div.style.display="inline";
+
+    // forget username, passwork, cookie
+	userModel.emailname("");
+	userModel.password("");
+	userModel.screenName("");
+	userModel.userid("");
+	userModel.lastStatus("Enter an email address and password to login.");
+	
+	eraseCookie("SessionId");
+}
+
+// Cookie functions.
+// from here: http://stackoverflow.com/questions/2144386/javascript-delete-cookie
+
+function eraseCookie(name) {
+    createCookie(name,"",-1);
+}
+
+function createCookie(name,value,days) {
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+}
+
+
+function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+// execute this fuction to run when window closes
+// will not run on opera or chrome.
+// will something else work on chrome?
+
+window.onbeforeunload = function() {
+
+	// save changed dataobjects?
+
+	eraseCookie("SessionId");
+	return null;
 }
 
 // Update User functions
@@ -78,9 +137,18 @@ function update(){
     	+"&screenName=" + userModel.screenName()
     	,
         function(jsonData) {
+        
+        // Report status
+	userModel.lastStatus(jsonData.msg);
+
+	// Need to check the return status in the json 
+	if (jsonData.status == "failure"){
+		//abort on failure
+		return;
+	}
+	
+	cancelUpdate();
     })
-    
-    cancelUpdate();
 }
 
 function cancelUpdate(){
@@ -110,12 +178,18 @@ function register(){
     	,
         function(jsonData) {
         
-        // Need to check the return status in the json 
-	// Report errors	
+        // Report status
+	userModel.lastStatus(jsonData.msg);
 
+	// Need to check the return status in the json 
+	if (jsonData.status == "failure"){
+		//abort on failure
+		return;
+	}	
+	
+	cancelReg();
+	login();
     })
-    
-    cancelReg();
 }
 
 function cancelReg(){
@@ -126,40 +200,97 @@ function cancelReg(){
 	div.style.display="inline";
 }
 
+
+// button functions
+
+function ld(){
+    var jsonData = loadDoc(userModel.userid(), 0);
+    
+        AppViewModel.firstName(jsonData.firstName);
+        AppViewModel.lastName(jsonData.lastName);
+        AppViewModel.type(jsonData.type);
+        AppViewModel.Quark = ko.observable(jsonData.Quark);
+        AppViewModel.pets(jsonData.pets);
+}
+
+function sd(){
+    var docid = saveDoc(userModel.userid(), 0, ko.toJSON(AppViewModel));
+}
+
+
+
 // Application functions below
 
-function loadDoc(){
+function loadDoc(userid, docid){
 
     jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database 
     	+"&userid=" + userModel.userid()
     	,
         function(jsonData) {
 
-        // Need to check the return status in the json 
-	// Report errors
+	// Need to check the return status in the json 
+	if (jsonData.status == "failure"){
+		//abort on failure
+
+		// Handle/Report errors
+		
+		return;
+	}
+         
  
-        AppViewModel.firstName(jsonData.firstName);
-        AppViewModel.lastName(jsonData.lastName);
-        AppViewModel.type(jsonData.type);
-        AppViewModel.Quark = ko.observable(jsonData.Quark);
-        AppViewModel.Quark = ko.observable(jsonData.Quark);
-        AppViewModel.pets(jsonData.pets);
+
+
+	// callback function to load data.
+
     })
 }
 
-function saveDoc(){
-
-    var jsonData = ko.toJSON(AppViewModel);
+  //userModel.userid(), docid, var jsonData = ko.toJSON(AppViewModel);
+function saveDoc(userid, docid, jsonData){
 
     jQuery.post("/cgi-bin/response.cgi?request=saveDoc&database="+ database 
-    	+"&userid=" + userModel.userid()
+    	+"&userid=" + userid
+    	+"&docid="  + docid
     	,
-        jsonData, function(returnedData) {
+        jsonData, function(retData) {
         // This callback is executed if the post was successful    
         
-        // Need to check the return status in the json 
-	// Report errors
+	// Need to check the return status in the json 
+	if (jsonData.status == "failure"){
+		//abort on failure
 
+		// Handle/Report errors
+		
+		return null;
+		
+		return retData.docid;
+	}
+
+	// callback function to load data.
+	
+
+    })
+}
+
+function loadDocList(userid){
+
+    jQuery.getJSON("/cgi-bin/response.cgi?request=loadDocList&database="+ database 
+    	+"&userid=" + userid
+    	,
+        function(jsonData) {
+
+	// Need to check the return status in the json 
+	if (jsonData.status == "failure"){
+		//abort on failure
+
+		// Handle/Report errors
+		
+		return;
+	}
+	
+	// callback function to load data.
+	return jsonData.results;
+	
     })
 }
 

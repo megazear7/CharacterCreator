@@ -6,13 +6,13 @@ use CGI::Cookie;
 use HTTP::Request::Common qw(POST);
 use LWP::UserAgent;
 use Time::localtime;
-use JSON ();
+use JSON;
 use MongoDB;
 use MongoDB::Collection;
 use MongoDB::OID;
 use Digest::SHA3 qw(sha3_224 sha3_224_base64);
 
-# use strict;   #this should really be turned on
+use strict;   #this should really be turned on
 use warnings;
 
 # this is used to make the crypto hashes more secure
@@ -21,16 +21,17 @@ use warnings;
 my $salt = "1c59f690-2cbf-11e3-9529-b3c242e7178e";
 
 # read the CGI params
-$cgi 	= new CGI ;
-@names 	= $cgi->param ;
+my $cgi 	= new CGI ;
+my @names 	= $cgi->param ;
 
-$REQUEST_METHOD = $ENV{"REQUEST_METHOD"};
-$QUERY_STRING   = $ENV{"QUERY_STRING"};
-$keywords       = $cgi->param('keywords');
+my $REQUEST_METHOD = $ENV{"REQUEST_METHOD"};
+my $QUERY_STRING   = $ENV{"QUERY_STRING"};
+my $keywords       = $cgi->param('keywords');
 
 # create a hash of the query string 
-@p = split (/\&/, $QUERY_STRING);
-%h = ();
+my @p = split (/\&/, $QUERY_STRING);
+my %h = ();
+my @nv;
 foreach (@p) {
     @nv = split (/=/);  
     $h{$nv[0]} = $nv[1];
@@ -47,13 +48,14 @@ if ($Cookie eq $digest) {$validCookie = 1;};
 my $conn = new MongoDB::Connection;
 my $HackMasterDB   = $conn->get_database( $h{"database"} ) ;
 my $UserCollection = $HackMasterDB->get_collection( 'user' );
-my $DocsCollection = $HackMasterDB->get_collection( 'docs' );
+#my $DocsCollection = $HackMasterDB->get_collection( 'docs' );
 
 
 # setup for output
 my $sc  = "";
 my $json  = "";
 
+my $jsonEncoder = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
 
 # handle the requests
 if ($REQUEST_METHOD eq 'POST') {
@@ -62,9 +64,41 @@ if ($REQUEST_METHOD eq 'POST') {
 
     if ($h{"request"} eq "saveDoc") {
 
-	my $userid = $h{"userid"};
+	if ($validCookie == 1)
+	{
+	    my $userid = $h{"userid"};
+	    my $docid = $h{"docid"};
+	    
+	    my $postdata = $cgi->param('POSTDATA');
+	    
+            my $jsonData = $jsonEncoder->encode($postdata) ;
+	     
+	    my $UserCollection = $HackMasterDB->get_collection( $userid );
+	    
+	    # check error value
+	    
+	    if ($docid eq "0") { 
+	    
+	    	# insert
+	        my $docid = $UserCollection->insert( { fred => '2' } );
+	        
+	        # check error value
+	        
+	    } else {
+	    
+	    	# update
+	    	$UserCollection->update( 
+			{ _id => MongoDB::OID->new(value => $docid)}, 
+			{ '$set' => { fred => '2' } } );
+				
+		# check error value
+	    }
 	
-        $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "validCookie" : "$validCookie", "Cookie" : "$Cookie", "Digest" : "$digest"}};
+            $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "docid" : "$docid", "results", "$postdata"}};
+            
+        } else {
+		$json = qq{{"status" : "failure", "msg" : "Invalid credentials."}};
+	}
     }
 
 } elsif ($REQUEST_METHOD eq 'GET'){
@@ -81,7 +115,7 @@ if ($REQUEST_METHOD eq 'POST') {
 
 	my $dts = $all->next;
 	
-	$jsonEncoder     = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
+	#$jsonEncoder     = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
         $json = $jsonEncoder->encode($dts) ;
 
 	if ($dts->{password} eq $password)
@@ -89,9 +123,8 @@ if ($REQUEST_METHOD eq 'POST') {
 
         	# create a cookie that holds the 
         	# document id of the user record
-        	$value = sha3_224_base64( $dts->{_id} . $ENV{"REMOTE_ADDR"} . $salt );
-	       	#$value = $dts->{_id};
-	       	#$value = "bob";
+        	my $value = sha3_224_base64( $dts->{_id} . $ENV{"REMOTE_ADDR"} . $salt );
+
         	$sc  = $cgi->cookie(
                    -name=>'SessionId', 
                    -value=>$value,
@@ -123,7 +156,7 @@ if ($REQUEST_METHOD eq 'POST') {
 
 	my $dts = $all->next;
 	
-	$jsonEncoder     = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
+	#$jsonEncoder     = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
         $json = $jsonEncoder->encode($dts) ;
         
         
@@ -165,9 +198,7 @@ if ($REQUEST_METHOD eq 'POST') {
 		# "cookie" : $Cookie, "digest" : $digest, "userid" : $h{"userid"}, "found" : $found,
 		 
 	} else {
-		$json = qq{{"status" : "failure", 
-		"cookie" : $Cookie, "digest" : $digest, "userid" : $h{"userid"}, "found" : $found,
-		"msg" : "Invalid credentials."}};
+		$json = qq{{"status" : "failure", "msg" : "Invalid credentials."}};
 
 	}
 
@@ -184,11 +215,26 @@ if ($REQUEST_METHOD eq 'POST') {
 	# handle load document request
         # my $inData = { "Quark" => "Spin", "firstName" => "James", "lastName" => "Rogers", "type" => "Emperor", "pets" => [ "Floppyhat", "Balloon", "Apple"]};
 #my $inData = { "success" => 1};
-	my $userid = $h{"userid"};
-	my $docid = $h{"docid"};
 
-        $jsonEncoder     = JSON->new->utf8->allow_nonref;
-        $json = $jsonEncoder->encode($inData);
+	if ($validCookie == 1)
+	{
+	    my $userid = $h{"userid"};
+	    my $docid = $h{"docid"};
+	    
+	    my $UserCollection = $HackMasterDB->get_collection( $userid );
+	
+	    my $all = $UserCollection->find( { _id => MongoDB::OID->new(value => $docid) } );
+
+	    my $dts = $all->next;
+	
+	    #$jsonEncoder = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
+            my $jsonDoc = $jsonEncoder->encode($dts) ;
+
+	    $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "results" : "$jsonDoc"}};
+            
+        } else {
+	    $json = qq{{"status" : "failure", "msg" : "Invalid credentials."}};
+	}
     }
 
 } else {

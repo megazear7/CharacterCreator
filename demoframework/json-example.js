@@ -204,6 +204,7 @@ function cancelReg(){
 // button functions
 
 function ld(){
+
     var jsonData = loadDoc(userModel.userid(), 0);
     
         AppViewModel.firstName(jsonData.firstName);
@@ -234,7 +235,7 @@ function loadDoc(userid, docid){
 
 		// Handle/Report errors
 		
-		return;
+		return jsonData;
 	}
          
  

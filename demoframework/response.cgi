@@ -1,5 +1,4 @@
 #!/usr/bin/perl  -wT
-use Cwd; $dir=cwd();
 
 use CGI;
 use CGI::Cookie;

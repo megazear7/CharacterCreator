@@ -20,7 +20,7 @@ use MongoDB::OID;
 use MongoDB::BSON;
 use Digest::SHA3 qw(sha3_224 sha3_224_base64);
 
-use BSON qw/encode decode/;
+#use BSON qw/encode decode/;
 
 use Data::Dumper;
 local $Data::Dumper::Terse = 1;

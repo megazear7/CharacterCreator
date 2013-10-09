@@ -1,7 +1,7 @@
 
 var database = "hackmaster";
-//var documentID = "5254d771bf922c5221000000";
-var documentID = 0;
+var documentID = "5254f77a1ad417d628000000";
+//var documentID = 0;
 
 var userModel = {
     emailname  : ko.observable("a@gmail.com"),  
@@ -280,7 +280,7 @@ function loadDocList(userid){
 		return;
 	}
 	// callback function to load data.
-        docModel.doclist(jsonData.result.results);
+        docModel.doclist(jsonData.result);
     })
 }
 

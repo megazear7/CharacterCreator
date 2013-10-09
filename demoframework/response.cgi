@@ -228,13 +228,24 @@ if ($REQUEST_METHOD eq 'POST') {
 	
 	my $all = $DocCollection->find();
 	
-	my $retString = "{\"results\":[";
-	while (my $doc = $all->next) {
-        	#print $doc->{'name'}."\n";
-        	my $jsonDoc = $jsonEncoder->encode($doc);
-        	$retString .= "$jsonDoc, ";
+	my $retString = " [ ";
+	my $firstThruLoop = 1;
+	my $doc;
+	while ($doc = $all->next) {
+		if ($firstThruLoop != 1){
+			$retString .= ", ";
+			}
+        	my $jsonDoc = $jsonEncoder->encode($doc->{_id});
+        	$retString .= "$jsonDoc";
+        	
+    		$retString .= ", ";
+        	my $jsonDoc = $jsonEncoder->encode($doc->{_id});
+        	$retString .= "$jsonDoc";
+    	
+    		$firstThruLoop = 0;
     	}
-    	$retString .= "]}";
+
+    	$retString .= " ]";
 	
         $json = qq{{"status" : "success", "msg" : "handled createDoc request", "result" : $retString }};
     } elsif ($h{"request"} eq "loadDoc") {

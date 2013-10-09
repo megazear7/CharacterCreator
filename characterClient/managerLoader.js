@@ -36,10 +36,15 @@ function loadMemberData(viewModel){
     	+"&emailname=" + $('.loginEmailname').val() 
     	+"&password=" + CryptoJS.SHA3($('.loginPassword').val(), { outputLength: 256 }),
         function(jsonData) {
+
+			console.log(jsonData);
 			
 			viewModel.loggedInMember().username(jsonData.result.screenName);
+			viewModel.loggedInMember().emailname(jsonData.result.emailname);
 			viewModel.loggedInMember().userid(jsonData.result._id.$oid);
 			viewModel.loggedInMember().isLoggedIn("loggedIn");
+
+			loadMemberCharacterData(viewModel, viewModel.loggedInMember().userid());
     })
 
 
@@ -80,7 +85,7 @@ function loadMemberDataNew(viewModel){
     })
 }
 
-function loadMemberCharacterData(viewModel){
+function loadMemberCharacterData(viewModel, userid){
 	// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
 	var temp;
 
@@ -106,7 +111,6 @@ function loadMemberCharacterData(viewModel){
 		*/
 
 	// How do I get the docid's and userid?
-	userid = 0;
 	docid = 0;
 
 	jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database 
@@ -114,7 +118,6 @@ function loadMemberCharacterData(viewModel){
     	+"&docid=" + docid
     	,
         function(jsonData) {
-			console.log(jsonData);
 			// Need to check the return status in the json 
 			if (jsonData.status == "failure"){
 				//abort on failure

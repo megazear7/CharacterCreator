@@ -105,7 +105,6 @@ function saveDoc(userid, docid, jsonData){
     	,
         jsonData, function(retData) {
 			// This callback is executed if the post was successful    
-			console.log(retData);
 				
 			// Need to check the return status in the json 
 			if (jsonData.status == "failure"){
@@ -121,6 +120,7 @@ function Member(){
 	this.username = ko.observable("");
 	this.isLoggedIn = ko.observable("notLoggedIn");
 	this.userid	= ko.observable("");
+	this.emailname = ko.observable("");
 
 	this.constructor = function(username){
 		this.username(username);
@@ -394,7 +394,7 @@ CharacterManagerViewModel = function(){
 	self.login = function(){
 		// right here you need to populate the view model with everything that is related to the member that just logged in
 		loadMemberData(self);
-		loadMemberCharacterData(self);
+		//loadMemberCharacterData(self, self.loggedInMember.userid());
 		self.goToCharacterList();
 	}
 
@@ -412,7 +412,6 @@ CharacterManagerViewModel = function(){
 
 	this.saveCharacter = function(char){
 		// need code to create docid
-		console.log("hello");
 		var docid = 0;
 		char.docid = docid;
 		saveDoc(self.userid, char.docid, ko.toJSON(char));

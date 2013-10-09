@@ -38,3 +38,46 @@ Could have an array of these and create div's on the fly to display as many as w
 Data driven control creation. 
 
 
+-----------------------------------------
+
+
+Running into this issue:
+
+I had trouble getting the actuall document id from the insert is is in a strange format like the following:
+
+bless( {
+         'value' => '5254f191c1b45b0c27000000'
+       }, 'MongoDB::OID' )
+
+
+
+See how the docid is buried in that object?
+
+I choose to just get a substring using this command: 
+
+
+# insert
+	        my $id = $UserCollection->insert( $jsonData );
+	        
+	        # check error value
+		
+		my $tmp = Dumper($id);
+		
+		$docid = substr($tmp, 30, 24);
+		
+--
+		
+The danger with this is how guaranteed am I of the length?
+
+If instead I split on single quotes then I could just take the 4th of 5 parts.
+
+--
+
+Ideally I should just know how to pull out the key value pair directly from the data structure.
+
+The best way would be to just set $docid using some hash reference.
+
+
+-------------------------------------------------------------
+
+

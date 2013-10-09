@@ -1,5 +1,7 @@
 
 var database = "hackmaster";
+//var documentID = "5254d771bf922c5221000000";
+var documentID = 0;
 
 var userModel = {
     emailname  : ko.observable("a@gmail.com"),  
@@ -10,7 +12,7 @@ var userModel = {
 };
 
 var docModel = {
-	doclist : ko.observableArray([]),
+	doclist : ko.observableArray(["test", "test"]),
 };
 
 var AppViewModel = {
@@ -205,48 +207,44 @@ function cancelReg(){
 
 function ld(){
 
-    var jsonData = loadDoc(userModel.userid(), 0);
+    loadDoc(userModel.userid(), documentID);
     
-        AppViewModel.firstName(jsonData.firstName);
-        AppViewModel.lastName(jsonData.lastName);
-        AppViewModel.type(jsonData.type);
-        AppViewModel.Quark = ko.observable(jsonData.Quark);
-        AppViewModel.pets(jsonData.pets);
 }
 
 function sd(){
-    var docid = saveDoc(userModel.userid(), 0, ko.toJSON(AppViewModel));
+    var docid = saveDoc(userModel.userid(), documentID, ko.toJSON(AppViewModel));
 }
-
-
 
 // Application functions below
 
 function loadDoc(userid, docid){
 
     jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database 
-    	+"&userid=" + userModel.userid()
+    	+"&userid=" + userid
+    	+"&docid=" + docid
     	,
         function(jsonData) {
 
 	// Need to check the return status in the json 
 	if (jsonData.status == "failure"){
 		//abort on failure
-
-		// Handle/Report errors
-		
-		return jsonData;
+		return;
 	}
-         
- 
-
-
-	// callback function to load data.
-
+ 	// callback function to load data.
+	ldfinish(jsonData);
     })
 }
 
-  //userModel.userid(), docid, var jsonData = ko.toJSON(AppViewModel);
+function ldfinish(jsonData){
+    
+        AppViewModel.firstName(jsonData.results.firstName);
+        AppViewModel.lastName(jsonData.results.lastName);
+        AppViewModel.type(jsonData.results.type);
+        //AppViewModel.Quark = ko.observable(jsonData.Quark);
+        AppViewModel.pets(jsonData.results.pets);
+}
+
+//userModel.userid(), docid, var jsonData = ko.toJSON(AppViewModel);
 function saveDoc(userid, docid, jsonData){
 
     jQuery.post("/cgi-bin/response.cgi?request=saveDoc&database="+ database 
@@ -258,19 +256,15 @@ function saveDoc(userid, docid, jsonData){
         
 	// Need to check the return status in the json 
 	if (jsonData.status == "failure"){
-		//abort on failure
-
-		// Handle/Report errors
-		
-		return null;
-		
-		return retData.docid;
+		return;
 	}
-
 	// callback function to load data.
 	
-
     })
+}
+
+function dld(){
+	loadDocList(userModel.userid());
 }
 
 function loadDocList(userid){
@@ -283,15 +277,10 @@ function loadDocList(userid){
 	// Need to check the return status in the json 
 	if (jsonData.status == "failure"){
 		//abort on failure
-
-		// Handle/Report errors
-		
 		return;
 	}
-	
 	// callback function to load data.
-	return jsonData.results;
-	
+        docModel.doclist(jsonData.result.results);
     })
 }
 

@@ -118,11 +118,14 @@
     <div id="docManager">
         <button type="Button" id="saveBtn" onclick="sd()">Save</button>
         <button type="Button" id="loadBtn" onclick="ld()">Load</button>
+        <button type="Button" id="loadDocBtn" onclick="dld()">LoadDocs</button>
+        <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
     </div>
 
     <!-- document view
       Everything to do with the current Document is here. -->
     <div id="doc">
+      <p><input data-bind="value: firstName" placeholder="First Name" title="First Name"></input></p>
       <p>First name: <strong data-bind="text: firstName"></strong></p>
       <p>Last name: <strong data-bind="text: lastName"></strong></p>
       <p/>
@@ -130,8 +133,9 @@
     </div>
 
     <script>
-      ko.applyBindings(userModel, document.getElementById("loginGroup") );
-      ko.applyBindings(AppViewModel, document.getElementById("doc") );
+      ko.applyBindings(userModel,    document.getElementById("loginGroup") );
+      ko.applyBindings(docModel,     document.getElementById("docManager") );
+      ko.applyBindings(AppViewModel, document.getElementById("doc")        );
     </script> 
 
   </body>

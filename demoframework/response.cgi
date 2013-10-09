@@ -1,15 +1,29 @@
 #!/usr/bin/perl  -wT
 
-use CGI;
+our %in;
+use CGI qw(:cgi-lib :standard);
+CGI::ReadParse;
+$CGI::POST_MAX=1024 * 100;  # max 100K posts
+$CGI::DISABLE_UPLOADS = 1;  # no uploads
+
+use CGI::Carp 'fatalsToBrowser';
+
 use CGI::Cookie;
 use HTTP::Request::Common qw(POST);
 use LWP::UserAgent;
+
 use Time::localtime;
 use JSON;
 use MongoDB;
 use MongoDB::Collection;
 use MongoDB::OID;
+use MongoDB::BSON;
 use Digest::SHA3 qw(sha3_224 sha3_224_base64);
+
+use BSON qw/encode decode/;
+
+use Data::Dumper;
+local $Data::Dumper::Terse = 1;
 
 use strict;   #this should really be turned on
 use warnings;
@@ -21,6 +35,7 @@ my $salt = "1c59f690-2cbf-11e3-9529-b3c242e7178e";
 
 # read the CGI params
 my $cgi 	= new CGI ;
+
 my @names 	= $cgi->param ;
 
 my $REQUEST_METHOD = $ENV{"REQUEST_METHOD"};
@@ -45,10 +60,9 @@ if ($Cookie eq $digest) {$validCookie = 1;};
 
 # open a connection to the mongodb 
 my $conn = new MongoDB::Connection;
-my $HackMasterDB   = $conn->get_database( $h{"database"} ) ;
-my $UserCollection = $HackMasterDB->get_collection( 'user' );
-#my $DocsCollection = $HackMasterDB->get_collection( 'docs' );
-
+my $db   = $conn->get_database( $h{"database"} ) ;
+my $UserCollection = $db->get_collection( 'user' );
+my $DocCollection;
 
 # setup for output
 my $sc  = "";
@@ -68,32 +82,48 @@ if ($REQUEST_METHOD eq 'POST') {
 	    my $userid = $h{"userid"};
 	    my $docid = $h{"docid"};
 	    
-	    my $postdata = $cgi->param('POSTDATA');
+	    my $postdata = $in{keywords};
 	    
-            my $jsonData = $jsonEncoder->encode($postdata) ;
+	    my $str = Dumper($postdata);
+	    
+	    chomp($str);
+	    chomp($str);
+	     $/ = "'";
 	     
-	    my $UserCollection = $HackMasterDB->get_collection( $userid );
+	    chomp($str);
+	    $str = substr($str, 1);
+	    
+	    my $newstr = $str;
+	    $newstr = substr($newstr, 1, length($newstr)-2);
+            
+	    my $jsonData = $jsonEncoder->decode( qq{{$newstr}} );
+	    
+	    my $UserCollection = $db->get_collection( "a" . $userid );
 	    
 	    # check error value
 	    
 	    if ($docid eq "0") { 
 	    
 	    	# insert
-	        my $docid = $UserCollection->insert( { fred => '2' } );
+	        my $id = $DocCollection->insert( $jsonData );
 	        
 	        # check error value
+		
+		my $tmp = Dumper($id);
+		
+		$docid = substr($tmp, 30, 24);
 	        
 	    } else {
 	    
 	    	# update
 	    	$UserCollection->update( 
 			{ _id => MongoDB::OID->new(value => $docid)}, 
-			{ '$set' => { fred => '2' } } );
+			{ '$set' => $jsonData } );
 				
 		# check error value
 	    }
-	
-            $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "docid" : "$docid", "results", "$postdata"}};
+			
+            $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "docid" : "$docid"}};
             
         } else {
 		$json = qq{{"status" : "failure", "msg" : "Invalid credentials."}};
@@ -107,19 +137,17 @@ if ($REQUEST_METHOD eq 'POST') {
 
 	my $emailname = $h{"emailname"};
 	my $password  = $h{"password"};
-	my ($userid);
+	my $userid;
 
 	# lookup document by username and password
 	my $all = $UserCollection->find( { "emailname"=> $emailname } );
 
 	my $dts = $all->next;
 	
-	#$jsonEncoder     = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
         $json = $jsonEncoder->encode($dts) ;
 
 	if ($dts->{password} eq $password)
 	{
-
         	# create a cookie that holds the 
         	# document id of the user record
         	my $value = sha3_224_base64( $dts->{_id} . $ENV{"REMOTE_ADDR"} . $salt );
@@ -139,25 +167,19 @@ if ($REQUEST_METHOD eq 'POST') {
         	$json = qq{{"status" : "failure", "msg" : "Login username or password is wrong", "result": $json }};
 	}
 
-
-
 	# also send a list of documents that belong to this user
 
     } elsif ($h{"request"} eq "register") {
 	# handle register request for a new user
 
-	my $emailname = $h{"emailname"};
-	my $password  = $h{"password"};
-	my $screenName  = $h{"screenName"};
+	my $emailname  = $h{"emailname"};
+	my $password   = $h{"password"};
+	my $screenName = $h{"screenName"};
 	
 	# Check to see if a document exists with this user name an login
 	my $all = $UserCollection->find( { "emailname"=> $emailname } );
-
 	my $dts = $all->next;
-	
-	#$jsonEncoder     = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
-        $json = $jsonEncoder->encode($dts) ;
-        
+        $json = $jsonEncoder->encode($dts);
         
         if ($dts->{emailname} eq $emailname) 
         {
@@ -172,7 +194,6 @@ if ($REQUEST_METHOD eq 'POST') {
         	$json = qq{{"status" : "success", "msg" : "Registered new user.", "result": $json }};
         }
 
-
     } elsif ($h{"request"} eq "userUpdate") {
 	# handle request to update user values
 	my $emailname  = $h{"emailname"};
@@ -182,23 +203,15 @@ if ($REQUEST_METHOD eq 'POST') {
 
 	if ($validCookie == 1)
 	{
-		#my $all = $UserCollection->update( { "emailname"=> $emailname } );
-		#$UserCollection->update( { emailname => $emailname }, 
-		#	{ '$set' => { screenName => $screenName } } );
-		
-		# find({ _id => MongoDB::OID->new(value => "4d2a0fae9e0a3b4b32f70000")})
 		$UserCollection->update( 
 			{ _id => MongoDB::OID->new(value => $userid)}, 
 			{ '$set' => { screenName => $screenName,
 				password => $password } } );
-		
 
 		$json = qq{{"status" : "success", "msg" : "handled userUpdate request"}};
-		# "cookie" : $Cookie, "digest" : $digest, "userid" : $h{"userid"}, "found" : $found,
 		 
 	} else {
 		$json = qq{{"status" : "failure", "msg" : "Invalid credentials."}};
-
 	}
 
     } elsif ($h{"request"} eq "forgotLogin") {
@@ -206,33 +219,52 @@ if ($REQUEST_METHOD eq 'POST') {
 	my $emailname = $h{"emailname"};
 
         $json = qq{{"status" : "success", "msg" : "handled forgotLogin request"}};
-    } elsif ($h{"request"} eq "createDoc") {
+    } elsif ($h{"request"} eq "loadDocList") {
 	# handle request to update user values
 	
-        $json = qq{{"status" : "success", "msg" : "handled createDoc request"}};
+	my $userid = $h{"userid"};
+	    
+	my $DocCollection = $db->get_collection( "a" . $userid );
+	
+	my $all = $DocCollection->find();
+	
+	my $retString = "{\"results\":[";
+	while (my $doc = $all->next) {
+        	#print $doc->{'name'}."\n";
+        	my $jsonDoc = $jsonEncoder->encode($doc);
+        	$retString .= "$jsonDoc, ";
+    	}
+    	$retString .= "]}";
+	
+        $json = qq{{"status" : "success", "msg" : "handled createDoc request", "result" : $retString }};
     } elsif ($h{"request"} eq "loadDoc") {
 	# handle load document request
-        # my $inData = { "Quark" => "Spin", "firstName" => "James", "lastName" => "Rogers", "type" => "Emperor", "pets" => [ "Floppyhat", "Balloon", "Apple"]};
-#my $inData = { "success" => 1};
 
 	if ($validCookie == 1)
 	{
 	    my $userid = $h{"userid"};
-	    my $docid = $h{"docid"};
+	    my $docid  = $h{"docid"};
 	    
-	    my $UserCollection = $HackMasterDB->get_collection( $userid );
+	    my $DocCollection = $db->get_collection( "a" . $userid );
 	
-	    my $all = $UserCollection->find( { _id => MongoDB::OID->new(value => $docid) } );
-
+	    my $all = $DocCollection->find( { _id=> MongoDB::OID->new(value => $docid) } );
+	    
+	    #my $err = $db->last_error();
+	    
 	    my $dts = $all->next;
 	
-	    #$jsonEncoder = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
-            my $jsonDoc = $jsonEncoder->encode($dts) ;
+            my $jsonDoc = $jsonEncoder->encode($dts);
 
-	    $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "results" : "$jsonDoc"}};
+	    $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "results": $jsonDoc }};
+	    
+	    # trying to implement some error handling.
+            if ($jsonDoc eq '') {	    
+            } else {
+	        #$json = qq{{"status" : "failure", "msg" : "Document Not Found"}};
+	    }
             
         } else {
-	    $json = qq{{"status" : "failure", "msg" : "Invalid credentials."}};
+	    $json = qq{{"status" : "failure", "msg" : "Invalid credentials"}};
 	}
     }
 
@@ -247,7 +279,8 @@ if ($sc ne ""){
 print $cgi->header(
     -type    => "application/json", 
     -charset => "utf-8",
-    -cookie  => $sc);
+    -cookie  => $sc
+    );
 } else {
 print $cgi->header(
     -type    => "application/json", 

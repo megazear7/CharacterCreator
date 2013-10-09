@@ -97,11 +97,30 @@ ko.bindingHandlers.GridSelect = {
     }
 };
 
+function saveDoc(userid, docid, jsonData){
+
+    jQuery.post("/cgi-bin/response.cgi?request=saveDoc&database="+ database 
+    	+"&userid=" + userid
+    	+"&docid="  + docid
+    	,
+        jsonData, function(retData) {
+			// This callback is executed if the post was successful    
+				
+			// Need to check the return status in the json 
+			if (jsonData.status == "failure"){
+				return;
+			}
+			// callback function to load data.
+		
+    })
+}
+
 function Member(){
 	var self = this;
 	this.username = ko.observable("");
 	this.isLoggedIn = ko.observable("notLoggedIn");
 	this.userid	= ko.observable("");
+	this.emailname = ko.observable("");
 
 	this.constructor = function(username){
 		this.username(username);
@@ -375,7 +394,7 @@ CharacterManagerViewModel = function(){
 	self.login = function(){
 		// right here you need to populate the view model with everything that is related to the member that just logged in
 		loadMemberData(self);
-		loadMemberCharacterData(self);
+		//loadMemberCharacterData(self, self.loggedInMember.userid());
 		self.goToCharacterList();
 	}
 
@@ -392,13 +411,10 @@ CharacterManagerViewModel = function(){
 	}
 
 	this.saveCharacter = function(char){
-		var jsonData = ko.toJSON(char);
-		// JIM123 here is what I will send for a save document
-		jQuery.post("/cgi-bin/response.cgi?request=saveDoc&database="+ "hackmaster"
-			+"&userid=" + self.loggedInMember().userid(),
-			jsonData, function(returnedData) {
-			// This callback is executed if the post was successful    
-		})
+		// need code to create docid
+		var docid = 0;
+		char.docid = docid;
+		saveDoc(self.userid, char.docid, ko.toJSON(char));
 	}
 
 	self.dialogWindowTemplateType = function(item){

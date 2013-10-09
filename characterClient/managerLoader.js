@@ -105,6 +105,24 @@ function loadMemberCharacterData(viewModel){
     })
 		*/
 
+	// How do I get the docid's and userid?
+	userid = 0;
+	docid = 0;
+
+	jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database 
+    	+"&userid=" + userid
+    	+"&docid=" + docid
+    	,
+        function(jsonData) {
+			console.log(jsonData);
+			// Need to check the return status in the json 
+			if (jsonData.status == "failure"){
+				//abort on failure
+				return;
+			}
+			// callback function to load data.
+    })
+
 	// Slighter
 	temp = new Character();
 	temp.constructor("Slighter", "Human", "Fighter", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);

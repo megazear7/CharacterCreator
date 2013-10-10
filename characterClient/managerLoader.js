@@ -113,10 +113,4 @@ function loadMemberCharacterData(viewModel, userid){
     })
 
 	// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
-	// Slighter
-	temp = new Character();
-	temp.constructor("Slighter", "Human", "Fighter", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-	temp.addWeapon("longsword");
-	temp.addWeapon("longsword");
-	viewModel.characterList.push(temp);
 }

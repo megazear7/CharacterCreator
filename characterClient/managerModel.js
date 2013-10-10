@@ -98,6 +98,7 @@ ko.bindingHandlers.GridSelect = {
 };
 
 function saveDoc(userid, docid, jsonData){
+	console.log(userid);
 
     jQuery.post("/cgi-bin/response.cgi?request=saveDoc&database="+ database 
     	+"&userid=" + userid
@@ -113,8 +114,7 @@ function saveDoc(userid, docid, jsonData){
 			}
 			// callback function to load data.
 			
-			})
-
+			});
 }
 
 function Member(){
@@ -416,7 +416,7 @@ CharacterManagerViewModel = function(){
 		// need code to create docid
 		var docid = 0;
 		char.docid = docid;
-		saveDoc(self.userid, char.docid, ko.toJSON(char));
+		saveDoc(self.loggedInMember().userid(), char.docid, ko.toJSON(char));
 	}
 
 	self.dialogWindowTemplateType = function(item){
@@ -456,6 +456,7 @@ CharacterManagerViewModel = function(){
 	* To go to a specific step pass in a step object into this function
 	*/
 	self.goToStep = function(character) { 
+		console.log(self.loggedInMember().userid());
 		self.currentStep += 1;
 		var stepName = "step" + self.currentStep;
 		var useCharacter; 

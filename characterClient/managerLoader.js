@@ -42,10 +42,14 @@ function loadMemberData(viewModel){
 				return;
 			}
 
+			console.log(jsonData.result._id.$oid);
+
 			viewModel.loggedInMember().username(jsonData.result.screenName);
 			viewModel.loggedInMember().emailname(jsonData.result.emailname);
 			viewModel.loggedInMember().userid(jsonData.result._id.$oid);
 			viewModel.loggedInMember().isLoggedIn("loggedIn");
+
+			console.log(viewModel.loggedInMember().userid());
 
 			loadMemberCharacterData(viewModel, viewModel.loggedInMember().userid());
 
@@ -56,7 +60,6 @@ function loadMemberData(viewModel){
 }
 
 function loadMemberCharacterData(viewModel, userid){
-	// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
 	var temp;
 
     jQuery.getJSON("/cgi-bin/response.cgi?request=loadDocList&database="+ database 
@@ -70,10 +73,46 @@ function loadMemberCharacterData(viewModel, userid){
 				return;
 			}
 			// callback function to load data.
-			console.log(jsonData.result.results);
-			//docModel.doclist(jsonData.result.results);
+			console.log(jsonData.result);
+			console.log(jsonData.result[0]);
+
+			for(var i = 0; i < jsonData.result.length; i++) {
+				jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database 
+					+"&userid=" + userid
+					+"&docid=" + jsonData.result[i]
+					,
+					function(resData) {
+
+						console.log(resData);
+						// Need to check the return status in the json 
+						if (resData.status == "failure"){
+							//abort on failure
+							return;
+						}
+						temp = new Character();
+						temp.constructor(	resData.results.name,
+											resData.results.race, 
+											resData.results.characterClass, 
+											resData.results.level, 
+											resData.results.maxHealth, 
+											resData.results.strenth, 
+											resData.results.consitution, 
+											resData.results.dextarity, 
+											resData.results.wisdom, 
+											resData.results.intelegence, 
+											resData.results.charisma, 
+											resData.results.looks, 
+											resData.results.honor 
+										);
+						temp.addWeapon("longsword");
+						temp.addWeapon("longsword");
+						viewModel.characterList.push(temp);
+						viewModel.goToCharacterList();
+				});
+			}
     })
 
+	// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
 	// Slighter
 	temp = new Character();
 	temp.constructor("Slighter", "Human", "Fighter", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);

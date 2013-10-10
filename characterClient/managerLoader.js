@@ -80,5 +80,4 @@ function loadMemberCharacterData(viewModel, userid){
 	temp.addWeapon("longsword");
 	temp.addWeapon("longsword");
 	viewModel.characterList.push(temp);
-	console.log(viewModel.characterList());
 }

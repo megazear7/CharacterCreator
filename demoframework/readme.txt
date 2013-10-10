@@ -80,4 +80,64 @@ The best way would be to just set $docid using some hash reference.
 
 -------------------------------------------------------------
 
+{
+  'ok' => '1',
+  'n' => 0,
+  'connectionId' => 285,
+  'err' => undef,
+  'updatedExisting' => bless( do{\(my $o = 0)}, 'boolean' )
+}
 
+{"status" : "success", "msg" : "handled createDoc request", "result" :  [  ] }jrogers@jrogers-1015PX:~/Documents/Books/Computer/CharacterCreator/demoframework$ ./test.cgi
+Possible unintended interpolation of @gmail in string at ./test.cgi line 31.
+Name "main::gmail" used only once: possible typo at ./test.cgi line 31.
+{
+  'ok' => '1',
+  'n' => 1,
+  'connectionId' => 286,
+  'err' => undef,
+  'updatedExisting' => bless( do{\(my $o = 1)}, 'boolean' )
+}
+
+{"status" : "success", "msg" : "handled createDoc request", "result" :  [ {"$oid":"5254f77a1ad417d628000000"} ] }
+
+
+jrogers@jrogers-1015PX:~/Documents/Books/Computer/CharacterCreator/demoframework$ ./test.cgi
+Possible unintended interpolation of @gmail in string at ./test.cgi line 31.
+Name "main::gmail" used only once: possible typo at ./test.cgi line 31.
+{
+  'ok' => '1',
+  'n' => 1,
+  'upserted' => bless( {
+                       'value' => '5254f77a1ad417d628000001'
+                     }, 'MongoDB::OID' ),
+  'connectionId' => 287,
+  'err' => undef,
+  'updatedExisting' => bless( do{\(my $o = 0)}, 'boolean' )
+}
+
+{"status" : "success", "msg" : "handled createDoc request", "result" :  [ {"$oid":"5254f77a1ad417d628000000"}, {"$oid":"5254f77a1ad417d628000001"} ] }
+
+
+
+--------------------------------------
+
+
+
+{
+  'firstName' => 'Bob',
+  'pets' => [
+            'Cat',
+            'Dog',
+            'Fish'
+          ],
+  '_id' => bless( {
+                  'value' => '5254f77a1ad417d628000001'
+                }, 'MongoDB::OID' ),
+  'type' => 'Customer',
+  'lastName' => 'Smith'
+}
+
+
+
+--------------------------------------------------------

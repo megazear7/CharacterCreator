@@ -8,7 +8,7 @@ var userModel = {
     password   : ko.observable("password"),
     screenName : ko.observable("Bob"),
     userid     : ko.observable(""),
-    lastStatus : ko.observable("Enter an email address and password to login."),
+    lastStatus : ko.observable("Enter an email and password"),
 };
 
 var docModel = {

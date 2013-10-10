@@ -82,49 +82,39 @@ if ($REQUEST_METHOD eq 'POST') {
 	    my $userid = $h{"userid"};
 	    my $docid = $h{"docid"};
 	    
+	    # The following line retrieves the post data.
 	    my $postdata = $in{keywords};
-	    
+	
+	    # The following  needs to be fixed to do the right thing. 
+	    # Too much string manipulation, should be able to convert
+	    # in just a line or two.
 	    my $str = Dumper($postdata);
-	    
 	    chomp($str);
-	    chomp($str);
-	     $/ = "'";
-	     
+	     $/ = "'";    
 	    chomp($str);
 	    $str = substr($str, 1);
+	    $str = substr($str, 1, length($str)-2);
+	    my $jsonData = $jsonEncoder->decode( qq{{$str}} );
 	    
-	    my $newstr = $str;
-	    $newstr = substr($newstr, 1, length($newstr)-2);
-            
-	    my $jsonData = $jsonEncoder->decode( qq{{$newstr}} );
+	    # Fix above here
 	    
-	    my $UserCollection = $db->get_collection( "a" . $userid );
+	    my $DocCollection = $db->get_collection( "a" . $userid );
 	    
-	    # check error value
-	    
-	    if ($docid eq "0") { 
-	    
-	    	# insert
-	        my $id = $DocCollection->insert( $jsonData );
-	        
-	        # check error value
-		
-		my $tmp = Dumper($id);
-		
-		$docid = substr($tmp, 30, 24);
-	        
+	    my $id = $DocCollection->update( 
+		{ _id => MongoDB::OID->new(value => $docid)}, 
+		{ '$set' => $jsonData }, { 'upsert' => "1"} );
+
+	    if ($id->{ok} == 1) {  
+
+		if ($id->{updatedExisting} != 1) {
+			$docid = $id->{upserted}->to_string;
+			print $docid . "\n";
+		};      	
+		$json = qq{{"status" : "success", "msg" : "handled saveDoc request", "docid" : "$docid"}};
 	    } else {
-	    
-	    	# update
-	    	$UserCollection->update( 
-			{ _id => MongoDB::OID->new(value => $docid)}, 
-			{ '$set' => $jsonData } );
-				
-		# check error value
-	    }
-			
-            $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "docid" : "$docid"}};
-            
+		$json = qq{{"status" : "failure", "msg" : "saveDoc request failed: $id->{err}"}};
+	    };
+
         } else {
 		$json = qq{{"status" : "failure", "msg" : "Invalid credentials."}};
 	}
@@ -222,6 +212,10 @@ if ($REQUEST_METHOD eq 'POST') {
     } elsif ($h{"request"} eq "loadDocList") {
 	# handle request to update user values
 	
+	if ($validCookie == 1)
+	{
+
+	
 	my $userid = $h{"userid"};
 	    
 	my $DocCollection = $db->get_collection( "a" . $userid );
@@ -232,22 +226,17 @@ if ($REQUEST_METHOD eq 'POST') {
 	my $firstThruLoop = 1;
 	my $doc;
 	while ($doc = $all->next) {
-		if ($firstThruLoop != 1){
-			$retString .= ", ";
-			}
-        	my $jsonDoc = $jsonEncoder->encode($doc->{_id});
-        	$retString .= "$jsonDoc";
-        	
-    		$retString .= ", ";
-        	my $jsonDoc = $jsonEncoder->encode($doc->{_id});
-        	$retString .= "$jsonDoc";
-    	
+		if ($firstThruLoop != 1){ $retString .= ", "; }
+        	$retString .= "\"" . $doc->{_id}->to_string . "\"";
     		$firstThruLoop = 0;
     	}
-
     	$retString .= " ]";
 	
         $json = qq{{"status" : "success", "msg" : "handled createDoc request", "result" : $retString }};
+        
+      } else {
+	    $json = qq{{"status" : "failure", "msg" : "Invalid credentials"}};
+      }
     } elsif ($h{"request"} eq "loadDoc") {
 	# handle load document request
 
@@ -287,14 +276,14 @@ if ($REQUEST_METHOD eq 'POST') {
 
 # print out header with cookies
 if ($sc ne ""){
-print $cgi->header(
-    -type    => "application/json", 
-    -charset => "utf-8",
-    -cookie  => $sc
+    print $cgi->header(
+	-type    => "application/json", 
+	-charset => "utf-8",
+	-cookie  => $sc
     );
 } else {
-print $cgi->header(
-    -type    => "application/json", 
+    print $cgi->header(
+	-type    => "application/json", 
     );
 }
 

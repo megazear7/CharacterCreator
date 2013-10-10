@@ -27,8 +27,8 @@ my $jsonEncoder = JSON->new->utf8->allow_nonref->allow_blessed->convert_blessed;
 
 
 my $userid = "52533e6af04c3c073c000000";
-#my $docid  = "5254f77a1ad417d628000002";
-my $docid  = "0";
+my $docid  = "5254f77a1ad417d628000002";
+#my $docid  = "0";
 my $emailname = "w\@gmail.com";
 my $password  = "p";
 	    
@@ -36,15 +36,15 @@ my $password  = "p";
 #my $jsonData = $jsonEncoder->decode( qq{{$newstr}} );
 
 my $jsonData = {
-  "firstName" => "Bob",
+  "firstName" => "Bobaaaaaaa",
   "lastName" => "Smith",
-  "type" => "Customer",
   "pets" => [
     "Cat",
     "Dog",
     "Fish"
   ]
 };
+#  "type" => "Customer",
 	    
 $DocCollection = $db->get_collection( "a" . $userid );
    
@@ -55,16 +55,17 @@ $DocCollection = $db->get_collection( "a" . $userid );
 	    if ($docid eq "0"){
 		$id = $DocCollection->insert( $jsonData );
 		$docid = $id->to_string;
-		$json = qq{{"status" : "success", "msg" : "handled saveDoc request", "docid" : "$docid"}};
+		$json = qq{{"status" : "success", "msg" : "handled saveDoc request: insert", "docid" : "$docid"}};
 	    } else {
 	    	$id = $DocCollection->update( 
 		    { _id => MongoDB::OID->new(value => $docid)}, 
-		    { '$set' => $jsonData }, { 'upsert' => "1"} );
+		    $jsonData );
+		    #{ '$set' => $jsonData });
 		if ($id->{ok} == 1) {  
 		    if ($id->{updatedExisting} != 1) {
 			$docid = $id->{upserted}->to_string;
 		    };      	
-		    $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "docid" : "$docid"}};
+		    $json = qq{{"status" : "success", "msg" : "handled saveDoc request: update", "docid" : "$docid"}};
 	        } else {
 		    $json = qq{{"status" : "failure", "msg" : "saveDoc request failed: $id->{err}"}};
 	        }

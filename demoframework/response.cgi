@@ -6,18 +6,18 @@ CGI::ReadParse;
 $CGI::POST_MAX=1024 * 100;  # max 100K posts
 $CGI::DISABLE_UPLOADS = 1;  # no uploads
 
-use CGI::Carp 'fatalsToBrowser';
+#use CGI::Carp 'fatalsToBrowser';
 
-use CGI::Cookie;
-use HTTP::Request::Common qw(POST);
-use LWP::UserAgent;
+#use CGI::Cookie;
+#use HTTP::Request::Common qw(POST);
+#use LWP::UserAgent;
 
-use Time::localtime;
+#use Time::localtime;
 use JSON;
 use MongoDB;
 use MongoDB::Collection;
 use MongoDB::OID;
-use MongoDB::BSON;
+#use MongoDB::BSON;
 use Digest::SHA3 qw(sha3_224 sha3_224_base64);
 
 #use BSON qw/encode decode/;
@@ -108,7 +108,7 @@ if ($REQUEST_METHOD eq 'POST') {
 	    } else {
 	    	$id = $DocCollection->update( 
 		    { _id => MongoDB::OID->new(value => $docid)}, 
-		    { '$set' => $jsonData }, { 'upsert' => "1"} );
+		    $jsonData );
 		if ($id->{ok} == 1) {  
 		    if ($id->{updatedExisting} != 1) {
 			$docid = $id->{upserted}->to_string;

@@ -100,20 +100,24 @@ if ($REQUEST_METHOD eq 'POST') {
 	    
 	    my $DocCollection = $db->get_collection( "a" . $userid );
 	    
-	    my $id = $DocCollection->update( 
-		{ _id => MongoDB::OID->new(value => $docid)}, 
-		{ '$set' => $jsonData }, { 'upsert' => "1"} );
-
-	    if ($id->{ok} == 1) {  
-
-		if ($id->{updatedExisting} != 1) {
-			$docid = $id->{upserted}->to_string;
-			print $docid . "\n";
-		};      	
+	    my $id;
+	    if ($docid eq "0"){
+		$id = $DocCollection->insert( $jsonData );
+		$docid = $id->to_string;
 		$json = qq{{"status" : "success", "msg" : "handled saveDoc request", "docid" : "$docid"}};
 	    } else {
-		$json = qq{{"status" : "failure", "msg" : "saveDoc request failed: $id->{err}"}};
-	    };
+	    	$id = $DocCollection->update( 
+		    { _id => MongoDB::OID->new(value => $docid)}, 
+		    { '$set' => $jsonData }, { 'upsert' => "1"} );
+		if ($id->{ok} == 1) {  
+		    if ($id->{updatedExisting} != 1) {
+			$docid = $id->{upserted}->to_string;
+		    };      	
+		    $json = qq{{"status" : "success", "msg" : "handled saveDoc request", "docid" : "$docid"}};
+	        } else {
+		    $json = qq{{"status" : "failure", "msg" : "saveDoc request failed: $id->{err}"}};
+	        }
+	    }
 
         } else {
 		$json = qq{{"status" : "failure", "msg" : "Invalid credentials."}};

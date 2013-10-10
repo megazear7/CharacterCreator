@@ -107,12 +107,14 @@ function saveDoc(userid, docid, jsonData){
 			// This callback is executed if the post was successful    
 				
 			// Need to check the return status in the json 
-			if (jsonData.status == "failure"){
+			console.log(retData);
+			if (retData.status == "failure"){
 				return;
 			}
 			// callback function to load data.
-		
-    })
+			
+			})
+
 }
 
 function Member(){
@@ -128,7 +130,7 @@ function Member(){
 	}
 
 	this.template = function(){
-		return self.isLoggedIn();
+		return self.isLoggedIn() + "Banner";
 	}
 
 }
@@ -394,8 +396,6 @@ CharacterManagerViewModel = function(){
 	self.login = function(){
 		// right here you need to populate the view model with everything that is related to the member that just logged in
 		loadMemberData(self);
-		//loadMemberCharacterData(self, self.loggedInMember.userid());
-		self.goToCharacterList();
 	}
 
 	self.register = function() {
@@ -404,9 +404,11 @@ CharacterManagerViewModel = function(){
 		jQuery.getJSON("/cgi-bin/response.cgi?request=register&database="+ "hackmaster" 
 				+"&emailname=" + $('.loginEmailname').val() 
 				+"&password=" + CryptoJS.SHA3($('.loginPassword').val(), { outputLength: 256 })
-				+"&screenName=" + "default",
+				+"&screenName=" + $('.loginUsername').val(),
 				function(jsonData) {
     	})
+
+		self.goToLogin();
  
 	}
 
@@ -506,6 +508,16 @@ CharacterManagerViewModel = function(){
 		self.navSummary("Login");
 	}
 
+	self.goToRegister = function(){
+		self.goToRegisterChangeView();
+		history.pushState({location: "register"}, 'register', 'register');
+	}
+	self.goToRegisterChangeView = function(){
+		self.chosenView("emptyView"); 
+		self.chosenView("registerPage"); 
+		self.navSummary("Registration");
+	}
+
 	/*
 	 * This is the standard "go home" type of button. This always takes you to the character list screen
 	 */
@@ -555,6 +567,9 @@ CharacterManagerViewModel = function(){
 			}
 			if(event.state.location == "login"){
 				self.goToLoginChangeView();
+			}
+			if(event.state.location == "register"){
+				self.goToRegisterChangeView();
 			}
 		}
 	});

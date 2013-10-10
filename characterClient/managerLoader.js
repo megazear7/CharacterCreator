@@ -36,52 +36,22 @@ function loadMemberData(viewModel){
     	+"&emailname=" + $('.loginEmailname').val() 
     	+"&password=" + CryptoJS.SHA3($('.loginPassword').val(), { outputLength: 256 }),
         function(jsonData) {
-
-			console.log(jsonData);
 			
+			if (jsonData.status == "failure") {
+				alert("Wrong email or password");
+				return;
+			}
+
 			viewModel.loggedInMember().username(jsonData.result.screenName);
 			viewModel.loggedInMember().emailname(jsonData.result.emailname);
 			viewModel.loggedInMember().userid(jsonData.result._id.$oid);
 			viewModel.loggedInMember().isLoggedIn("loggedIn");
 
 			loadMemberCharacterData(viewModel, viewModel.loggedInMember().userid());
-    })
+
+			viewModel.goToCharacterList();
 
 
-	// down here all the documents attached to this member need to be loaded
-			/*
-    jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database 
-    	+"&userid=" + viewModel.loggedInMember.userid(),
-        function(jsonData) {
- 
-			var temp = new Member();
-			temp.constructor("Megazear7");
-			viewModel.loggedInMember(temp);
-
-			AppViewModel.firstName(jsonData.firstName);
-			AppViewModel.lastName(jsonData.lastName);
-			AppViewModel.type(jsonData.type);
-			AppViewModel.Quark = ko.observable(jsonData.Quark);
-			AppViewModel.Quark = ko.observable(jsonData.Quark);
-			AppViewModel.pets(jsonData.pets);
-    })
-			*/
-
-
-}
-
-function loadMemberDataNew(viewModel){
-	var emailname = $(".loginEmailname").attr("value");
-	var password = $(".loginPassword").attr("value");
-    jQuery.getJSON("/cgi-bin/response.cgi?request=login&emailname="
-    	+ emailname +"&password=" + password,
-        function(jsonData) {
-			var temp = new Member();
-			temp.constructor("Megazear7");
-			// will this reference to viewmodel here work inside a call back function?
-			// the jsonData that we get back from here needs to add the newly created member
-			// to the view model
-			viewModel.loggedInMember(temp);
     })
 }
 
@@ -89,41 +59,19 @@ function loadMemberCharacterData(viewModel, userid){
 	// for reference: (name, race, characterClass, level, maxHealth, strength, constitution, dextarity, wisdom, intelegence, charisma, looks, honor)
 	var temp;
 
-
-		/*
-    jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database 
-    	+"&userid=" + userModel.userid(),
-        function(jsonData) {
- 
-		temp = new Character();
-		temp.constructor("Slighter", "Human", "Fighter", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-		temp.addWeapon("longsword");
-		temp.addWeapon("longsword");
-		viewModel.characterList.push(temp);
-
-        AppViewModel.firstName(jsonData.firstName);
-        AppViewModel.lastName(jsonData.lastName);
-        AppViewModel.type(jsonData.type);
-        AppViewModel.Quark = ko.observable(jsonData.Quark);
-        AppViewModel.Quark = ko.observable(jsonData.Quark);
-        AppViewModel.pets(jsonData.pets);
-    })
-		*/
-
-	// How do I get the docid's and userid?
-	docid = 0;
-
-	jQuery.getJSON("/cgi-bin/response.cgi?request=loadDoc&database="+ database 
+    jQuery.getJSON("/cgi-bin/response.cgi?request=loadDocList&database="+ database 
     	+"&userid=" + userid
-    	+"&docid=" + docid
     	,
         function(jsonData) {
+
 			// Need to check the return status in the json 
 			if (jsonData.status == "failure"){
 				//abort on failure
 				return;
 			}
 			// callback function to load data.
+			console.log(jsonData.result.results);
+			//docModel.doclist(jsonData.result.results);
     })
 
 	// Slighter
@@ -132,21 +80,5 @@ function loadMemberCharacterData(viewModel, userid){
 	temp.addWeapon("longsword");
 	temp.addWeapon("longsword");
 	viewModel.characterList.push(temp);
-
-	// Wiz
-	temp = new Character();
-	temp.constructor("Wiz", "Elf", "Wizard", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-	temp.addWeapon("dagger");
-	temp.addSpell("fireball");
-	viewModel.characterList.push(temp);
-
-	//
-	temp = new Character();
-	temp.constructor("Mearth", "Human", "Cleric", 4, 35, 13.45, 10.00, 12.12, 13.09, 8.90, 7.47, 9.07, 11.98);
-	viewModel.characterList.push(temp);
-	temp.addWeapon("dagger");
-	temp.addWeapon("dagger");
-	temp.addSpell("fireball");
-	temp.addSpell("fireball");
-	temp.addSpell("fireball");
+	console.log(viewModel.characterList());
 }

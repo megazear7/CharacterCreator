@@ -36,35 +36,70 @@
 	</div>
 </script>
 
-<script id="loggedIn" type="text/html">
+<script id="loggedInBanner" type="text/html">
 	<span>Currently Logged In as: <span data-bind="text: $root.loggedInMember().username"></span></span>
 </script>
 
-<script id="notLoggedIn" type="text/html">
+<script id="notLoggedInBanner" type="text/html">
 	<span>Not Logged In</span>
 </script>
 
 <script id="loginPage" type="text/html">
+	<div data-bind="template: {name: $root.loggedInMember().isLoggedIn}"></div>
+</script>
+
+<script id="loggedIn" type="text/html">
+  	<div class="logoutContainer">
+		<p>You are currently logged in as <span data-bind="text: $root.loggedInMember().username"></span></p>
+        <button type="Button" id="updateBtn" data-bind="click: $root.logout">Logout</button>
+	</div>
+</script>
+
+<script id="notLoggedIn" type="text/html">
   	<div class="loginContainer">
         <table>
          <td>
           <tr>
-	    	<input class="loginEmailname" data-bind="" />
+	    	<input class="loginEmailname" placeholder="email" data-bind="" />
           </tr>
           <tr>
-            <input class="loginPassword" data-bind="" />
+            <input type="password" placeholder="password" class="loginPassword" data-bind="" />
           </tr>
           <tr>
             <button type="Button" id="loginBtn" data-bind="click: $root.login">Login</button>
           </tr>
           <tr>
-            <button type="Button" id="regBtn" data-bind="click: $root.register">Register</button>
+            <button type="Button" id="regBtn" data-bind="click: $root.goToRegister">Register</button>
           </tr>
           <tr>
             <button type="Button" id="forgotBtn" onclick="forgot()">Forgot</button>
           </tr>
           <tr>
             <button type="Button" id="updateBtn" onclick="update()">Update</button>
+          </tr>
+        </td>
+       </table> 
+	</div>
+</script>
+
+<script id="registerPage" type="text/html">
+  	<div class="loginContainer">
+        <table>
+         <td>
+          <tr>
+	    	<input class="loginEmailname" placeholder="email" data-bind="" />
+          </tr>
+          <tr>
+            <input type="password" placeholder="password" class="loginPassword" data-bind="" />
+          </tr>
+          <tr>
+	    	<input class="loginUsername" placeholder="username" data-bind="" />
+          </tr>
+          <tr>
+            <button type="Button" id="regBtn" data-bind="click: $root.register">Register</button>
+          </tr>
+          <tr>
+            <button type="Button" id="" data-bind="click: $root.goToLogin">Back To Login</button>
           </tr>
         </td>
        </table> 

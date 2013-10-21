@@ -10,6 +10,28 @@
 	-webkit-transition: border-color .25s linear;
 	-moz-transition: border-color .25s linear;
 }
+
+.selected {
+	background-color:rgb(190,190,190) !important;
+}
+
+.race_choice:hover {
+	background-color:rgb(200,200,200);
+}
+
+.race_choice {
+	margin:10px;
+	padding:10px;
+	font-size:150%;
+	font-weight:bold;
+	display:inline-block;
+	background-color:rgb(255,255,255);
+	transition: border-color .25s linear;
+	-o-transition: border-color .25s linear;
+	-webkit-transition: border-color .25s linear;
+	-moz-transition: border-color .25s linear;
+}
+
 /*
 .create_next_button:hover {
 	border-left: 50px solid #def;

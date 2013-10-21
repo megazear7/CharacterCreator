@@ -98,7 +98,6 @@ ko.bindingHandlers.GridSelect = {
 };
 
 function saveDoc(userid, docid, jsonData){
-	console.log(userid);
 
     jQuery.post("/cgi-bin/response.cgi?request=saveDoc&database="+ database 
     	+"&userid=" + userid
@@ -108,7 +107,6 @@ function saveDoc(userid, docid, jsonData){
 			// This callback is executed if the post was successful    
 				
 			// Need to check the return status in the json 
-			console.log(retData);
 			if (retData.status == "failure"){
 				return;
 			}
@@ -271,6 +269,10 @@ function Character(name, race, characterClass){
 		});
 		$('.choose_name').click(function(){
 			self.name($('.name_chosen').val());
+		});
+		$('.race_choice').click(function(){
+			$('.race_choice').removeClass("selected");
+			$(this).addClass("selected");
 		});
 	}
 
@@ -456,7 +458,6 @@ CharacterManagerViewModel = function(){
 	* To go to a specific step pass in a step object into this function
 	*/
 	self.goToStep = function(character) { 
-		console.log(self.loggedInMember().userid());
 		self.currentStep += 1;
 		var stepName = "step" + self.currentStep;
 		var useCharacter; 

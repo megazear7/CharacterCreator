@@ -5,6 +5,7 @@ sudo cp characterClient/response.cgi /usr/lib/cgi-bin/
 sudo cp -r characterClient /var/www/
 sudo cp -r lib /var/www/
 
+# example 
 # on alex's computer the apache directories are as follows:
 # /var/www/                       for html files
 # /usr/lib/cgi-bin/   		      for cgi files
